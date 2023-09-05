@@ -48,7 +48,7 @@ def render_page(name: str, request: Request, value: Optional[Dict] = None):
     if not value:
         value = {}
     value["request"] = request
-    return JINJA_TEMPLATES.TemplateResponse(f"{name}.html.j2", value)
+    return JINJA_TEMPLATES.TemplateResponse(f"{name}.html", value)
 
 
 # Make a copy of above with full type safety in future

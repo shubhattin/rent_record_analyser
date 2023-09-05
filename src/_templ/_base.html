@@ -2,11 +2,11 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %}</title>
-    {% block head %}
-    {% endblock %}
+    {% block head %}{% endblock -%}
+    <link rel="stylesheet" href="/pico.css">
   </head>
   <body>
-    {% block body %}{% endblock %}
+    {%- block body %}{% endblock -%}
     <script src="./htmx.js"></script>
   </body>
 </html>
