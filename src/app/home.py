@@ -1,10 +1,16 @@
+"""
+Page :- /
+"""
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
 from kry.plugins import render_page
+from ._router import app_router
 
-app_router = APIRouter(prefix="", default_response_class=HTMLResponse)
+router = APIRouter(prefix="")
 
 
-@app_router.get("/")
+@router.get("/")
 async def home_page(req: Request):
     return render_page("main", req)
+
+
+app_router.include_router(router)
