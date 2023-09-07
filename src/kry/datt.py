@@ -2,7 +2,7 @@ import os, json
 from deta import Deta
 
 DEV_ENV: bool = (
-    (os.getenv("DETA_SPACE_APP") and os.getenv("DETA_SPACE_APP") != "true")
+    (os.getenv("DETA_SPACE_APP") and os.getenv("DETA_SPACE_APP") != "true")  # type: ignore
     or (os.getenv("VIRTUAL_ENV") is not None)
     or (os.getenv("PIPENV_ACTIVE") and os.getenv("PIPENV_ACTIVE") == "1")
 )
@@ -14,12 +14,13 @@ if DEV_ENV:
 
     dotenv.load_dotenv()
 
-    deta = Deta(os.getenv("DETA_KEY"))
+    deta = Deta(os.getenv("DETA_KEY"))  # type: ignore
 else:
     deta = Deta()
 
 Drive = deta.Drive
 Base = deta.Base
+AsyncBase = deta.AsyncBase
 
 
 def read_file(file: str):
@@ -29,16 +30,16 @@ def read_file(file: str):
     return val
 
 
-def deta_val(key: str, root="verify", jsn=False):
+def deta_val(key: str, root, jsn=False):
     if key == "":
         return None
     v = deta.Base(root).get(key)
     if v == None:
         v = None
     else:
-        v = v["value"]
+        v = v["value"]  # type: ignore
     if jsn:
-        v = json.loads(v)
+        v = json.loads(v)  # type: ignore
     return v
 
 
@@ -77,4 +78,4 @@ class LoadListJSON(LoadData):
 
     def get(self) -> dict:
         """Get raw `JSON`"""
-        return super().get()[0]
+        return super().get()[0]  # type: ignore

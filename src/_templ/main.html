@@ -1,4 +1,27 @@
 {% extends "_base.html" %} {% block title %}Rent Record Analyser{% endblock %}
-{% block body %}
-<div>Good</div>
-{% endblock %}
+{% block head %}
+<meta name="description" content="Simple House Rent Record Analyser" />
+{% endblock %} {% block body %} {% for year in res -%}
+<div>
+  {% set yr_dt = res[year] -%}
+  <h5 style="margin-bottom: 10px">
+    Year {{year}}, Total <sup>₹</sup>{{ yr_dt["total"]}}
+  </h5>
+  {% for month in yr_dt %} {%- if month != "total" %} {%- set mn_dt =
+  yr_dt[month] %}
+  <div style="margin-bottom: 5px">
+    <div style="font-weight: bold">
+      {{MONTH_NAME[month - 1]}}, Total = <sup>₹</sup>{{ mn_dt["total"]}}
+    </div>
+    {% for day in mn_dt %} {% if day != "total" -%}
+    <div>
+      {% set day_dt = mn_dt[day] %} {{day}}<sup
+        >{{ NUMBER_SUFFIX[day%10 - 1] }}</sup
+      >
+      {{MONTH_NAME_SHORT[month - 1]}} :- {{join_amount(day_dt)}}
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+  {% endif %} {% endfor -%}
+</div>
+{% endfor %} {% endblock %}

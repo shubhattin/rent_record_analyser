@@ -1,5 +1,5 @@
 v: 0
-app_name: 'rent-record'
+app_name: 'rentrecord'
 micros:
   - name: python-app
     src: ./src
