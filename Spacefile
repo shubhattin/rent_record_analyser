@@ -1,9 +1,8 @@
 v: 0
-app_name: 'rentrecord'
+app_name: 'rent-record'
 micros:
-  - name: python-app
-    src: ./src
-    engine: python3.9
+  - name: nextjs-app
+    src: .
+    engine: next
     primary: true
     public: true
-    run: uvicorn main:app
