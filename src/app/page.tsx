@@ -1,4 +1,5 @@
-import { Base } from "@/tools/deta";
+import type { Metadata } from "next";
+import { base_fetch } from "@/tools/deta";
 import {
   get_year_list,
   type dtType,
@@ -9,14 +10,18 @@ import {
   MONTH_NAMES_SHORT,
 } from "./get_data";
 
+export const metadata: Metadata = {
+  title: "Rent Record Analyser",
+  description: "A Simple House Rent Record Analyser",
+};
+
 const getRawData = async () => {
   let lst: any[] = [];
-  const base = Base("rent_data");
-  let last: string = undefined!;
+  let last: string = null!;
   while (true) {
-    const dt = await base.fetch({}, { last: last });
+    const dt = await base_fetch("rent_data", last);
     lst = lst.concat(dt.items);
-    last = dt.last!;
+    last = dt.paging.last!;
     if (!last) break;
   }
   return lst as dtType[];

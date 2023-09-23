@@ -6,8 +6,8 @@ import "@picocss/pico";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Rent Record Analyser",
-  description: "A Simple House Rent Record Analyser",
+  icons: "favicon.png",
+  robots: "noindex",
 };
 
 export default function RootLayout({
