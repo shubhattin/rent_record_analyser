@@ -111,8 +111,7 @@ export const get_date_list = (
 
 const sort_items = (num_lst: number[], data_lst: any[]) => {
   const srt_num_lst = [...num_lst]; //cloning
-  srt_num_lst.sort();
-  srt_num_lst.reverse();
+  srt_num_lst.sort((a, b) => b - a); // sorting in descending order
   const srt_data_lst = srt_num_lst.map((v) => data_lst[num_lst.indexOf(v)]);
   return [srt_num_lst, srt_data_lst];
 };
