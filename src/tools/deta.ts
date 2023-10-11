@@ -1,9 +1,11 @@
 import { fetch_post, fetch_get, Fetch } from "@/tools/fetch";
 
-const KEY = process.env.DETA_KEY;
+const KEY = process.env.DETA_PROJECT_KEY || process.env.DETA_KEY;
 
-const URL = (baseName: string) =>
-  `https://database.deta.sh/v1/${KEY?.split("_")[0]}/${baseName}`;
+const URL = (baseName: string) => {
+  console.log([998823188, KEY]);
+  return `https://database.deta.sh/v1/${KEY?.split("_")[0]}/${baseName}`;
+};
 
 export const base_fetch = async (baseName: string, last: string = null!) => {
   const req = fetch_post(`${URL(baseName)}/query`, {
