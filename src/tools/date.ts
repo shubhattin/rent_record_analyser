@@ -25,4 +25,4 @@ export const unNormaliseDate = (date: string) => {
  * Evaluates `a > b` .Both dates should be in `yyyy-mm-dd` format
  */
 export const compare_dates = (a: string, b: string) =>
-  new Date(a) >= new Date(b);
+  new Date(a) > new Date(b);
