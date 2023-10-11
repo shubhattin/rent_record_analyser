@@ -1,3 +1,4 @@
+"use client";
 import {
   get_year_list,
   type dtType,
