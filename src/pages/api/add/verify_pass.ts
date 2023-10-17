@@ -7,7 +7,7 @@ export const POST: APIRoute = async ({ request }) => {
   const body: { key: string } = await request.json();
   const { key } = body;
   const hash = (await base_get("others", "passkey"))["value"];
-  const verified = await puShTi(key, hash);
+  const verified = puShTi(key, hash);
   const data: {
     verified: boolean;
     last_date?: [string, number];
@@ -21,7 +21,3 @@ export const POST: APIRoute = async ({ request }) => {
   }
   return JSONResponse(data);
 };
-
-// export const config = {
-//   runtime: 'edge',
-// };

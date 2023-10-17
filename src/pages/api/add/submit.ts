@@ -9,7 +9,7 @@ export const POST: APIRoute = async ({ request }) => {
     await request.json();
 
   // verifying for correct key
-  const verified = await puShTi(key, (await base_get("others", "passkey"))["value"]);
+  const verified = puShTi(key, (await base_get("others", "passkey"))["value"]);
   if (!verified) return JSONResponse({ status: "wrong_key" });
 
   const last_date: string = (await base_get("others", "last_date"))["value"]; // noemalised date
@@ -28,8 +28,4 @@ export const POST: APIRoute = async ({ request }) => {
   base_put("others", [{ key: "last_date", value: date }]);
 
   return JSONResponse({ status: "success" });
-};
-
-export const config = {
-  runtime: 'edge',
 };
