@@ -25,5 +25,7 @@ const data = await getRawData();
   description="A Simple House Rent Record Analyser"
 >
   <!-- Using svelte for templating but could also be done directly, this is to avoid the nested map function -->
-  <RentRecord data={data} />
+  <div class="container">
+    <RentRecord data={data} />
+  </div>
 </RootLayout>
