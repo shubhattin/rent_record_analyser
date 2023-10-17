@@ -22,6 +22,6 @@ export const POST: APIRoute = async ({ request }) => {
   return JSONResponse(data);
 };
 
-export const config = {
-  runtime: 'edge',
-};
+// export const config = {
+//   runtime: 'edge',
+// };
