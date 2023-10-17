@@ -29,3 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   return JSONResponse({ status: "success" });
 };
+
+export const config = {
+  runtime: 'edge',
+};
