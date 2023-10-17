@@ -1,12 +1,13 @@
-import { NextResponse } from "next/server";
-import { puShTi } from "@/tools/hash";
-import { base_get } from "@/tools/deta";
+import type { APIRoute } from "astro";
+import { puShTi } from "@tools/hash";
+import { base_get } from "@tools/deta";
+import { JSONResponse } from "@tools/responses";
 
-export async function POST(req: Request) {
-  const body: { key: string } = await req.json();
+export const POST: APIRoute = async ({ request }) => {
+  const body: { key: string } = await request.json();
   const { key } = body;
   const hash = (await base_get("others", "passkey"))["value"];
-  const verified = puShTi(key, hash);
+  const verified = await puShTi(key, hash);
   const data: {
     verified: boolean;
     last_date?: [string, number];
@@ -18,5 +19,5 @@ export async function POST(req: Request) {
     ).reduce((a, b) => a + b);
     data.last_date = [last_date, amount];
   }
-  return NextResponse.json(data);
-}
+  return JSONResponse(data);
+};

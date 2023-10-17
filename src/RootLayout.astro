@@ -1,0 +1,26 @@
+---
+import "@picocss/pico";
+import { ViewTransitions } from "astro:transitions";
+
+const { title, description, favicon } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <link rel="icon" href={`/${favicon || "favicon.ico"}`} />
+    {description && <meta name="description" content={description} />}
+    <ViewTransitions />
+  </head>
+  <body>
+    <slot />
+    <style is:global>
+      body {
+        padding: 5px;
+      }
+    </style>
+  </body>
+</html>

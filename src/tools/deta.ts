@@ -1,6 +1,8 @@
-import { fetch_post, fetch_get, Fetch } from "@/tools/fetch";
+import { fetch_post, fetch_get, Fetch } from "@tools/fetch";
 
-const KEY = process.env.DETA_PROJECT_KEY || process.env.DETA_KEY;
+let KEY: string = null!;
+if (import.meta.env.DEV) KEY = import.meta.env.DETA_KEY;
+else KEY = process.env.DETA_KEY!;
 
 const URL = (baseName: string) =>
   `https://database.deta.sh/v1/${KEY?.split("_")[0]}/${baseName}`;
@@ -12,9 +14,6 @@ export const base_fetch = async (baseName: string, last: string = null!) => {
     },
     headers: {
       "X-Api-Key": KEY!,
-    },
-    next: {
-      revalidate: 60, // in every 1 mins reconsider cache
     },
   });
   const resp = await req;
@@ -33,9 +32,6 @@ export const base_get = async (baseName: string, key: string) => {
     headers: {
       "X-Api-Key": KEY!,
     },
-    next: {
-      revalidate: 60, // in every 1 mins reconsider cache
-    },
   });
   const resp = await req;
   return await resp.json();
@@ -49,9 +45,6 @@ export const base_put = async (baseName: string, values: any[]) => {
     },
     headers: {
       "X-Api-Key": KEY!,
-    },
-    next: {
-      revalidate: 60, // in every 1 mins reconsider cache
     },
   });
   const resp = await req;
