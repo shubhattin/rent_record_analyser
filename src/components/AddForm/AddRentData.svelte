@@ -34,31 +34,33 @@
   };
 </script>
 
-<h4 style="margin-bottom:5px">Add New Entry</h4>
-{#if !errorStatus && !submitted}
-  <form on:submit|preventDefault={sumbit_data}>
-    <input type="date" required bind:value={date} />
-    <input type="number" required bind:value={amount} />
-    <input type="submit" value="Sumbit" />
-  </form>
-{:else if errorStatus}
-  <input
-    type="text"
-    readonly
-    aria-invalid="true"
-    value="Cannot Add Record before the Last Date"
-  />
-{:else if submitted}
-  <a href="/">Home Page</a>
-  <div>
-    <strong>
-      Successfully Added Record of ₹ {amount} dated{" "}
-      {normaliseDate(date)}.
-    </strong>
-  </div>
-{/if}
-<div style="margin-top:45px;">
+<section>
+  <h4>Add New Entry</h4>
+  {#if !errorStatus && !submitted}
+    <form on:submit|preventDefault={sumbit_data}>
+      <input type="date" required bind:value={date} />
+      <input type="number" required bind:value={amount} />
+      <input type="submit" value="Sumbit" />
+    </form>
+  {:else if errorStatus}
+    <input
+      type="text"
+      readonly
+      aria-invalid="true"
+      value="Cannot Add Record before the Last Date"
+    />
+  {:else if submitted}
+    <a href="/">Home Page</a>
+    <div>
+      <strong>
+        Successfully Added Record of ₹ {amount} dated{" "}
+        {normaliseDate(date)}.
+      </strong>
+    </div>
+  {/if}
+</section>
+<section>
   <strong>Last Record</strong>
   {"=>"}
   {last_date_data[0]} :- ₹ {last_date_data[1]}
-</div>
+</section>

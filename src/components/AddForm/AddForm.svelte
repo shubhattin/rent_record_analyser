@@ -32,11 +32,18 @@
   };
 </script>
 
-{#if !passUnlocked}
-  <form on:submit|preventDefault={check_pass}>
-    <input type="password" bind:value={passKey} placeholder="गूढपद" required />
-    <input type="submit" value="Submit" />
-  </form>
-{:else}
-  <AddRentData {passKey} {last_date_data} />
-{/if}
+<div class="container">
+  {#if !passUnlocked}
+    <form on:submit|preventDefault={check_pass} class="grid">
+      <input
+        type="password"
+        bind:value={passKey}
+        placeholder="गूढपद"
+        required
+      />
+      <input type="submit" value="Submit" />
+    </form>
+  {:else}
+    <AddRentData {passKey} {last_date_data} />
+  {/if}
+</div>
