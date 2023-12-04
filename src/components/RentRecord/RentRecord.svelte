@@ -16,7 +16,7 @@
 
 <!-- Yearly -->
 {#each year_list as yr, i_yr (yr)}
-  <h5 style="margin-bottom: 10px;">
+  <h5 style="margin-bottom: 10px; color: var(--h2-color);">
     Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
   </h5>
   <!-- Monthly -->
@@ -24,18 +24,28 @@
   {#each month_list as mn, i_mn (mn)}
     {@const [date_list, amount_dt_list] = get_date_list(yr, mn, data)}
     <div style="margin-bottom:5px">
-      <div style="font-weight: bold;">
-        {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
-      </div>
-      <!-- DateWise -->
-      {#each date_list as dt, i_dt (dt)}
-        <div>
-          {dt}
-          <sup>{dt % 10 === 0 ? "th" : NUMBER_SUFFIX[(dt % 10) - 1]}</sup>{" "}
-          {MONTH_NAMES_SHORT[mn - 1]} :-{" "}
-          {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(", ")}
-        </div>
-      {/each}
+      <details open={i_mn === 0}>
+        <summary style={i_mn === 0 ? "font-weight: bold;" : ""}>
+          {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
+        </summary>
+        <!-- DateWise -->
+        {#each date_list as dt, i_dt (dt)}
+          <div>
+            {dt}
+            <sup>{dt % 10 === 0 ? "th" : NUMBER_SUFFIX[(dt % 10) - 1]}</sup
+            >{" "}
+            {MONTH_NAMES_SHORT[mn - 1]} :-{" "}
+            {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(", ")}
+          </div>
+        {/each}
+      </details>
     </div>
   {/each}
 {/each}
+
+<style>
+  /* retaining the  color even after open */
+  details[open] > summary:not([role]):not(:focus) {
+    color: var(--h4-color);
+  }
+</style>
