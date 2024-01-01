@@ -23,7 +23,6 @@
   {@const [month_list, amount_mn_list] = get_month_list(yr, data)}
   {#each month_list as mn, i_mn (mn)}
     {@const [date_list, amount_dt_list] = get_date_list(yr, mn, data)}
-    <div style="margin-bottom:5px">
       <details open={i_mn === 0}>
         <summary style={i_mn === 0 ? "font-weight: bold;" : ""}>
           {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
@@ -39,7 +38,6 @@
           </div>
         {/each}
       </details>
-    </div>
   {/each}
 {/each}
 
