@@ -48,28 +48,13 @@
     </details>
   {/each}
 {/each}
-<strong>
+<small>
   Total = ₹ {total}
-</strong>
-
-<div>
-  <a class="add_link" href="/add">
-    <div />
-  </a>
-</div>
+</small>
 
 <style>
   /* retaining the  color even after open */
   details[open] > summary:not([role]):not(:focus) {
     color: var(--h4-color);
-  }
-  .add_link {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    height: 15px;
-    width: 15px;
-    display: block;
-    border: 1px solid rgb(82, 80, 80);
   }
 </style>
