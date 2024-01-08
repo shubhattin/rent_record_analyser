@@ -1,7 +1,7 @@
 {
   "name": "Rent",
   "short_name": "Rent",
-  "start_url": "index.html",
+  "start_url": "",
   "scope": "./",
   "icons": [
     {
