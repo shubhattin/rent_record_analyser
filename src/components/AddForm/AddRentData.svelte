@@ -4,7 +4,6 @@
 
   type lastDateIntoType = [string, number];
   export let passKey: string;
-  export let last_date_data: lastDateIntoType;
 
   let date = "";
   let amount: number;
@@ -23,12 +22,7 @@
     const res = await req;
     if (!res.ok) return;
     const { status }: { status: string } = await res.json();
-    if (status === "date_smaller") {
-      errorStatus = true;
-      setTimeout(() => (errorStatus = false), 4000);
-      date = "";
-      amount = null!;
-    } else if (status === "success") {
+    if (status === "success") {
       submitted = true;
     }
   };
@@ -58,9 +52,4 @@
       </strong>
     </div>
   {/if}
-</section>
-<section>
-  <strong>Last Record</strong>
-  {"=>"}
-  {last_date_data[0]} :- ₹ {last_date_data[1]}
 </section>

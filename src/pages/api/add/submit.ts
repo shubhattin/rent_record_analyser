@@ -12,20 +12,17 @@ export const POST: APIRoute = async ({ request }) => {
   const verified = puShTi(key, (await base_get("others", "passkey"))["value"]);
   if (!verified) return JSONResponse({ status: "wrong_key" });
 
-  const last_date: string = (await base_get("others", "last_date"))["value"]; // noemalised date
-
-  if (compare_dates(unNormaliseDate(last_date), date))
-    return JSONResponse({ status: "date_smaller" });
-
   date = normaliseDate(date); // normalizing to store in database
-  let data = { key: date, amount: [amount] };
-  if (last_date === date) {
-    // if already exists
-    data = await base_get("rent_data", date);
+  let date_data_ref = await base_get("rent_data", date);
+  let data;
+  if ("amount" in date_data_ref) {
+    // if date already exists
+    data = date_data_ref;
     data.amount.push(amount);
+  } else {
+    data = { key: date, amount: [amount] };
   }
   base_put("rent_data", [data]);
-  base_put("others", [{ key: "last_date", value: date }]);
 
   return JSONResponse({ status: "success" });
 };

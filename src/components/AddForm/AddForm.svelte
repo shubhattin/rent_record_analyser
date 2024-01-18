@@ -5,9 +5,6 @@
   let passUnlocked = false;
   let passKey = "";
 
-  type lastDateIntoType = [string, number];
-  let last_date_data: lastDateIntoType = null!;
-
   const check_pass = async () => {
     if (passKey === "") return;
     const req = fetch_post("/api/add/verify_pass", {
@@ -22,12 +19,10 @@
     }
     const json: {
       verified: boolean;
-      last_date?: lastDateIntoType;
     } = await resp.json();
     if (!json.verified) passKey = "";
     else {
       passUnlocked = true;
-      last_date_data = json.last_date!;
     }
   };
 </script>
@@ -44,6 +39,6 @@
       <input type="submit" value="Submit" />
     </form>
   {:else}
-    <AddRentData {passKey} {last_date_data} />
+    <AddRentData {passKey} />
   {/if}
 </div>
