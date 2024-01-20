@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fetch_post } from "@tools/fetch";
   import AddRentData from "./AddRentData.svelte";
+  import { z } from "zod";
 
   let passUnlocked = false;
   let passKey = "";
@@ -17,10 +18,10 @@
       passKey = "";
       return;
     }
-    const json: {
-      verified: boolean;
-    } = await resp.json();
-    if (!json.verified) passKey = "";
+    const { verified } = z
+      .object({ verified: z.boolean() })
+      .parse(await resp.json());
+    if (!verified) passKey = "";
     else {
       passUnlocked = true;
     }

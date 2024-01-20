@@ -1,17 +1,21 @@
 import type { APIRoute } from "astro";
 import { JSONResponse } from "@tools/responses";
-import { compare_dates, unNormaliseDate, normaliseDate } from "@tools/date";
+import { normaliseDate } from "@tools/date";
 import { base_get, base_put } from "@tools/deta";
 import { puShTi } from "@tools/hash";
+import { z } from "zod";
+import { dataSchema } from "@components/get_data";
 
+const requestSchema = dataSchema.merge(
+  z.object({
+    key: z.string().min(4),
+  })
+);
 export const POST: APIRoute = async ({ request }) => {
-  let {
-    key,
-    date,
-    amount,
-    month,
-  }: { key: string; date: string; amount: number; month: string } =
-    await request.json();
+  const req_parse = requestSchema.safeParse(await request.json());
+  if (!req_parse.success)
+    return JSONResponse({ status: "error_parsing_request" });
+  let { key, date, amount, month } = req_parse.data;
 
   // verifying for correct key
   const verified = puShTi(key, (await base_get("others", "passkey"))["value"]);

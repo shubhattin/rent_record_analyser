@@ -10,7 +10,6 @@
   $: {
     let changed = new Set<string>();
     for (let i = 0; i < data.length; i++) {
-      // console.log(prev_data[i],data[i])
       if (
         prev_data[i].date !== data[i].date ||
         prev_data[i].amount !== data[i].amount ||

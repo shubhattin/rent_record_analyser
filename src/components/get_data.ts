@@ -1,14 +1,16 @@
 import { sort_dates } from "@tools/date";
 import { base_fetch } from "@tools/deta";
+import { z } from "zod";
 
-export interface dtType {
-  key: string;
+export const dataSchema = z.object({
+  key: z.string(),
   // format :- dd/mm/yyyy
-  date: string;
-  amount: number;
+  date: z.string().regex(/\d?\d\/\d?\d\/\d{4}/),
   // format :- mm-yyyy
-  month: string;
-}
+  amount: z.number().int(),
+  month: z.string().regex(/\d?\d-\d{4}/),
+});
+export type dtType = z.infer<typeof dataSchema>;
 
 export const get_rent_record_data = async () => {
   const sort_data_based_on_date = (dates: dtType[], order: 1 | -1 = 1) => {
@@ -35,11 +37,19 @@ export const get_rent_record_data = async () => {
     // Sort the dates using the custom comparator
     return dates.slice().sort(compareDates);
   };
+  const filter_items = (lst: any[]): dtType[] => {
+    const filtered: dtType[] = [];
+    for (let x of lst) {
+      const parse = dataSchema.safeParse(x);
+      if (parse.success) filtered.push(parse.data);
+    }
+    return filtered;
+  };
   let lst: any[] = [];
   let last: string = null!;
   while (true) {
     const dt = await base_fetch("data", last);
-    lst = lst.concat(dt.items);
+    lst = lst.concat(filter_items(dt.items));
     last = dt.paging.last!;
     if (!last) break;
   }

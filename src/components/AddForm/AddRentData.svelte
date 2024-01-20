@@ -3,6 +3,7 @@
   import { fetch_post } from "@tools/fetch";
   import { MONTH_NAMES } from "@tools/date";
   import { onMount } from "svelte";
+  import { z } from "zod";
 
   export let passKey: string;
 
@@ -35,7 +36,7 @@
     });
     const res = await req;
     if (!res.ok) return;
-    const { status }: { status: string } = await res.json();
+    const { status } = z.object({ status: z.string() }).parse(await res.json());
     if (status === "success") {
       submitted = true;
     }
