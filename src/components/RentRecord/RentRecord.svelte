@@ -51,9 +51,12 @@
   Total = ₹ {total}
 </small>
 
-<div>
-  <a class="add_link" href="/add">
-    <div />
+<div class="links">
+  <a href="/add">
+    ➕
+  </a>
+  <a href="/edit">
+    📝
   </a>
 </div>
 
@@ -62,13 +65,9 @@
   details[open] > summary:not([role]):not(:focus) {
     color: var(--h4-color);
   }
-  .add_link {
+  .links {
     position: absolute;
     right: 0;
     bottom: 0;
-    height: 15px;
-    width: 15px;
-    display: block;
-    border: 1px solid var(--h6-color);
   }
 </style>

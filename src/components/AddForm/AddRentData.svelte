@@ -29,7 +29,7 @@
     const req = fetch_post("/api/add/submit", {
       json: {
         key: passKey,
-        date: date, // sending date without normalization in form yyyy-mm-dd
+        date: normaliseDate(date),
         amount: amount,
         month: `${month}-${year}`,
       },
