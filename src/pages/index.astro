@@ -10,7 +10,7 @@ const getRawData = async () => {
   let lst: any[] = [];
   let last: string = null!;
   while (true) {
-    const dt = await base_fetch("rent_data", last);
+    const dt = await base_fetch("data", last);
     lst = lst.concat(dt.items);
     last = dt.paging.last!;
     if (!last) break;
