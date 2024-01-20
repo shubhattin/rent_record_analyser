@@ -2,17 +2,20 @@
 import "@picocss/pico";
 import { ViewTransitions } from "astro:transitions";
 
-const { title, description, favicon } = Astro.props;
+const { title, description, favicon, theme } = Astro.props;
+
+const props: any = {};
+if (theme) props["data-theme"] = theme;
 ---
 
-<html lang="en">
+<html lang="en" {...props}>
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
     <link rel="icon" href={`/${favicon || "favicon.ico"}`} />
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" />
     {description && <meta name="description" content={description} />}
     <ViewTransitions />
   </head>

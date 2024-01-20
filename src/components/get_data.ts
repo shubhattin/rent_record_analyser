@@ -1,12 +1,51 @@
 import { sort_dates } from "@tools/date";
+import { base_fetch } from "@tools/deta";
 
 export interface dtType {
+  key: string;
   // format :- dd/mm/yyyy
   date: string;
   amount: number;
   // format :- mm-yyyy
   month: string;
 }
+
+export const get_rent_record_data = async () => {
+  const sort_data_based_on_date = (dates: dtType[], order: 1 | -1 = 1) => {
+    const compareDates = (data1: dtType, data2: dtType): number => {
+      const date1 = data1.date;
+      const date2 = data2.date;
+      const [day1, month1, year1] = date1.split("/").map(Number);
+      const [day2, month2, year2] = date2.split("/").map(Number);
+
+      // Compare years first
+      if (year1 !== year2) {
+        return (year1 - year2) * order;
+      }
+
+      // If years are the same, compare months
+      if (month1 !== month2) {
+        return (month1 - month2) * order;
+      }
+
+      // If months are the same, compare days
+      return (day1 - day2) * order;
+    };
+
+    // Sort the dates using the custom comparator
+    return dates.slice().sort(compareDates);
+  };
+  let lst: any[] = [];
+  let last: string = null!;
+  while (true) {
+    const dt = await base_fetch("data", last);
+    lst = lst.concat(dt.items);
+    last = dt.paging.last!;
+    if (!last) break;
+  }
+  lst = sort_data_based_on_date(lst, -1) as dtType[];
+  return lst;
+};
 
 /**
  * Return array in the form of `[year list, amount list]`

@@ -4,7 +4,7 @@
     type dtType,
     get_month_list,
     get_date_list,
-  } from "./get_data";
+  } from "@components/get_data";
   import { MONTH_NAMES, NUMBER_SUFFIX, MONTH_NAMES_SHORT } from "@tools/date";
 
   export let data: dtType[];

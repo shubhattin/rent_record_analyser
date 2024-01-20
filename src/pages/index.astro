@@ -1,23 +1,11 @@
 ---
 import RootLayout from "src/RootLayout.astro";
 import RentRecord from "@components/RentRecord/RentRecord.svelte";
-import { type dtType } from "@components/RentRecord/get_data";
-import { base_fetch } from "@tools/deta";
+import { get_rent_record_data } from "@components/get_data";
 
 export const prerender = false;
 
-const getRawData = async () => {
-  let lst: any[] = [];
-  let last: string = null!;
-  while (true) {
-    const dt = await base_fetch("data", last);
-    lst = lst.concat(dt.items);
-    last = dt.paging.last!;
-    if (!last) break;
-  }
-  return lst as dtType[];
-};
-const data = await getRawData();
+const data = await get_rent_record_data();
 ---
 
 <RootLayout
