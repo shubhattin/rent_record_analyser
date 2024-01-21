@@ -132,7 +132,6 @@ export const get_date_list = (
   }
 
   const sorted_full_dates = sort_dates(full_dates, -1);
-  // if (year === 2023 && month === 8) console.log(full_dates, sorted_full_dates);
   const sorted_dates = sorted_full_dates.map((v) => dates[full_dates.indexOf(v)]);
   const sorted_amounts = sorted_full_dates.map((v) => amounts[full_dates.indexOf(v)]);
   // actual months

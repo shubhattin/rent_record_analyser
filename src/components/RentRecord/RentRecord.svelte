@@ -42,8 +42,8 @@
 </small>
 
 <div class="links">
-  <a href="/add"> ➕ </a>
-  <a href="/list"> ✏️ </a>
+  <a href="/list">✏️</a>
+  <a href="/add">➕</a>
 </div>
 
 <style>
@@ -55,5 +55,6 @@
     position: absolute;
     right: 0;
     bottom: 0;
+    font-size: 1.25rem;
   }
 </style>
