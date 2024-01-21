@@ -1,5 +1,5 @@
 ---
-import RootLayout from "src/RootLayout.astro";
+import RootLayout from 'src/RootLayout.astro';
 
 export const prerender = true;
 ---
@@ -8,14 +8,14 @@ export const prerender = true;
   <button id="install_btn">Install</button>
   <script>
     let install_prompt: any = null!;
-    const install_button = document.querySelector("#install_btn")!;
+    const install_button = document.querySelector('#install_btn')!;
 
-    window.addEventListener("beforeinstallprompt", (event) => {
+    window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
       install_prompt = event;
     });
 
-    install_button.addEventListener("click", async () => {
+    install_button.addEventListener('click', async () => {
       if (!install_prompt) return;
       await install_prompt.prompt();
     });

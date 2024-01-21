@@ -1,43 +1,33 @@
 export const MONTH_NAMES_SHORT = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
 ];
 export const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
 ];
 
-export const NUMBER_SUFFIX = [
-  "st",
-  "nd",
-  "rd",
-  "th",
-  "th",
-  "th",
-  "th",
-  "th",
-  "th",
-];
+export const NUMBER_SUFFIX = ['st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
 
 /**
  * Normalize Dates :- `2023-09-08` -> `8/9/2023`
@@ -45,9 +35,9 @@ export const NUMBER_SUFFIX = [
 export const normaliseDate = (date: string) => {
   // This Normalization is useful while comparing dates
   // dd/mm/yyyy
-  const lst = date.split("-").map((v) => parseInt(v));
+  const lst = date.split('-').map((v) => parseInt(v));
   lst.reverse();
-  return lst.join("/");
+  return lst.join('/');
   // yyyy-mm-dd
 };
 
@@ -56,22 +46,21 @@ export const normaliseDate = (date: string) => {
  */
 export const unNormaliseDate = (date: string) => {
   // dd/mm/yyyy
-  const lst = date.split("/").map((v) => parseInt(v));
+  const lst = date.split('/').map((v) => parseInt(v));
   lst.reverse();
-  return lst.join("-");
+  return lst.join('-');
   // yyyy-mm-dd
 };
 
 /**
  * Evaluates `a > b` .Both dates should be in `yyyy-mm-dd` format
  */
-export const compare_dates = (a: string, b: string) =>
-  new Date(a) > new Date(b);
+export const compare_dates = (a: string, b: string) => new Date(a) > new Date(b);
 
 export const sort_dates = (dates: string[], order: 1 | -1 = 1) => {
   const compareDates = (date1: string, date2: string): number => {
-    const [day1, month1, year1] = date1.split("/").map(Number);
-    const [day2, month2, year2] = date2.split("/").map(Number);
+    const [day1, month1, year1] = date1.split('/').map(Number);
+    const [day2, month2, year2] = date2.split('/').map(Number);
 
     // Compare years first
     if (year1 !== year2) {

@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { normaliseDate } from "@tools/date";
-  import { fetch_post } from "@tools/fetch";
-  import { MONTH_NAMES } from "@tools/date";
-  import { onMount } from "svelte";
-  import { z } from "zod";
+  import { normaliseDate } from '@tools/date';
+  import { fetch_post } from '@tools/fetch';
+  import { MONTH_NAMES } from '@tools/date';
+  import { onMount } from 'svelte';
+  import { z } from 'zod';
+  import { slide, scale } from 'svelte/transition';
 
   export let passKey: string;
 
@@ -12,10 +13,8 @@
   const current_year = todays_date.getFullYear();
 
   const get_todays_date = () => {
-    const prefix_zeros = (n: number) => `${n < 10 ? "0" : ""}${n}`;
-    return `${current_year}-${prefix_zeros(current_month)}-${prefix_zeros(
-      todays_date.getDate()
-    )}`;
+    const prefix_zeros = (n: number) => `${n < 10 ? '0' : ''}${n}`;
+    return `${current_year}-${prefix_zeros(current_month)}-${prefix_zeros(todays_date.getDate())}`;
   };
   let date = get_todays_date();
   let month = current_month.toString();
@@ -25,19 +24,19 @@
   let submitted = false;
 
   const sumbit_data = async () => {
-    if (!date || date === "" || !amount || amount === 0) return;
-    const req = fetch_post("/api/add/submit", {
+    if (!date || date === '' || !amount || amount === 0) return;
+    const req = fetch_post('/api/add/submit', {
       json: {
         key: passKey,
         date: normaliseDate(date),
         amount: amount,
-        month: `${month}-${year}`,
-      },
+        month: `${month}-${year}`
+      }
     });
     const res = await req;
     if (!res.ok) return;
     const { status } = z.object({ status: z.string() }).parse(await res.json());
-    if (status === "success") {
+    if (status === 'success') {
       submitted = true;
     }
   };
@@ -52,7 +51,7 @@
 <section>
   <h4>Add New Entry</h4>
   {#if !errorStatus && !submitted}
-    <form on:submit|preventDefault={sumbit_data}>
+    <form transition:slide on:submit|preventDefault={sumbit_data}>
       <input type="date" required bind:value={date} />
       <div class="grid">
         <label>
@@ -89,12 +88,28 @@
       value="Cannot Add Record before the Last Date"
     />
   {:else if submitted}
-    <a href="/">Home Page</a>
-    <div>
-      <strong>
-        Successfully Added Record of ₹ {amount} dated{" "}
-        {normaliseDate(date)}.
-      </strong>
+    <div transition:scale>
+      <a href="/">Home Page</a>
+      <div>
+        <strong>
+          Successfully Added Record of ₹ {amount} dated{' '}
+          {normaliseDate(date)}.
+        </strong>
+      </div>
+      <button
+        style="width:fit-content;"
+        on:click={() => {
+          // resetting this component
+          date = get_todays_date();
+          month = current_month.toString();
+          year = current_year.toString();
+          // @ts-ignore
+          amount = null;
+          errorStatus = false;
+          submitted = false;
+          amount_input_elmt.focus();
+        }}>Add More</button
+      >
     </div>
   {/if}
 </section>
