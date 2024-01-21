@@ -1,90 +1,61 @@
 <script lang="ts">
   import type { dtType } from "@components/get_data";
+  import Edit from "./Edit.svelte";
+  import { fetch_post } from "@tools/fetch";
+  import { z } from "zod";
+
   export let data: dtType[];
 
-  let prev_data = JSON.parse(JSON.stringify(data));
+  let ediatble = true;
+  let pass_verify_show_status = false;
+  let passKey = "";
 
-  let changed_records = new Set<string>();
-  let to_delete_records = new Set<string>();
-
-  $: {
-    let changed = new Set<string>();
-    for (let i = 0; i < data.length; i++) {
-      if (
-        prev_data[i].date !== data[i].date ||
-        prev_data[i].amount !== data[i].amount ||
-        prev_data[i].month !== data[i].month
-      )
-        changed.add(data[i].key);
+  const check_pass = async () => {
+    if (passKey === "") return;
+    const req = fetch_post("/api/edit/verify_pass", {
+      json: {
+        key: passKey,
+      },
+    });
+    const resp = await req;
+    if (!resp.ok) {
+      passKey = "";
+      return;
     }
-    changed_records = changed;
-  }
-
-  const get_parse_int = (str: any) => parseInt(str);
+    const { verified } = z
+      .object({ verified: z.boolean() })
+      .parse(await resp.json());
+    if (!verified) passKey = "";
+    else {
+      ediatble = true;
+    }
+  };
 </script>
 
-<table role="grid">
-  <thead>
-    <tr>
-      <th scope="col"><strong>Date</strong></th>
-      <th scope="col"><strong>Amount</strong></th>
-      <th scope="col"><strong>Month</strong></th>
-      <th scope="col"><strong>Key</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each data as dt, i}
-      {@const changed_status = changed_records.has(dt.key)}
-      {@const to_delete_status = to_delete_records.has(dt.key)}
-      {@const clss = to_delete_status
-        ? "to_delete"
-        : changed_status
-          ? "changed"
-          : ""}
-      <tr class={clss}>
-        <td contenteditable="true" bind:textContent={dt.date}>{dt.date}</td>
-        <td
-          contenteditable="true"
-          on:input={(e) =>
-            (dt.amount = get_parse_int(e.currentTarget.textContent))}
-          >{dt.amount}</td
-        >
-        <td contenteditable="true" bind:textContent={dt.month}>{dt.month}</td>
-        <td
-          >{dt.key}
-          {#if !to_delete_status}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <span
-              on:click={() => {
-                to_delete_records.add(dt.key);
-                to_delete_records = to_delete_records;
-              }}>❌</span
-            >
-          {:else}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <span
-              on:click={() => {
-                to_delete_records.delete(dt.key);
-                to_delete_records = to_delete_records;
-              }}>✅️</span
-            >
-          {/if}
-        </td>
-      </tr>
-    {/each}
-  </tbody>
-</table>
+{#if !ediatble}
+  {#if pass_verify_show_status}
+    <form on:submit|preventDefault={check_pass} class="grid">
+      <input
+        type="password"
+        bind:value={passKey}
+        placeholder="गूढपद"
+        required
+      />
+      <input type="submit" value="Submit" />
+    </form>
+  {:else}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="edit_btn" on:click={() => (pass_verify_show_status = true)}>
+      ✏️
+    </div>
+  {/if}
+{/if}
+<Edit {data} {ediatble} {passKey} />
 
 <style>
-  .changed {
-    border: 2px solid yellow;
-  }
-  .to_delete {
-    border: 2px solid #ff0000;
-  }
-  td {
-    outline: none;
+  .edit_btn {
+    font-size: 1.25rem;
   }
 </style>

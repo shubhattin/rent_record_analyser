@@ -2,13 +2,17 @@ import { sort_dates } from "@tools/date";
 import { base_fetch } from "@tools/deta";
 import { z } from "zod";
 
+export const amountSchema = z.number().int();
+export const monthSchema = z.string().regex(/^\d?\d-\d{4}$/);
+export const keySchema = z.string().min(4);
+export const dateSchema = z.string().regex(/^\d?\d\/\d?\d\/\d{4}$/);
 export const dataSchema = z.object({
-  key: z.string(),
+  key: keySchema,
   // format :- dd/mm/yyyy
-  date: z.string().regex(/\d?\d\/\d?\d\/\d{4}/),
+  date: dateSchema,
   // format :- mm-yyyy
-  amount: z.number().int(),
-  month: z.string().regex(/\d?\d-\d{4}/),
+  amount: amountSchema,
+  month: monthSchema,
 });
 export type dtType = z.infer<typeof dataSchema>;
 
