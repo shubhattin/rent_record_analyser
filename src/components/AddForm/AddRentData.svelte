@@ -89,16 +89,22 @@
     />
   {:else if submitted}
     <div transition:scale>
-      <a href="/">Home Page</a>
+      <a href="/">
+        <button style="width:fit-content;">Home Page</button>
+      </a>
       <div>
         <strong>
           Successfully Added Record of ₹ {amount} dated{' '}
           {normaliseDate(date)}.
         </strong>
       </div>
-      <button
+      <br />
+      <!-- svelte-ignore a11y-missing-attribute -->
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <a
         style="width:fit-content;"
-        on:click={() => {
+        on:click|preventDefault={() => {
           // resetting this component
           date = get_todays_date();
           month = current_month.toString();
@@ -108,7 +114,7 @@
           errorStatus = false;
           submitted = false;
           amount_input_elmt.focus();
-        }}>Add More</button
+        }}>Add More</a
       >
     </div>
   {/if}

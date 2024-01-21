@@ -100,7 +100,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each data as dt, i}
+    {#each data as dt, i (dt.key)}
       {@const to_change_status = to_change_list.has(dt.key)}
       {@const to_delete_status = to_delete_list.has(dt.key)}
       {@const clss = to_delete_status ? 'to_delete' : to_change_status ? 'changed' : ''}
