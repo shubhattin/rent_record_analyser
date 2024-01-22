@@ -52,7 +52,7 @@
     color: var(--h4-color);
   }
   .links {
-    position: absolute;
+    position: fixed;
     right: 0;
     bottom: 0;
     font-size: 1.25rem;

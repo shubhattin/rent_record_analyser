@@ -2,8 +2,9 @@
   import { type dtType, dataSchema, sort_data_based_on_date } from '@components/get_data';
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
-  import { type Writable } from 'svelte/store';
+  import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
+  import Modal from '../Modal.svelte';
 
   export let data: dtType[];
   export let editable: Writable<boolean>;
@@ -96,7 +97,7 @@
       <th scope="col"><strong>Date</strong></th>
       <th scope="col"><strong>Amount</strong></th>
       <th scope="col"><strong>Month</strong></th>
-      <th scope="col"><strong>Key</strong></th>
+      <th scope="col"><strong class="small">Key</strong></th>
     </tr>
   </thead>
   <tbody>
@@ -121,8 +122,10 @@
           contenteditable={$editable}
           on:input={(e) => set_text_from_input(e, (val) => (dt.month = val))}>{dt.month}</td
         >
-        <td
-          >{dt.key}
+        <td>
+          <span class="small">
+            {dt.key}
+          </span>
           {#if $editable}
             {@const values_edited =
               dt.amount !== prev_data[i].amount ||
@@ -168,5 +171,15 @@
   }
   td {
     outline: none;
+  }
+  td,
+  th {
+    text-align: center;
+  }
+  .small {
+    font-size: 0.55rem;
+  }
+  strong.small {
+    font-size: 0.6rem;
   }
 </style>
