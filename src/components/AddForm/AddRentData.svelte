@@ -113,7 +113,9 @@
           amount = null;
           errorStatus = false;
           submitted = false;
-          amount_input_elmt.focus();
+          setTimeout(() => {
+            amount_input_elmt.focus();
+          }, 300);
         }}>Add More</a
       >
     </div>

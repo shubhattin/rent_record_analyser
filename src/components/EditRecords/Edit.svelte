@@ -63,24 +63,22 @@
     if (!res.ok) return;
     const { status } = z.object({ status: z.string() }).parse(await res.json());
     if (status === 'success') {
+      // trying to do optimistic updates without relying on the sever response of updated data
       let new_data = deepCopy(data);
-      for (let key of to_delete) {
-        const index = get_key_index_in_data(key, new_data);
-        new_data.splice(index, 1);
-      }
       for (let dt of to_change) {
         const index = get_key_index_in_data(dt.key, new_data);
-        new_data[index] = dt;
+        new_data[index] = deepCopy(dt);
       }
+      new_data = new_data.filter((dt) => !to_delete.includes(dt.key));
       new_data = sort_data_based_on_date(new_data, -1);
 
       // resetting values
-      $passKey = '';
-      $editable = false;
+      data = deepCopy(new_data);
+      prev_data = deepCopy(data);
       to_change_list = new Set<string>();
       to_delete_list = new Set<string>();
-      data = new_data;
-      prev_data = deepCopy(data);
+      $passKey = '';
+      $editable = false;
     }
   };
 </script>
