@@ -91,7 +91,7 @@
 >
   <h6>Are you sure to Save Changes ?</h6>
   <strong>
-    <div>Edits → {to_change_list.size}, Deletions → {to_delete_list.size}</div>
+    <div>Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}</div>
   </strong>
 </Modal>
 {#if $editable}

@@ -30,7 +30,7 @@
       {#each date_list as dt, i_dt (dt)}
         <div>
           {dt}<sup>{dt % 10 === 0 ? 'th' : NUMBER_SUFFIX[(dt % 10) - 1]}</sup>{' '}
-          {MONTH_NAMES_SHORT[actual_month_list[i_dt] - 1]} :-{' '}
+          {MONTH_NAMES_SHORT[actual_month_list[i_dt] - 1]} ↦{' '}
           {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(', ')}
         </div>
       {/each}
