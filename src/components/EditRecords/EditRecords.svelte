@@ -4,7 +4,7 @@
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
   import { writable } from 'svelte/store';
-  import { slide, scale } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
   import Modal from '@components/Modal.svelte';
   import { onMount } from 'svelte';
 
@@ -65,13 +65,13 @@
     <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
-      in:scale
+      transition:slide
       class="edit_btn"
       on:click={() => {
         $pass_enterer_status = true;
         setTimeout(() => {
           pass_input_elmnt.focus();
-        }, 100);
+        }, 500);
       }}
     >
       ✏️
@@ -83,7 +83,7 @@
 
 <style>
   .edit_btn {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     position: fixed;
     right: 0;
     bottom: 0;

@@ -17,6 +17,7 @@
   }
 
   let prev_data = deepCopy(data);
+  let save_modal_opened = writable(false);
 
   let to_change_list = new Set<string>();
   let to_delete_list = new Set<string>();
@@ -84,9 +85,24 @@
   };
 </script>
 
+<Modal
+  modal_open={save_modal_opened}
+  cancel_btn_txt="❌ Close"
+  confirm_btn_txt="✅ Confirm"
+  onConfirm={save_data}
+>
+  <h6>Are you sure to Save Changes ?</h6>
+  <strong>
+    <div>Edits → {to_change_list.size}, Deletions → {to_delete_list.size}</div>
+  </strong>
+</Modal>
 {#if $editable}
   <div class="grid" transition:slide>
-    <button on:click={save_data} style="width:fit-content;" disabled={!is_savable}>
+    <button
+      on:click={() => ($save_modal_opened = true)}
+      style="width:fit-content;"
+      disabled={!is_savable}
+    >
       💾 Save
     </button>
   </div>

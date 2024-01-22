@@ -7,6 +7,7 @@
   export let confirm_btn_txt: string | null = null!;
   export let onOpen: () => void = null!;
   export let onClose: () => void = null!;
+  export let onConfirm: () => void = null!;
 
   let modalElement: HTMLElement;
   let opened = false;
@@ -26,6 +27,7 @@
   let visibleModal: HTMLElement | null = null;
 
   const openModal = () => {
+    if (opened) return;
     if (isScrollbarVisible())
       document.documentElement.style.setProperty('--scrollbar-width', getScrollbarWidth() + 'px');
     document.documentElement.classList.add(isOpenClass, openingClass);
@@ -37,6 +39,7 @@
     if (onOpen) onOpen();
   };
   const closeModal = () => {
+    if (!opened) return;
     visibleModal = null;
     document.documentElement.classList.add(closingClass);
     setTimeout(() => {
@@ -89,7 +92,13 @@
           <button class="footer-btn secondary" on:click={closeModal}>{cancel_btn_txt}</button>
         {/if}
         {#if confirm_btn_txt}
-          <button class="footer-btn" on:click={closeModal}>{cancel_btn_txt}</button>
+          <button
+            class="footer-btn"
+            on:click={() => {
+              closeModal();
+              if (onConfirm) onConfirm();
+            }}>{confirm_btn_txt}</button
+          >
         {/if}
       </footer>
     {/if}
