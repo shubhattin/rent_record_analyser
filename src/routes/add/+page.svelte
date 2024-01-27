@@ -26,13 +26,15 @@
   };
 </script>
 
-<div class="container">
-  {#if !passUnlocked}
-    <form on:submit|preventDefault={check_pass} class="grid">
-      <input type="password" bind:value={passKey} placeholder="गूढपद" required />
-      <input type="submit" value="Submit" />
-    </form>
-  {:else}
-    <AddRentData {passKey} />
-  {/if}
-</div>
+<svelte:head>
+  <title>Add Rent Record</title>
+</svelte:head>
+
+{#if !passUnlocked}
+  <form on:submit|preventDefault={check_pass} class="grid">
+    <input type="password" bind:value={passKey} placeholder="गूढपद" required />
+    <input type="submit" value="Submit" />
+  </form>
+{:else}
+  <AddRentData {passKey} />
+{/if}

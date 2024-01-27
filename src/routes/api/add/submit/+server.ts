@@ -1,10 +1,10 @@
-import type { APIRoute } from 'astro';
 import { JSONResponse } from '@tools/responses';
 import { base_get, base_put } from '@tools/deta';
 import { puShTi } from '@tools/hash';
-import { dataSchema } from '@components/get_data';
+import { dataSchema } from '$lib/get_data';
+import type { RequestHandler } from './$types';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const req_parse = dataSchema.safeParse(await request.json());
   if (!req_parse.success) return JSONResponse({ status: 'error_parsing_request' });
   let { key, date, amount, month } = req_parse.data;

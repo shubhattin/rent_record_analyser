@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { type dtType, dataSchema, sort_data_based_on_date } from '@components/get_data';
+  import { type dtType, dataSchema, sort_data_based_on_date } from '$lib/get_data';
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
-  import Modal from '../Modal.svelte';
+  import Modal from '@components/Modal.svelte';
 
   export let data: dtType[];
   export let editable: Writable<boolean>;

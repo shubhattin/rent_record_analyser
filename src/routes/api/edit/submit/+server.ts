@@ -1,11 +1,11 @@
-import type { APIRoute } from 'astro';
+import type { RequestHandler } from './$types';
 import { JSONResponse } from '@tools/responses';
 import { z } from 'zod';
 import { base_delete, base_get, base_put } from '@tools/deta';
 import { puShTi } from '@tools/hash';
-import { dataSchema } from '@components/get_data';
+import { dataSchema } from '$lib/get_data';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
     .object({
       to_delete: z.string().array(),

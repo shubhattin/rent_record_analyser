@@ -1,8 +1,9 @@
 import { fetch_post, fetch_get, Fetch } from '@tools/fetch';
+import { env } from '$env/dynamic/private';
 
 let KEY: string = null!;
-if (import.meta.env.DEV) KEY = import.meta.env.DETA_KEY;
-else KEY = process.env.DETA_KEY!;
+if (import.meta.env.DEV) KEY = env.DETA_PROJECT_KEY;
+else KEY = process.env.DETA_PROJECT_KEY!;
 
 const URL = (baseName: string) => `https://database.deta.sh/v1/${KEY?.split('_')[0]}/${baseName}`;
 

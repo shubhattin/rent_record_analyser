@@ -1,13 +1,21 @@
 <script lang="ts">
-  import { get_year_list, type dtType, get_month_list, get_date_list } from '@components/get_data';
+  import { get_year_list, type dtType, get_month_list, get_date_list } from '$lib/get_data';
   import { MONTH_NAMES, NUMBER_SUFFIX, MONTH_NAMES_SHORT } from '@tools/date';
+  import type { PageData } from './$types';
 
-  export let data: dtType[];
+  export let data: PageData;
+  let rent_data = data.rent_data;
+  $: rent_data = data.rent_data;
 
-  const [year_list, amount_yr_list] = get_year_list(data);
+  const [year_list, amount_yr_list] = get_year_list(rent_data);
 
-  const total = data.reduce((total, item) => total + item.amount, 0);
+  const total = rent_data.reduce((total, item) => total + item.amount, 0);
 </script>
+
+<svelte:head>
+  <title>Rent Record Analyser</title>
+  <meta name="description" content="A Simple House Rent Record Analyser" />
+</svelte:head>
 
 <!-- Yearly -->
 {#each year_list as yr, i_yr (yr)}
@@ -19,9 +27,9 @@
     Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
   </h5>
   <!-- Monthly -->
-  {@const [month_list, amount_mn_list] = get_month_list(yr, data)}
+  {@const [month_list, amount_mn_list] = get_month_list(yr, rent_data)}
   {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list, actual_month_list] = get_date_list(yr, mn, data)}
+    {@const [date_list, amount_dt_list, actual_month_list] = get_date_list(yr, mn, rent_data)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { dtType } from '@components/get_data';
   import Edit from './Edit.svelte';
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
@@ -7,8 +6,11 @@
   import { slide } from 'svelte/transition';
   import Modal from '@components/Modal.svelte';
   import { onMount } from 'svelte';
+  import type { PageData } from './$types';
 
-  export let data: dtType[];
+  export let data: PageData;
+  let rent_data = data.rent_data;
+  $: rent_data = data.rent_data;
 
   let editable = writable(false);
   let pass_enterer_status = writable(false);
@@ -21,6 +23,7 @@
         e.returnValue = ''; // Chrome requires returnValue to be set
       }
     });
+    document.querySelector('html')?.setAttribute('data-theme', 'dark'); // enforcing dark theme on this page
   });
   $: {
   }
@@ -46,6 +49,10 @@
 
   let pass_input_elmnt: HTMLInputElement;
 </script>
+
+<svelte:head>
+  <title>Rent Record Editor</title>
+</svelte:head>
 
 {#if !$editable}
   <Modal modal_open={pass_enterer_status}>
@@ -79,7 +86,7 @@
   {/if}
 {/if}
 
-<Edit {data} {editable} {passKey} />
+<Edit data={rent_data} {editable} {passKey} />
 
 <style>
   .edit_btn {
