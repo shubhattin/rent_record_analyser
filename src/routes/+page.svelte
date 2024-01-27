@@ -2,6 +2,8 @@
   import { get_year_list, type dtType, get_month_list, get_date_list } from '$lib/get_data';
   import { MONTH_NAMES, NUMBER_SUFFIX, MONTH_NAMES_SHORT } from '@tools/date';
   import type { PageData } from './$types';
+  import { preloadData } from '$app/navigation';
+  import { onMount } from 'svelte';
 
   export let data: PageData;
   let rent_data = data.rent_data;
@@ -10,6 +12,14 @@
   const [year_list, amount_yr_list] = get_year_list(rent_data);
 
   const total = rent_data.reduce((total, item) => total + item.amount, 0);
+
+  onMount(() => {
+    if (import.meta.env.PROD)
+      setTimeout(() => {
+        preloadData('/add');
+        preloadData('/list');
+      }, 2000);
+  });
 </script>
 
 <svelte:head>
