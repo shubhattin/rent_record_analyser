@@ -1,5 +1,5 @@
 import { type dtType, dataSchema, sort_data_based_on_date } from '$lib/get_data';
-import { base_fetch_all, base_fetch } from '@tools/deta';
+import { base_fetch_all } from '@tools/deta';
 
 export const get_rent_record_data = async () => {
   const filter_items = (lst: any[]): dtType[] => {
