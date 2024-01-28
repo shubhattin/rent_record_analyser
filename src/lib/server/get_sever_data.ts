@@ -10,6 +10,6 @@ export const get_rent_record_data = async () => {
     }
     return filtered;
   };
-  const data = sort_data_based_on_date(filter_items(await base_fetch_all<dtType>('data')));
+  const data = sort_data_based_on_date(filter_items(await base_fetch_all<dtType>('data')), -1);
   return data;
 };
