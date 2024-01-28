@@ -34,9 +34,9 @@ export const base_fetch_all = async <T>(baseName: string) => {
   let list: T[] = [];
   while (true) {
     const dt = await base_fetch<T>(baseName, last);
-    list.concat(dt.items);
-    if (!dt.paging.last) break;
+    list = list.concat(dt.items);
     last = dt.paging.last!;
+    if (!last) break;
   }
   return list;
 };
