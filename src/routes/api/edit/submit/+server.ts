@@ -24,9 +24,9 @@ export const POST: RequestHandler = async ({ request }) => {
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
-  base_put('data', to_change);
+  await base_put('data', to_change);
 
-  base_delete('data', to_delete);
+  await base_delete('data', to_delete);
 
   return JSONResponse({ status: 'success' });
 };

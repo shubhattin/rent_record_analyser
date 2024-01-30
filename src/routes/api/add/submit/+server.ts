@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
   let data = { amount: amount, month: month, date: date };
-  base_put('data', [data]);
+  await base_put('data', [data]);
 
   return JSONResponse({ status: 'success' });
 };
