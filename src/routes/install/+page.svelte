@@ -1,19 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
-  let event_fired = false;
-  let install_prompt: any = null!;
-
-  onMount(() => {
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event_fired = true;
-      event.preventDefault();
-      console.log(event);
-      install_prompt = event;
-    });
-  });
+  const get_pwa_prompt = () => (window as any).pwa_installer;
 
   const install_PWA = async () => {
+    const install_prompt=get_pwa_prompt()
     if (!install_prompt) return;
     await install_prompt.prompt();
   };
@@ -21,12 +10,21 @@
 
 <svelte:head>
   <title>Rent App Installer</title>
+  <script>
+    window.pwa_installer = null;
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      console.log(event);
+      window.pwa_installer = event;
+    });
+    console.log('Good');
+  </script>
 </svelte:head>
 
-{#if event_fired}
+<!-- {#if event_fired}
   {#if !install_prompt}
     <div>PWA installation not supported</div>
-  {:else}
+  {:else} -->
     <button on:click={install_PWA}>Install</button>
-  {/if}
-{/if}
+  <!-- {/if}
+{/if} -->
