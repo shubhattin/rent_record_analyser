@@ -45,13 +45,21 @@
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
       </summary>
       <!-- DateWise -->
-      {#each date_list as dt, i_dt (dt)}
-        <div>
-          {dt}<sup>{dt % 10 === 0 ? 'th' : NUMBER_SUFFIX[(dt % 10) - 1]}</sup>{' '}
-          {MONTH_NAMES_SHORT[actual_month_list[i_dt] - 1]} ↦{' '}
-          {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(', ')}
-        </div>
-      {/each}
+      <table class="table reset_css">
+        {#each date_list as dt, i_dt (dt)}
+          <tr>
+            <td>
+              {dt}<sup>{dt % 10 === 0 ? 'th' : NUMBER_SUFFIX[(dt % 10) - 1]}</sup>
+            </td>
+            <td>
+              {MONTH_NAMES_SHORT[actual_month_list[i_dt] - 1]}
+            </td>
+            <td>
+              {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(', ')}
+            </td>
+          </tr>
+        {/each}
+      </table>
     </details>
   {/each}
 {/each}
@@ -64,7 +72,7 @@
   <a href="/add">➕</a>
 </div>
 
-<style>
+<style lang="scss">
   /* retaining the  color even after open */
   details[open] > summary:not([role]):not(:focus) {
     color: var(--h4-color);
@@ -74,5 +82,34 @@
     right: 0;
     bottom: 0;
     font-size: 1.25rem;
+  }
+  .reset_css {
+    all: unset;
+  }
+  details {
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.5rem;
+
+    summary {
+      margin-bottom: 0.5rem;
+    }
+  }
+  .table {
+    display: table;
+    td {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+      padding-top: 0.1rem;
+      padding-bottom: 0.1rem;
+      text-align: start;
+      font-size: 0.875rem;
+    }
+    tr {
+      display: table-row;
+    }
+
+    td {
+      display: table-cell;
+    }
   }
 </style>
