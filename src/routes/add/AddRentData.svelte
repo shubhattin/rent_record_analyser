@@ -3,6 +3,7 @@
   import { fetch_post } from '@tools/fetch';
   import { MONTH_NAMES } from '@tools/date';
   import { onMount } from 'svelte';
+  import Spinner from '@components/Spinner.svelte';
   import { z } from 'zod';
   import { slide, scale } from 'svelte/transition';
 
@@ -11,6 +12,7 @@
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
   const current_year = todays_date.getFullYear();
+  let submit_spinner_show = false;
 
   const get_todays_date = () => {
     const prefix_zeros = (n: number) => `${n < 10 ? '0' : ''}${n}`;
@@ -33,7 +35,9 @@
         month: `${month}-${year}`
       }
     });
+    submit_spinner_show = true;
     const res = await req;
+    submit_spinner_show = false;
     if (!res.ok) return;
     const { status } = z.object({ status: z.string() }).parse(await res.json());
     if (status === 'success') {
@@ -78,7 +82,10 @@
         bind:value={amount}
         bind:this={amount_input_elmt}
       />
-      <input type="submit" value="Sumbit" />
+      <button type="submit">
+        <Spinner show={submit_spinner_show} />
+        Submit
+      </button>
     </form>
   {:else if errorStatus}
     <input

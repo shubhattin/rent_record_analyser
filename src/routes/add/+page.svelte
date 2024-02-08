@@ -1,9 +1,11 @@
 <script lang="ts">
   import { fetch_post } from '@tools/fetch';
   import AddRentData from './AddRentData.svelte';
+  import Spinner from '@components/Spinner.svelte';
   import { z } from 'zod';
 
   let passUnlocked = false;
+  let pass_input_spinner_show = false;
   let passKey = '';
 
   const check_pass = async () => {
@@ -13,7 +15,9 @@
         key: passKey
       }
     });
+    pass_input_spinner_show = true;
     const resp = await req;
+    pass_input_spinner_show = false;
     if (!resp.ok) {
       passKey = '';
       return;
@@ -29,11 +33,13 @@
 <svelte:head>
   <title>Add Rent Record</title>
 </svelte:head>
-
 {#if !passUnlocked}
   <form on:submit|preventDefault={check_pass} class="grid">
     <input type="password" bind:value={passKey} placeholder="गूढपद" required />
-    <input type="submit" value="Submit" />
+    <button type="submit">
+      <Spinner show={pass_input_spinner_show} />
+      Sumbit
+    </button>
   </form>
 {:else}
   <AddRentData {passKey} />

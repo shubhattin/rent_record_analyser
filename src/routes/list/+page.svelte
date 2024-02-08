@@ -6,6 +6,7 @@
   import { slide } from 'svelte/transition';
   import Modal from '@components/Modal.svelte';
   import { onMount } from 'svelte';
+  import Spinner from '@components/Spinner.svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -15,6 +16,7 @@
   let editable = writable(false);
   let pass_enterer_status = writable(false);
   let passKey = writable('');
+  let pass_verify_spinner_show = false;
 
   onMount(() => {
     window.addEventListener('beforeunload', function (e) {
@@ -34,7 +36,9 @@
         key: $passKey
       }
     });
+    pass_verify_spinner_show = true;
     const resp = await req;
+    pass_verify_spinner_show = false;
     if (!resp.ok) {
       $passKey = '';
       return;
@@ -64,7 +68,10 @@
         placeholder="गूढपद"
         required
       />
-      <input type="submit" value="Submit" />
+      <button type="submit">
+        <Spinner show={pass_verify_spinner_show} />
+        Submit
+      </button>
     </form>
   </Modal>
   {#if !$pass_enterer_status}

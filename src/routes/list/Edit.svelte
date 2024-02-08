@@ -5,10 +5,13 @@
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
   import Modal from '@components/Modal.svelte';
+  import Spinner from '@components/Spinner.svelte';
 
   export let data: dtType[];
   export let editable: Writable<boolean>;
   export let passKey: Writable<string>;
+
+  let save_spinner_show = false;
 
   function deepCopy<T>(source: T): T {
     const jsonString = JSON.stringify(source);
@@ -59,7 +62,9 @@
         passKey: $passKey
       }
     });
+    save_spinner_show = true;
     const res = await req;
+    save_spinner_show = false;
     if (!res.ok) return;
     const { status } = z.object({ status: z.string() }).parse(await res.json());
     if (status === 'success') {
@@ -95,14 +100,15 @@
   </strong>
 </Modal>
 {#if $editable}
-  <div class="grid" transition:slide>
+  <div transition:slide>
     <button
       on:click={() => ($save_modal_opened = true)}
-      style="width:fit-content;"
+      style="width:fit-content; display:inline-block; margin-left:2px;"
       disabled={!is_savable}
     >
       💾 Save
     </button>
+    <Spinner show={save_spinner_show} />
   </div>
 {/if}
 <table role="grid">
