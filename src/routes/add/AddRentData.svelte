@@ -25,7 +25,7 @@
   let errorStatus = false;
   let submitted = false;
 
-  const sumbit_data = async () => {
+  const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     const req = fetch_post('/api/add/submit', {
       json: {
@@ -55,7 +55,7 @@
 <section>
   <h4>Add New Entry</h4>
   {#if !errorStatus && !submitted}
-    <form transition:slide on:submit|preventDefault={sumbit_data}>
+    <form transition:slide on:submit|preventDefault={submit_data}>
       <input type="date" required bind:value={date} />
       <div class="grid">
         <label>

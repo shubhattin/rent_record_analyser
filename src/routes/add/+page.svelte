@@ -38,7 +38,7 @@
     <input type="password" bind:value={passKey} placeholder="गूढपद" required />
     <button type="submit">
       <Spinner show={pass_input_spinner_show} />
-      Sumbit
+      Submit
     </button>
   </form>
 {:else}
