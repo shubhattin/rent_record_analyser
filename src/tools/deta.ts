@@ -1,10 +1,10 @@
 import { fetch_post, fetch_get, Fetch } from '@tools/fetch';
 import { env } from '$env/dynamic/private';
 
-export interface key_value_type<T> {
+export type key_value_type<T> = {
   key: string;
   value: T;
-}
+};
 const KEY = import.meta.env ? env.DETA_PROJECT_KEY : process.env.DETA_PROJECT_KEY!;
 
 const URL = (baseName: string) => `https://database.deta.sh/v1/${KEY?.split('_')[0]}/${baseName}`;
@@ -61,19 +61,24 @@ export const base_put = async <T>(baseName: string, values: T[]) => {
       'X-Api-Key': KEY!
     }
   });
-  const resp = await req;
+  const resp_json = (await (await req).json()) as {
+    processed?: { items: T[] };
+    failed?: { items: T[] };
+  };
+  return resp_json;
 };
 
 export const base_delete = async (baseName: string, keys: string[]) => {
-  const responses: Promise<Response>[] = [];
-  for (let key of keys) {
-    const req = Fetch(`${URL(baseName)}/items/${key}`, {
-      method: 'DELETE',
-      headers: {
-        'X-Api-Key': KEY!
-      }
-    });
-    responses.push(req);
-  }
-  for (let response of responses) await response;
+  const responses_json = await Promise.all(
+    keys.map(async (key) => {
+      const resp = await Fetch(`${URL(baseName)}/items/${key}`, {
+        method: 'DELETE',
+        headers: {
+          'X-Api-Key': KEY!
+        }
+      });
+      return (await resp.json()) as { key: string };
+    })
+  );
+  return responses_json;
 };
