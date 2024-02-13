@@ -1,5 +1,6 @@
-import { get_rent_record_data } from '$lib/server/get_sever_data';
+import { db } from '@tools/db';
 
 export const load = async () => {
-  return { rent_data: await get_rent_record_data() };
+  const data = await db.selectFrom('rent_data').selectAll().orderBy('date desc').execute(); // getting pre sorted data
+  return { rent_data: data };
 };
