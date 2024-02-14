@@ -2,6 +2,8 @@
 
 Made Using _[SvelteKit](https://kit.svelte.dev/)_ and [PicoCSS](https://picocss.com/) for simple styling.
 
+Using [MySQL](https://www.mysql.com/) as database, previous was using [Deta Base](https://deta.space/developers) untill [this commit](https://github.com/shubhattin/rent_record_analyser/tree/249bd7eb68a30d04d433be0e690823a21eae3b8f).
+
 <br/>
 <br/>
 
