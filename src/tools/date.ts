@@ -51,31 +51,3 @@ export const unNormaliseDate = (date: string) => {
   return lst.join('-');
   // yyyy-mm-dd
 };
-
-/**
- * Evaluates `a > b` .Both dates should be in `yyyy-mm-dd` format
- */
-export const compare_dates = (a: string, b: string) => new Date(a) > new Date(b);
-
-export const sort_dates = (dates: string[], order: 1 | -1 = 1) => {
-  const compareDates = (date1: string, date2: string): number => {
-    const [day1, month1, year1] = date1.split('/').map(Number);
-    const [day2, month2, year2] = date2.split('/').map(Number);
-
-    // Compare years first
-    if (year1 !== year2) {
-      return (year1 - year2) * order;
-    }
-
-    // If years are the same, compare months
-    if (month1 !== month2) {
-      return (month1 - month2) * order;
-    }
-
-    // If months are the same, compare days
-    return (day1 - day2) * order;
-  };
-
-  // Sort the dates using the custom comparator
-  return dates.slice().sort(compareDates);
-};

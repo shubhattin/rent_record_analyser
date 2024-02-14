@@ -1,15 +1,21 @@
 import type { RequestHandler } from './$types';
 import { JSONResponse } from '@tools/responses';
 import { z } from 'zod';
-import { base_delete, base_get, base_put, type key_value_type } from '@tools/deta';
 import { puShTi } from '@tools/hash';
-import { dataSchema } from '$lib/get_data';
+import { db } from '@tools/db';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
     .object({
-      to_delete: z.string().array(),
-      to_change: dataSchema.array(),
+      to_delete: z.number().int().array(),
+      to_change: z
+        .object({
+          id: z.number().int(),
+          date: z.coerce.date(),
+          month: z.coerce.date(),
+          amount: z.number().int()
+        })
+        .array(),
       passKey: z.string()
     })
     .safeParse(await request.json());
@@ -20,13 +26,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const verified = puShTi(
     passKey,
-    (await base_get<key_value_type<string>>('others', 'passkey')).value
+    (await db.selectFrom('others').select('value').where('id', '=', 'passKey').execute())[0].value
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
-  await base_put('data', to_change);
-
-  await base_delete('data', to_delete);
-
+  const operations: Promise<any>[] = [];
+  for (let dt of to_change)
+    operations.push(db.updateTable('rent_data').set(dt).where('id', '=', dt.id).execute());
+  if (to_delete.length !== 0) {
+    const delete_resp = db.deleteFrom('rent_data').where('id', 'in', to_delete).execute();
+    operations.push(delete_resp);
+  }
+  if (operations.length !== 0) await Promise.all(operations);
   return JSONResponse({ status: 'success' });
 };

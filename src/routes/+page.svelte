@@ -1,42 +1,12 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import { preloadData } from '$app/navigation';
+  import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
 
   export let data: PageData;
   let rent_data = data.rent_data;
   $: rent_data = data.rent_data;
-
-  const MONTH_NAMES_SHORT = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
-  const MONTH_NAMES = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
-
-  const NUMBER_SUFFIX = ['st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
 
   // all lists are already formatted in
   const get_year_list = () => {

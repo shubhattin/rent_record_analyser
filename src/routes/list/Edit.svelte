@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { type dtType, dataSchema, sort_data_based_on_date } from '$lib/get_data';
+  import type { RentData } from '@tools/db_type';
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
@@ -7,45 +7,62 @@
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
 
-  export let data: dtType[];
+  export let data: RentData[];
   export let editable: Writable<boolean>;
   export let passKey: Writable<string>;
 
   let save_spinner_show = false;
 
-  function deepCopy<T>(source: T): T {
-    const jsonString = JSON.stringify(source);
-    const copiedObject = JSON.parse(jsonString);
-    return copiedObject as T;
+  const get_date_string = (date: Date) => {
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+  function deepCopy<T>(value: T, is_array: boolean): T {
+    const source = value as any;
+    if (is_array)
+      return source.map((obj: any) => ({
+        ...obj,
+        date: new Date(obj.date),
+        month: new Date(obj.month)
+      })) as T;
+    return { ...source, date: new Date(source.date), month: new Date(source.month) } as T;
   }
 
-  let prev_data = deepCopy(data);
+  let prev_data = deepCopy(data, true);
   let save_modal_opened = writable(false);
 
-  let to_change_list = new Set<string>();
-  let to_delete_list = new Set<string>();
+  let to_change_list = new Set<number>();
+  let to_delete_list = new Set<number>();
 
   $: {
-    let changed = new Set<string>();
-    for (let i = 0; i < data.length; i++) {
-      if (
-        (prev_data[i].date !== data[i].date ||
-          prev_data[i].amount !== data[i].amount ||
-          prev_data[i].month !== data[i].month) &&
-        !to_delete_list.has(data[i].key) &&
-        dataSchema.safeParse(data[i]).success
-      )
-        changed.add(data[i].key);
+    if (editable) {
+      let changed = new Set<number>();
+      for (let i = 0; i < data.length; i++) {
+        if (
+          (get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
+            prev_data[i].amount !== data[i].amount ||
+            get_date_string(prev_data[i].month) !== get_date_string(data[i].month)) &&
+          !to_delete_list.has(data[i].id) &&
+          z
+            .object({
+              id: z.number().int(),
+              amount: z.number().int(),
+              date: z.date(),
+              month: z.date()
+            })
+            .safeParse(data[i]).success
+        )
+          changed.add(data[i].id);
+      }
+      to_change_list = changed;
     }
-    to_change_list = changed;
   }
 
-  const set_text_from_input = (e: any, func: (val: string) => any) => {
+  const set_val_from_input = (e: any, func: (val: string) => any) => {
     func(e.currentTarget.textContent);
   };
 
-  const get_key_index_in_data = (key: string, dt: any[] = data) => {
-    for (let i = 0; i < data.length; i++) if (data[i].key === key) return i;
+  const get_key_index_in_data = (id: number, dt: any[] = data) => {
+    for (let i = 0; i < data.length; i++) if (data[i].id === id) return i;
     return -1;
   };
 
@@ -53,7 +70,9 @@
 
   const save_data = async () => {
     if (!is_savable) return;
-    const to_change = Array.from(to_change_list).map((key) => data[get_key_index_in_data(key)]);
+    const to_change = Array.from(to_change_list)
+      .filter((id) => !to_delete_list.has(id))
+      .map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
     const req = fetch_post('/api/edit/submit', {
       json: {
@@ -69,19 +88,26 @@
     const { status } = z.object({ status: z.string() }).parse(await res.json());
     if (status === 'success') {
       // trying to do optimistic updates without relying on the sever response of updated data
-      let new_data = deepCopy(data);
+      let new_data = deepCopy(data, true);
       for (let dt of to_change) {
-        const index = get_key_index_in_data(dt.key, new_data);
-        new_data[index] = deepCopy(dt);
+        const index = get_key_index_in_data(dt.id, new_data);
+        new_data[index] = deepCopy(dt, false);
       }
-      new_data = new_data.filter((dt) => !to_delete.includes(dt.key));
-      new_data = sort_data_based_on_date(new_data, -1);
+      new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
+      new_data = new_data.sort((dt1, dt2) => {
+        const [date1, date2] = [dt1.date, dt2.date];
+        const [day1, month1, year1] = [date1.getDate(), date1.getMonth() + 1, date1.getFullYear()];
+        const [day2, month2, year2] = [date2.getDate(), date2.getMonth() + 1, date2.getFullYear()];
+        if (year1 !== year2) return (year1 - year2) * -1; // -1 for descending order
+        if (month1 !== month2) return (month1 - month2) * -1;
+        return (day1 - day2) * -1;
+      });
 
       // resetting values
-      data = deepCopy(new_data);
-      prev_data = deepCopy(data);
-      to_change_list = new Set<string>();
-      to_delete_list = new Set<string>();
+      data = deepCopy(new_data, true);
+      prev_data = deepCopy(data, true);
+      to_change_list = new Set<number>();
+      to_delete_list = new Set<number>();
       $passKey = '';
       $editable = false;
     }
@@ -117,51 +143,74 @@
       <th scope="col"><strong>Date</strong></th>
       <th scope="col"><strong>Amount</strong></th>
       <th scope="col"><strong>Month</strong></th>
-      <th scope="col"><strong class="small">Key</strong></th>
+      <th scope="col"><strong class="small">ID</strong></th>
     </tr>
   </thead>
   <tbody>
-    {#each data as dt, i (dt.key)}
-      {@const to_change_status = to_change_list.has(dt.key)}
-      {@const to_delete_status = to_delete_list.has(dt.key)}
+    {#each data as dt, i (dt.id)}
+      {@const to_change_status = to_change_list.has(dt.id)}
+      {@const to_delete_status = to_delete_list.has(dt.id)}
       {@const clss = to_delete_status ? 'to_delete' : to_change_status ? 'changed' : ''}
       <tr class={clss}>
         <td
           contenteditable={$editable}
-          on:input={(e) => set_text_from_input(e, (val) => (dt.date = val))}>{dt.date}</td
+          on:input={(e) =>
+            set_val_from_input(e, (val) => {
+              const str_val = z
+                .string()
+                .regex(/^\d{1,2}\/\d{1,2}\/\d{4}$/)
+                .safeParse(val);
+              if (!str_val.success) return;
+              val = str_val.data;
+              // val is in dd/mm/yyyy to convert to yyyy-mm-dd
+              const vals = val.split('/');
+              val = `${vals[2]}-${vals[1]}-${vals[0]}`;
+              const parse_val = z.coerce.date().safeParse(val);
+              if (parse_val.success) dt.date = parse_val.data;
+            })}>{get_date_string(dt.date)}</td
         >
         <td
           contenteditable={$editable}
           on:input={(e) =>
-            set_text_from_input(e, (val) => {
+            set_val_from_input(e, (val) => {
               const parse_val = z.coerce.number().int().safeParse(val);
               if (parse_val.success) dt.amount = parse_val.data;
             })}>{dt.amount}</td
         >
         <td
           contenteditable={$editable}
-          on:input={(e) => set_text_from_input(e, (val) => (dt.month = val))}>{dt.month}</td
+          on:input={(e) =>
+            set_val_from_input(e, (val) => {
+              const str_val = z
+                .string()
+                .regex(/^\d{4}-\d{1,2}$/)
+                .safeParse(val);
+              if (!str_val.success) return;
+              val = str_val.data;
+              const parse_val = z.coerce.date().safeParse(val + '-1');
+              if (parse_val.success) dt.month = parse_val.data;
+            })}>{`${dt.month.getFullYear()}-${dt.month.getMonth() + 1}`}</td
         >
         <td>
           <span class="small">
-            {dt.key}
+            {dt.id}
           </span>
           {#if $editable}
             {@const values_edited =
-              dt.amount !== prev_data[i].amount ||
-              dt.date !== prev_data[i].date ||
-              dt.month !== prev_data[i].month}
+              get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
+              prev_data[i].amount !== data[i].amount ||
+              get_date_string(prev_data[i].month) !== get_date_string(data[i].month)}
             {#if !to_delete_status && values_edited}
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <span on:click={() => (data[i] = deepCopy(prev_data[i]))}>🔄</span>
+              <span on:click={() => (data[i] = deepCopy(prev_data[i], false))}>🔄</span>
             {/if}
             {#if !to_delete_status}
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <!-- svelte-ignore a11y-no-static-element-interactions -->
               <span
                 on:click={() => {
-                  to_delete_list.add(dt.key);
+                  to_delete_list.add(dt.id);
                   to_delete_list = to_delete_list;
                 }}>❌</span
               >
@@ -170,7 +219,7 @@
               <!-- svelte-ignore a11y-no-static-element-interactions -->
               <span
                 on:click={() => {
-                  to_delete_list.delete(dt.key);
+                  to_delete_list.delete(dt.id);
                   to_delete_list = to_delete_list;
                 }}>✅️</span
               >
