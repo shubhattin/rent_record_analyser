@@ -1,8 +1,9 @@
 import { JSONResponse } from '@tools/responses';
 import { puShTi } from '@tools/hash';
 import type { RequestHandler } from './$types';
-import { db } from '@tools/db';
 import { z } from 'zod';
+import { db } from '@tools/db';
+import { rent_data_table } from '@tools/db/types';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
@@ -19,18 +20,15 @@ export const POST: RequestHandler = async ({ request }) => {
   // verifying for correct key
   const verified = puShTi(
     passKey,
-    (await db.selectFrom('others').select('value').where('id', '=', 'passKey').execute())[0].value
+    (await db.query.others.findFirst({ where: ({ id }, { eq }) => eq(id, 'passKey') }))!.value
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
-  await db
-    .insertInto('rent_data')
-    .values({
-      amount: amount,
-      month: month,
-      date: date
-    })
-    .execute();
+  await db.insert(rent_data_table).values({
+    amount: amount,
+    month: month,
+    date: date
+  });
 
   return JSONResponse({ status: 'success' });
 };

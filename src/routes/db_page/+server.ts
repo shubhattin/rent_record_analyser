@@ -1,10 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '@tools/db';
+import { eq } from 'drizzle-orm';
+import { others_table } from '@tools/db/types';
 
 export const GET: RequestHandler = async () => {
-  const link = (
-    await db.selectFrom('others').select('value').where('id', '=', 'db_page').execute()
-  )[0].value;
+  const link = (await db.query.others.findFirst({ where: eq(others_table.id, 'db_page') }))!.value;
   return redirect(302, link);
 };

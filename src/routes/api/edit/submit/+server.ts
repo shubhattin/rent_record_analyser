@@ -3,6 +3,8 @@ import { JSONResponse } from '@tools/responses';
 import { z } from 'zod';
 import { puShTi } from '@tools/hash';
 import { db } from '@tools/db';
+import { rent_data_table } from '@tools/db/types';
+import { eq, inArray } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
@@ -26,15 +28,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const verified = puShTi(
     passKey,
-    (await db.selectFrom('others').select('value').where('id', '=', 'passKey').execute())[0].value
+    (await db.query.others.findFirst({ where: ({ id }, { eq }) => eq(id, 'passKey') }))!.value
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
   const operations: Promise<any>[] = [];
   for (let dt of to_change)
-    operations.push(db.updateTable('rent_data').set(dt).where('id', '=', dt.id).execute());
+    operations.push(db.update(rent_data_table).set(dt).where(eq(rent_data_table.id, dt.id)));
   if (to_delete.length !== 0) {
-    const delete_resp = db.deleteFrom('rent_data').where('id', 'in', to_delete).execute();
+    const delete_resp = db.delete(rent_data_table).where(inArray(rent_data_table.id, to_delete));
     operations.push(delete_resp);
   }
   if (operations.length !== 0) await Promise.all(operations);

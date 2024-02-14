@@ -26,7 +26,7 @@
   "dependencies": {
     "@picocss/pico": "^1.5.11",
     "@sveltejs/adapter-vercel": "^5.1.0",
-    "kysely": "^0.27.2",
+    "drizzle-orm": "^0.29.3",
     "mysql2": "^3.9.1",
     "sass": "^1.70.0",
     "zod": "^3.22.4"
