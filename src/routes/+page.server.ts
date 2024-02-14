@@ -3,7 +3,7 @@ import { db } from '@tools/db';
 export const load = async () => {
   const data_query = db
     .selectFrom('rent_data')
-    .selectAll()
+    .select(['date', 'amount', 'month'])
     .orderBy('month desc')
     .orderBy('date desc')
     .execute(); // getting pre sorted data

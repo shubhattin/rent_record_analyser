@@ -1,7 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { base_get, type key_value_type } from '@tools/deta';
+import { db } from '@tools/db';
 
 export const GET: RequestHandler = async () => {
-  return redirect(302, (await base_get<key_value_type<string>>('others', 'db_page'))['value']);
+  const link = (
+    await db.selectFrom('others').select('value').where('id', '=', 'db_page').execute()
+  )[0].value;
+  return redirect(302, link);
 };

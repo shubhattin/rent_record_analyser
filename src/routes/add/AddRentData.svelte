@@ -29,10 +29,10 @@
     if (!date || date === '' || !amount || amount === 0) return;
     const req = fetch_post('/api/add/submit', {
       json: {
-        key: passKey,
-        date: normaliseDate(date),
+        passKey: passKey,
+        date: date, // yyyy-mm-dd
         amount: amount,
-        month: `${month}-${year}`
+        month: `${year}-${month}-1` // 1st day of the month
       }
     });
     submit_spinner_show = true;
