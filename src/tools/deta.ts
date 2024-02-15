@@ -5,7 +5,7 @@ export type key_value_type<T> = {
   key: string;
   value: T;
 };
-const KEY = import.meta.env ? env.DETA_PROJECT_KEY : process.env.DETA_PROJECT_KEY!;
+const KEY = env.DETA_PROJECT_KEY;
 
 const URL = (baseName: string) => `https://database.deta.sh/v1/${KEY?.split('_')[0]}/${baseName}`;
 
