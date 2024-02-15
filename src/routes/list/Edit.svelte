@@ -4,7 +4,7 @@
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
-  import { get_date_string, get_utc_date_string } from '@tools/date';
+  import { clone_date, get_date_string, get_utc_date_string } from '@tools/date';
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
 
@@ -19,10 +19,10 @@
     if (is_array)
       return source.map((obj: any) => ({
         ...obj,
-        date: new Date(obj.date),
-        month: new Date(obj.month)
+        date: clone_date(obj.date),
+        month: clone_date(obj.month)
       })) as T;
-    return { ...source, date: new Date(source.date), month: new Date(source.month) } as T;
+    return { ...source, date: clone_date(source.date), month: clone_date(source.month) } as T;
   }
 
   let prev_data = deepCopy(data, true);
@@ -166,7 +166,10 @@
                 .string()
                 .regex(/^\d{1,2}\/\d{1,2}\/\d{4}$/)
                 .safeParse(val);
-              if (!str_val.success) return;
+              if (!str_val.success) {
+                // dt.date = clone_date(prev_data[i].date);
+                return;
+              }
               val = str_val.data;
               // val is in dd/mm/yyyy to convert to yyyy-mm-dd
               const vals = val.split('/');
@@ -181,6 +184,7 @@
             set_val_from_input(e, (val) => {
               const parse_val = z.coerce.number().int().safeParse(val);
               if (parse_val.success) dt.amount = parse_val.data;
+              // else dt.amount=prev_data[i].amount
             })}>{dt.amount}</td
         >
         <td
@@ -191,7 +195,10 @@
                 .string()
                 .regex(/^\d{4}-\d{1,2}$/)
                 .safeParse(val);
-              if (!str_val.success) return;
+              if (!str_val.success) {
+                // dt.month=clone_date(prev_data[i].clo)
+                return;
+              }
               val = str_val.data;
               const parse_val = z.coerce
                 .date()

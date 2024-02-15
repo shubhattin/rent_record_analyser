@@ -73,3 +73,7 @@ export const get_utc_date_string = (val: string, format: date_formats) => {
 export const get_utc_date = (val: string, format: date_formats) => {
   return new Date(get_utc_date_string(val, format));
 };
+
+export const clone_date = (date: Date) => {
+  return new Date(date.toISOString());
+};
