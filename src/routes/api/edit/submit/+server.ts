@@ -1,15 +1,23 @@
 import type { RequestHandler } from './$types';
 import { JSONResponse } from '@tools/responses';
 import { z } from 'zod';
-import { base_delete, base_get, base_put, type key_value_type } from '@tools/deta';
 import { puShTi } from '@tools/hash';
-import { dataSchema } from '$lib/get_data';
+import { db } from '@tools/db';
+import { rent_data_table } from '@tools/db/types';
+import { eq, inArray, sql } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
     .object({
-      to_delete: z.string().array(),
-      to_change: dataSchema.array(),
+      to_delete: z.number().int().array(),
+      to_change: z
+        .object({
+          id: z.number().int(),
+          date: z.coerce.date(),
+          month: z.coerce.date(),
+          amount: z.number().int()
+        })
+        .array(),
       passKey: z.string()
     })
     .safeParse(await request.json());
@@ -20,13 +28,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const verified = puShTi(
     passKey,
-    (await base_get<key_value_type<string>>('others', 'passkey')).value
+    (await db.query.others.findFirst({ where: ({ key }, { eq }) => eq(key, 'passKey') }))!
+      .value as string
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
-  await base_put('data', to_change);
+  const operations: Promise<any>[] = [];
 
-  await base_delete('data', to_delete);
-
+  for (let dt of to_change)
+    operations.push(db.update(rent_data_table).set(dt).where(eq(rent_data_table.id, dt.id)));
+  if (to_delete.length !== 0) {
+    const delete_resp = db.delete(rent_data_table).where(inArray(rent_data_table.id, to_delete));
+    operations.push(delete_resp);
+  }
+  if (operations.length !== 0) await Promise.all(operations);
   return JSONResponse({ status: 'success' });
 };

@@ -51,31 +51,29 @@ export const unNormaliseDate = (date: string) => {
   return lst.join('-');
   // yyyy-mm-dd
 };
+type date_formats = 'yyyy-mm-dd' | 'dd/mm/yyyy';
 
-/**
- * Evaluates `a > b` .Both dates should be in `yyyy-mm-dd` format
- */
-export const compare_dates = (a: string, b: string) => new Date(a) > new Date(b);
+export const get_date_string = (date: Date, format: date_formats = 'dd/mm/yyyy') => {
+  const [dt, mn, yr] = [date.getUTCDate(), date.getUTCMonth() + 1, date.getUTCFullYear()];
+  if (format === 'yyyy-mm-dd') return `${yr}-${mn}-${dt}`;
+  return `${dt}/${mn}/${yr}`;
+};
 
-export const sort_dates = (dates: string[], order: 1 | -1 = 1) => {
-  const compareDates = (date1: string, date2: string): number => {
-    const [day1, month1, year1] = date1.split('/').map(Number);
-    const [day2, month2, year2] = date2.split('/').map(Number);
+const prefix_zeros = (n: number) => `${n < 10 ? '0' : ''}${n}`;
 
-    // Compare years first
-    if (year1 !== year2) {
-      return (year1 - year2) * order;
-    }
+export const get_utc_date_string = (val: string, format: date_formats) => {
+  let date: number = 0,
+    month: number = 0,
+    year: number = 0;
+  if (format === 'dd/mm/yyyy') [date, month, year] = val.split('/').map((v) => parseInt(v));
+  else if (format === 'yyyy-mm-dd') [year, month, date] = val.split('-').map((v) => parseInt(v));
+  return `${year}-${prefix_zeros(month)}-${prefix_zeros(date)}T00:00Z`;
+};
 
-    // If years are the same, compare months
-    if (month1 !== month2) {
-      return (month1 - month2) * order;
-    }
+export const get_utc_date = (val: string, format: date_formats) => {
+  return new Date(get_utc_date_string(val, format));
+};
 
-    // If months are the same, compare days
-    return (day1 - day2) * order;
-  };
-
-  // Sort the dates using the custom comparator
-  return dates.slice().sort(compareDates);
+export const clone_date = (date: Date) => {
+  return new Date(date.toISOString());
 };

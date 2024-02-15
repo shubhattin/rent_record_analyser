@@ -1,15 +1,64 @@
 <script lang="ts">
-  import { get_year_list, type dtType, get_month_list, get_date_list } from '$lib/get_data';
-  import { MONTH_NAMES, NUMBER_SUFFIX, MONTH_NAMES_SHORT } from '@tools/date';
   import type { PageData } from './$types';
   import { preloadData } from '$app/navigation';
+  import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
 
   export let data: PageData;
   let rent_data = data.rent_data;
   $: rent_data = data.rent_data;
 
-  const [year_list, amount_yr_list] = get_year_list(rent_data);
+  // all lists are already formatted in
+  const get_year_list = () => {
+    const years: number[] = [];
+    const amounts: number[] = [];
+    for (let dt of rent_data) {
+      const yr = dt.month.getUTCFullYear();
+      const index = years.indexOf(yr);
+      if (index === -1) {
+        years.push(yr);
+        amounts.push(dt.amount);
+      } else amounts[index] += dt.amount;
+    }
+    return [years, amounts];
+  };
+
+  const get_month_list = (year: number) => {
+    const months: number[] = [];
+    const amounts: number[] = [];
+    for (let dt of rent_data) {
+      if (year !== dt.month.getUTCFullYear()) continue;
+      const month = dt.month.getUTCMonth() + 1;
+      const index = months.indexOf(month);
+      if (index === -1) {
+        months.push(month);
+        amounts.push(dt.amount);
+      } else amounts[index] += dt.amount;
+    }
+    return [months, amounts];
+  };
+
+  const get_date_list = (year: number, month: number): [Date[], number[][]] => {
+    const dates: Date[] = [];
+    const amounts: number[][] = [];
+    for (let dt of rent_data) {
+      if (year !== dt.month.getUTCFullYear()) continue;
+      if (month !== dt.month.getUTCMonth() + 1) continue;
+
+      const index = (() => {
+        const date = dt.date.toLocaleDateString();
+        for (let i = 0; i < dates.length; i++) if (dates[i].toLocaleDateString() === date) return i;
+        return -1;
+      })();
+      if (index === -1) {
+        dates.push(dt.date);
+        amounts.push([dt.amount]);
+      } else amounts[index].push(dt.amount);
+    }
+    return [dates, amounts];
+  };
+
+  const [year_list, amount_yr_list] = get_year_list();
 
   const total = rent_data.reduce((total, item) => total + item.amount, 0);
 
@@ -37,9 +86,9 @@
     Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
   </h5>
   <!-- Monthly -->
-  {@const [month_list, amount_mn_list] = get_month_list(yr, rent_data)}
+  {@const [month_list, amount_mn_list] = get_month_list(yr)}
   {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list, actual_month_list] = get_date_list(yr, mn, rent_data)}
+    {@const [date_list, amount_dt_list] = get_date_list(yr, mn)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
@@ -47,12 +96,13 @@
       <!-- DateWise -->
       <table class="table reset_css">
         {#each date_list as dt, i_dt (dt)}
+          {@const date = dt.getUTCDate()}
           <tr>
             <td>
-              {dt}<sup>{dt % 10 === 0 ? 'th' : NUMBER_SUFFIX[(dt % 10) - 1]}</sup>
+              {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
             </td>
             <td>
-              {MONTH_NAMES_SHORT[actual_month_list[i_dt] - 1]}
+              {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
             </td>
             <td>
               {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(', ')}
