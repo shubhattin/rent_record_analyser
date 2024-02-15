@@ -51,3 +51,9 @@ export const unNormaliseDate = (date: string) => {
   return lst.join('-');
   // yyyy-mm-dd
 };
+
+export const get_date_string = (date: Date, format: 'yyyy-mm-dd' | 'dd/mm/yyyy' = 'dd/mm/yyyy') => {
+  const [dt, mn, yr] = [date.getDate(), date.getMonth() + 1, date.getFullYear()];
+  if (format === 'yyyy-mm-dd') return `${yr}-${mn}-${dt}`;
+  return `${dt}/${mn}/${yr}`;
+};

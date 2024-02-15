@@ -1,9 +1,10 @@
 <script lang="ts">
-  import type { RentData } from '@tools/db_type';
+  import type { RentData } from '@tools/db/types';
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
+  import { get_date_string } from '@tools/date';
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
 
@@ -13,9 +14,6 @@
 
   let save_spinner_show = false;
 
-  const get_date_string = (date: Date) => {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-  };
   function deepCopy<T>(value: T, is_array: boolean): T {
     const source = value as any;
     if (is_array)

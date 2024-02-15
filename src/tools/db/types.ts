@@ -16,4 +16,5 @@ export const schema = {
   others: others_table,
   rent_data: rent_data_table
 };
-type r = typeof rent_data_table.$inferSelect;
+
+export type RentData = typeof rent_data_table.$inferSelect;
