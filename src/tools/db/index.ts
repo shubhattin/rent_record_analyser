@@ -1,14 +1,22 @@
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
 import { env } from '$env/dynamic/private';
 import { schema } from './types';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
-const poolConnection = mysql.createPool({
-  database: env.MYSQL_DB_NAME,
-  host: env.MYSQL_HOST,
-  user: env.MYSQL_USERNAME,
-  password: env.MYSQL_PASSWORD,
-  port: 3306
-});
+/*
+Note :-  Currenly not using the serverless neon library as we are not using it in edge
 
-export const db = drizzle(poolConnection, { schema, mode: 'default' });
+import { neon } from '@neondatabase/serverless';
+import { drizzle as drizzle_neon } from 'drizzle-orm/neon-http';
+export const db = drizzle_neon(neon(env.PG_DATABASE_URL), { schema });
+
+OR
+
+export const db = import.meta.env.DEV
+  ? drizzle(postgres(env.PG_DATABASE_URL), { schema })
+  : drizzle_neon(neon(env.PG_DATABASE_URL), { schema });
+
+*/
+
+const queryClient = postgres(env.PG_DATABASE_URL);
+export const db = drizzle(queryClient, { schema });

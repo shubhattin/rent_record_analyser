@@ -10,8 +10,9 @@ export const POST: RequestHandler = async ({ request }) => {
     return JSONResponse({ verified: false, detail: 'error_parsing_request' });
   const { key } = body_parse.data;
 
-  const hash = (await db.query.others.findFirst({ where: ({ id }, { eq }) => eq(id, 'passKey') }))!
-    .value;
+  const hash = (await db.query.others.findFirst({
+    where: ({ key }, { eq }) => eq(key, 'passKey')
+  }))!.value as string;
   const verified = puShTi(key, hash);
   const data: {
     verified: boolean;

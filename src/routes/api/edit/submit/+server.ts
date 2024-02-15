@@ -28,7 +28,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const verified = puShTi(
     passKey,
-    (await db.query.others.findFirst({ where: ({ id }, { eq }) => eq(id, 'passKey') }))!.value
+    (await db.query.others.findFirst({ where: ({ key }, { eq }) => eq(key, 'passKey') }))!
+      .value as string
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
