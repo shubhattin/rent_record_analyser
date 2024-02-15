@@ -13,7 +13,7 @@
     const years: number[] = [];
     const amounts: number[] = [];
     for (let dt of rent_data) {
-      const yr = dt.month.getFullYear();
+      const yr = dt.month.getUTCFullYear();
       const index = years.indexOf(yr);
       if (index === -1) {
         years.push(yr);
@@ -27,8 +27,8 @@
     const months: number[] = [];
     const amounts: number[] = [];
     for (let dt of rent_data) {
-      if (year !== dt.month.getFullYear()) continue;
-      const month = dt.month.getMonth() + 1;
+      if (year !== dt.month.getUTCFullYear()) continue;
+      const month = dt.month.getUTCMonth() + 1;
       const index = months.indexOf(month);
       if (index === -1) {
         months.push(month);
@@ -42,8 +42,8 @@
     const dates: Date[] = [];
     const amounts: number[][] = [];
     for (let dt of rent_data) {
-      if (year !== dt.month.getFullYear()) continue;
-      if (month !== dt.month.getMonth() + 1) continue;
+      if (year !== dt.month.getUTCFullYear()) continue;
+      if (month !== dt.month.getUTCMonth() + 1) continue;
 
       const index = (() => {
         const date = dt.date.toLocaleDateString();
@@ -96,13 +96,13 @@
       <!-- DateWise -->
       <table class="table reset_css">
         {#each date_list as dt, i_dt (dt)}
-          {@const date = dt.getDate()}
+          {@const date = dt.getUTCDate()}
           <tr>
             <td>
               {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
             </td>
             <td>
-              {MONTH_NAMES_SHORT[dt.getMonth() + 1 - 1]}
+              {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
             </td>
             <td>
               {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(', ')}

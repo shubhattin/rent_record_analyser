@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { normaliseDate } from '@tools/date';
+  import { get_utc_date, normaliseDate } from '@tools/date';
   import { fetch_post } from '@tools/fetch';
   import { MONTH_NAMES } from '@tools/date';
   import { onMount } from 'svelte';
@@ -30,9 +30,9 @@
     const req = fetch_post('/api/add/submit', {
       json: {
         passKey: passKey,
-        date: date, // yyyy-mm-dd
+        date: get_utc_date(date, 'yyyy-mm-dd'),
         amount: amount,
-        month: `${year}-${month}-1` // 1st day of the month
+        month: get_utc_date(`${year}-${month}-1`, 'yyyy-mm-dd') // 1st day of the month
       }
     });
     submit_spinner_show = true;

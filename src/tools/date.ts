@@ -51,9 +51,25 @@ export const unNormaliseDate = (date: string) => {
   return lst.join('-');
   // yyyy-mm-dd
 };
+type date_formats = 'yyyy-mm-dd' | 'dd/mm/yyyy';
 
-export const get_date_string = (date: Date, format: 'yyyy-mm-dd' | 'dd/mm/yyyy' = 'dd/mm/yyyy') => {
-  const [dt, mn, yr] = [date.getDate(), date.getMonth() + 1, date.getFullYear()];
+export const get_date_string = (date: Date, format: date_formats = 'dd/mm/yyyy') => {
+  const [dt, mn, yr] = [date.getUTCDate(), date.getUTCMonth() + 1, date.getUTCFullYear()];
   if (format === 'yyyy-mm-dd') return `${yr}-${mn}-${dt}`;
   return `${dt}/${mn}/${yr}`;
+};
+
+const prefix_zeros = (n: number) => `${n < 10 ? '0' : ''}${n}`;
+
+export const get_utc_date_string = (val: string, format: date_formats) => {
+  let date: number = 0,
+    month: number = 0,
+    year: number = 0;
+  if (format === 'dd/mm/yyyy') [date, month, year] = val.split('/').map((v) => parseInt(v));
+  else if (format === 'yyyy-mm-dd') [year, month, date] = val.split('-').map((v) => parseInt(v));
+  return `${year}-${prefix_zeros(month)}-${prefix_zeros(date)}T00:00Z`;
+};
+
+export const get_utc_date = (val: string, format: date_formats) => {
+  return new Date(get_utc_date_string(val, format));
 };

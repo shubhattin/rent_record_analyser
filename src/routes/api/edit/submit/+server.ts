@@ -4,8 +4,7 @@ import { z } from 'zod';
 import { puShTi } from '@tools/hash';
 import { db } from '@tools/db';
 import { rent_data_table } from '@tools/db/types';
-import { inArray, sql } from 'drizzle-orm';
-import { get_date_string } from '@tools/date';
+import { eq, inArray, sql } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
@@ -36,29 +35,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const operations: Promise<any>[] = [];
 
-  const to_change_set = to_change.map((dt) => {
-    return {
-      ...dt,
-      date: get_date_string(dt.date, 'yyyy-mm-dd'),
-      month: get_date_string(dt.month, 'yyyy-mm-dd')
-    };
-  });
-  for (let dt of to_change_set) {
-    operations.push(
-      db.execute(
-        sql.raw(`UPDATE rent_data
-       SET  amount=${dt.amount}, date='${dt.date}', month='${dt.month}'
-       WHERE id = ${dt.id}`)
-      )
-    );
-    /*
-    Here Not using the ORM's insert function as it cuasing some problem while storing date and montg
-    of type `Date`, it seems that the orm is calling the `.toISOString()`which is cauding
-    date to be 1 day before to the indended date in some cases(or time maybe).
-
-    // operations.push(db.update(rent_data_table).set(dt).where(eq(rent_data_table.id, dt.id)));
-    */
-  }
+  for (let dt of to_change)
+    operations.push(db.update(rent_data_table).set(dt).where(eq(rent_data_table.id, dt.id)));
   if (to_delete.length !== 0) {
     const delete_resp = db.delete(rent_data_table).where(inArray(rent_data_table.id, to_delete));
     operations.push(delete_resp);

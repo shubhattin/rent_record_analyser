@@ -4,7 +4,7 @@
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
-  import { get_date_string } from '@tools/date';
+  import { get_date_string, get_utc_date_string } from '@tools/date';
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
 
@@ -94,8 +94,16 @@
       new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
       new_data = new_data.sort((dt1, dt2) => {
         const [date1, date2] = [dt1.date, dt2.date];
-        const [day1, month1, year1] = [date1.getDate(), date1.getMonth() + 1, date1.getFullYear()];
-        const [day2, month2, year2] = [date2.getDate(), date2.getMonth() + 1, date2.getFullYear()];
+        const [day1, month1, year1] = [
+          date1.getUTCDate(),
+          date1.getUTCMonth() + 1,
+          date1.getUTCFullYear()
+        ];
+        const [day2, month2, year2] = [
+          date2.getUTCDate(),
+          date2.getUTCMonth() + 1,
+          date2.getUTCFullYear()
+        ];
         if (year1 !== year2) return (year1 - year2) * -1; // -1 for descending order
         if (month1 !== month2) return (month1 - month2) * -1;
         return (day1 - day2) * -1;
@@ -162,7 +170,7 @@
               val = str_val.data;
               // val is in dd/mm/yyyy to convert to yyyy-mm-dd
               const vals = val.split('/');
-              val = `${vals[2]}-${vals[1]}-${vals[0]}`;
+              val = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`, 'yyyy-mm-dd');
               const parse_val = z.coerce.date().safeParse(val);
               if (parse_val.success) dt.date = parse_val.data;
             })}>{get_date_string(dt.date)}</td
@@ -185,9 +193,11 @@
                 .safeParse(val);
               if (!str_val.success) return;
               val = str_val.data;
-              const parse_val = z.coerce.date().safeParse(val + '-1');
+              const parse_val = z.coerce
+                .date()
+                .safeParse(get_utc_date_string(val + '-1', 'yyyy-mm-dd'));
               if (parse_val.success) dt.month = parse_val.data;
-            })}>{`${dt.month.getFullYear()}-${dt.month.getMonth() + 1}`}</td
+            })}>{`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}</td
         >
         <td>
           <span class="small">

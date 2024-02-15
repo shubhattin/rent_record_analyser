@@ -3,8 +3,7 @@ import { puShTi } from '@tools/hash';
 import type { RequestHandler } from './$types';
 import { z } from 'zod';
 import { db } from '@tools/db';
-import { sql } from 'drizzle-orm';
-import { get_date_string } from '@tools/date';
+import { rent_data_table } from '@tools/db/types';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z
@@ -26,17 +25,11 @@ export const POST: RequestHandler = async ({ request }) => {
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 
-  await db.execute(
-    sql.raw(`INSERT INTO rent_data(amount, month, date)
-        VALUES (${amount}, '${get_date_string(month, 'yyyy-mm-dd')}', '${get_date_string(date, 'yyyy-mm-dd')}')`)
-  );
-  // not using built in ORM's insert as it causing dates to be of 1 day before indended
-
-  // await db.insert(rent_data_table).values({
-  //   amount: amount,
-  //   month: month,
-  //   date: date
-  // });
+  await db.insert(rent_data_table).values({
+    amount: amount,
+    month: month,
+    date: date
+  });
 
   return JSONResponse({ status: 'success' });
 };
