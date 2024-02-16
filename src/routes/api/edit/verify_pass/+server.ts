@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   const hash = (await db.query.others.findFirst({
     where: ({ key }, { eq }) => eq(key, 'passKey')
-  }))!.value as string;
+  }))!.value;
   const verified = puShTi(key, hash);
   const data: {
     verified: boolean;

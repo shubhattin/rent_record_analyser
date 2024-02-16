@@ -5,7 +5,6 @@ import { eq } from 'drizzle-orm';
 import { others_table } from '@tools/db/types';
 
 export const GET: RequestHandler = async () => {
-  const link = (await db.query.others.findFirst({ where: eq(others_table.key, 'db_page') }))!
-    .value as string;
+  const link = (await db.query.others.findFirst({ where: eq(others_table.key, 'db_page') }))!.value;
   return redirect(302, link);
 };

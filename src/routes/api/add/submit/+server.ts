@@ -17,11 +17,16 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!req_parse.success) return JSONResponse({ status: 'error_parsing_request' });
   let { passKey, date, amount, month } = req_parse.data;
 
+  /*
+  -> Use this code below to reset SERIAL to max id
+
+  await db.execute(sql`SELECT setval('rent_data_id_seq', (select MAX(id) from rent_data))`);
+  */
+
   // verifying for correct key
   const verified = puShTi(
     passKey,
-    (await db.query.others.findFirst({ where: ({ key }, { eq }) => eq(key, 'passKey') }))!
-      .value as string
+    (await db.query.others.findFirst({ where: ({ key }, { eq }) => eq(key, 'passKey') }))!.value
   );
   if (!verified) return JSONResponse({ status: 'wrong_key' });
 

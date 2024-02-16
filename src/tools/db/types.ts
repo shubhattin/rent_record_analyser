@@ -1,4 +1,4 @@
-import { pgTable, serial, date, varchar, integer, json } from 'drizzle-orm/pg-core';
+import { pgTable, serial, date, varchar, integer } from 'drizzle-orm/pg-core';
 
 export const rent_data_table = pgTable('rent_data', {
   id: serial('id').primaryKey(),
@@ -9,7 +9,7 @@ export const rent_data_table = pgTable('rent_data', {
 
 export const others_table = pgTable('others', {
   key: varchar('key', { length: 20 }).primaryKey(),
-  value: json('value').notNull()
+  value: varchar('value', { length: 250 }).notNull()
 });
 
 export const schema = {
