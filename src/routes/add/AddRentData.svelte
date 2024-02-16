@@ -30,9 +30,9 @@
     const req = fetch_post('/api/add/submit', {
       json: {
         passKey: passKey,
-        date: get_utc_date(date, 'yyyy-mm-dd'),
+        date: get_utc_date(date),
         amount: amount,
-        month: get_utc_date(`${year}-${month}-1`, 'yyyy-mm-dd') // 1st day of the month
+        month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
       }
     });
     submit_spinner_show = true;

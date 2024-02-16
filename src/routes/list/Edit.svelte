@@ -4,7 +4,7 @@
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
-  import { clone_date, get_date_string, get_utc_date_string } from '@tools/date';
+  import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
 
@@ -68,9 +68,7 @@
 
   const save_data = async () => {
     if (!is_savable) return;
-    const to_change = Array.from(to_change_list)
-      .filter((id) => !to_delete_list.has(id))
-      .map((id) => data[get_key_index_in_data(id)]);
+    const to_change = Array.from(to_change_list).map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
     const req = fetch_post('/api/edit/submit', {
       json: {
@@ -92,22 +90,7 @@
         new_data[index] = deepCopy(dt, false);
       }
       new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
-      new_data = new_data.sort((dt1, dt2) => {
-        const [date1, date2] = [dt1.date, dt2.date];
-        const [day1, month1, year1] = [
-          date1.getUTCDate(),
-          date1.getUTCMonth() + 1,
-          date1.getUTCFullYear()
-        ];
-        const [day2, month2, year2] = [
-          date2.getUTCDate(),
-          date2.getUTCMonth() + 1,
-          date2.getUTCFullYear()
-        ];
-        if (year1 !== year2) return (year1 - year2) * -1; // -1 for descending order
-        if (month1 !== month2) return (month1 - month2) * -1;
-        return (day1 - day2) * -1;
-      });
+      new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
 
       // resetting values
       data = deepCopy(new_data, true);
@@ -173,7 +156,7 @@
               val = str_val.data;
               // val is in dd/mm/yyyy to convert to yyyy-mm-dd
               const vals = val.split('/');
-              val = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`, 'yyyy-mm-dd');
+              val = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`);
               const parse_val = z.coerce.date().safeParse(val);
               if (parse_val.success) dt.date = parse_val.data;
             })}>{get_date_string(dt.date)}</td
@@ -200,9 +183,7 @@
                 return;
               }
               val = str_val.data;
-              const parse_val = z.coerce
-                .date()
-                .safeParse(get_utc_date_string(val + '-1', 'yyyy-mm-dd'));
+              const parse_val = z.coerce.date().safeParse(get_utc_date_string(val + '-1'));
               if (parse_val.success) dt.month = parse_val.data;
             })}>{`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}</td
         >
