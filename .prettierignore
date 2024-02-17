@@ -2,6 +2,7 @@ node_modules
 build
 .space
 .svelte-kit
+drizzle
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
