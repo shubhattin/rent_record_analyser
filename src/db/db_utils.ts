@@ -10,6 +10,6 @@ export const get_db_url = (env: any): string => {
       description: 'Connection string for PostgreSQL'
     })
     .safeParse(url);
-  if (!url_parse.success) throw new Error('Please set `PG_DATABASE_URL` in .env.local');
+  if (!url_parse.success) throw new Error('Please set `PG_DATABASE_URL`');
   return url_parse.data;
 };
