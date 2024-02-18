@@ -12,6 +12,7 @@ import { sql } from 'drizzle-orm';
 
 const main = async () => {
   if (!(await confirm_environemnt())) return;
+
   console.log(`Insering Data into ${dbMode} Database...`);
 
   const in_file_name = {
@@ -40,12 +41,7 @@ main().then(() => {
 });
 
 async function confirm_environemnt() {
-  let confirmation: string = '';
-  if (dbMode === 'PROD') {
-    confirmation = await take_input('Are you sure INSERT in PROD ? ');
-  } else if (dbMode === 'PREVIEW') {
-    confirmation = await take_input('Are you sure to INSERT in PREVIEW ? ');
-  }
-  if (dbMode === 'LOCAL' || ['yes', 'y'].includes(confirmation)) return true;
+  let confirmation: string = await take_input(`Are you sure INSERT in ${dbMode} ? `);
+  if (['yes', 'y'].includes(confirmation)) return true;
   return false;
 }

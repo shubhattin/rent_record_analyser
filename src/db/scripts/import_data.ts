@@ -1,9 +1,12 @@
 import { client, queryClient } from './client';
 import { writeFile } from 'fs/promises';
-import { dbMode, make_dir } from '@tools/kry';
+import { dbMode, make_dir, take_input } from '@tools/kry';
 
 const main = async () => {
+  if (!(await confirm_environemnt())) return;
+
   console.log(`Fetching Data from ${dbMode} Database...`);
+
   const rent_data = await client.query.rent_data.findMany();
   const others = await client.query.others.findMany();
 
@@ -23,3 +26,9 @@ const main = async () => {
 main().then(() => {
   queryClient.end();
 });
+
+async function confirm_environemnt() {
+  let confirmation: string = await take_input(`Are you sure SELECT from ${dbMode} ? `);
+  if (['yes', 'y'].includes(confirmation)) return true;
+  return false;
+}
