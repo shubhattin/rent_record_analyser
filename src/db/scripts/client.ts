@@ -1,11 +1,10 @@
-// import { env } from '$env/dynamic/private';
-import { schema } from '@tools/db/types';
+import dotenv from 'dotenv';
+import { schema } from '@db/schema';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import dotenv from 'dotenv';
 import { dbMode } from '@tools/kry';
 
-dotenv.config({ path: '../../.env.local' });
+dotenv.config({ path: '../../../.env.local' });
 
 const DB_URL = {
   LOCAL: process.env.PG_DATABASE_URL!,

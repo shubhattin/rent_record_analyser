@@ -6,7 +6,7 @@ import {
   others_table,
   selectRentDataSchema,
   selectOthersSchema
-} from '@tools/db/types';
+} from '@db/schema';
 import { z } from 'zod';
 import { sql } from 'drizzle-orm';
 

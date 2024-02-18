@@ -2,7 +2,7 @@ import { puShTi } from '@tools/hash';
 import { JSONResponse } from '@tools/responses';
 import { z } from 'zod';
 import type { RequestHandler } from './$types';
-import { db } from '@tools/db';
+import { db } from '@db';
 
 export const POST: RequestHandler = async ({ request }) => {
   const body_parse = z.object({ key: z.string().min(4) }).safeParse(await request.json());

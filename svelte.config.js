@@ -11,7 +11,9 @@ const config = {
     adapter: adapter(),
     alias: {
       '@tools/*': 'src/tools/*',
-      '@components/*': 'src/components/*'
+      '@components/*': 'src/components/*',
+      '@db/*': 'src/db/*',
+      '@db': 'src/db/index.ts'
     }
   }
 };

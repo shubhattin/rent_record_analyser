@@ -1,5 +1,5 @@
 {
-  "id": "4660e334-f480-41ff-9687-1be3bc6bf443",
+  "id": "75c6508f-f0d5-4dd8-be6e-346df16ea77c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -16,7 +16,7 @@
         },
         "value": {
           "name": "value",
-          "type": "varchar(250)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         }

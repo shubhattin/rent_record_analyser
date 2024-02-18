@@ -2,8 +2,8 @@ import type { RequestHandler } from './$types';
 import { JSONResponse } from '@tools/responses';
 import { z } from 'zod';
 import { puShTi } from '@tools/hash';
-import { db } from '@tools/db';
-import { rent_data_table } from '@tools/db/types';
+import { db } from '@db';
+import { rent_data_table } from '@db/schema';
 import { eq, inArray, sql } from 'drizzle-orm';
 
 export const POST: RequestHandler = async ({ request }) => {

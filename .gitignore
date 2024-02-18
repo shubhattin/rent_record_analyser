@@ -11,4 +11,4 @@ vite.config.ts.timestamp-*
 
 .vercel
 
-src/scripts/out/
+src/db/scripts/out/

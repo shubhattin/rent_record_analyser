@@ -2,8 +2,8 @@ import { JSONResponse } from '@tools/responses';
 import { puShTi } from '@tools/hash';
 import type { RequestHandler } from './$types';
 import { z } from 'zod';
-import { db } from '@tools/db';
-import { rent_data_table } from '@tools/db/types';
+import { db } from '@db';
+import { rent_data_table } from '@db/schema';
 
 export const POST: RequestHandler = async ({ request }) => {
   const req_parse = z

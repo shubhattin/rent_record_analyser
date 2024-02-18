@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { RentData } from '@tools/db/types';
+  import type { RentData } from '@db/schema';
   import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';

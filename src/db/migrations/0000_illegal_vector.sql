@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "others" (
 	"key" varchar(20) PRIMARY KEY NOT NULL,
-	"value" varchar(250) NOT NULL
+	"value" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "rent_data" (

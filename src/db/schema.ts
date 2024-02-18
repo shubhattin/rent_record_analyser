@@ -1,4 +1,4 @@
-import { pgTable, serial, date, varchar, integer } from 'drizzle-orm/pg-core';
+import { pgTable, serial, date, varchar, integer, text } from 'drizzle-orm/pg-core';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
@@ -11,7 +11,7 @@ export const rent_data_table = pgTable('rent_data', {
 
 export const others_table = pgTable('others', {
   key: varchar('key', { length: 20 }).primaryKey(),
-  value: varchar('value', { length: 250 }).notNull()
+  value: text('value').notNull()
 });
 
 export const schema = {
@@ -26,9 +26,3 @@ export const selectRentDataSchema = createSelectSchema(rent_data_table, {
   month: z.coerce.date()
 });
 export const selectOthersSchema = createSelectSchema(others_table);
-
-export const get_db_url = (env: any): string => {
-  if (process.env.DB_MODE === 'PROD') return env.PG_DATABASE_URL1;
-  else if (process.env.DB_MODE === 'PREVIEW') return env.PG_DATABASE_URL2;
-  return env.PG_DATABASE_URL;
-};

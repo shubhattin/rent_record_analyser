@@ -10,7 +10,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "migration:generate": "drizzle-kit generate:pg",
-    "migration:push": "cd ./src/tools/db && tsx migrate.ts",
+    "migration:push": "cd ./src/db && tsx migrate.ts",
     "migration:drop": "drizzle-kit drop",
     "migration:direct-push": "drizzle-kit push:pg",
     "lint": "prettier --check .",

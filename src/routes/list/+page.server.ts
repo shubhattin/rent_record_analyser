@@ -1,4 +1,4 @@
-import { db } from '@tools/db';
+import { db } from '@db';
 
 export const load = async () => {
   // const data = await db.select().from(rent_data).orderBy(desc(rent_data.date));
