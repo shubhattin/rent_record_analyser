@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { RentData } from '@db/schema';
-  import { fetch_post } from '@tools/fetch';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
+  import { client } from '@api/client';
 
   export let data: RentData[];
   export let editable: Writable<boolean>;
@@ -70,18 +70,13 @@
     if (!is_savable) return;
     const to_change = Array.from(to_change_list).map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
-    const req = fetch_post('/api/edit/submit', {
-      json: {
-        to_delete: to_delete,
-        to_change: to_change,
-        passKey: $passKey
-      }
-    });
     save_spinner_show = true;
-    const res = await req;
+    const { status } = await client.edit_data.submit_data.mutate({
+      to_delete: to_delete,
+      to_change: to_change,
+      password: $passKey
+    });
     save_spinner_show = false;
-    if (!res.ok) return;
-    const { status } = z.object({ status: z.string() }).parse(await res.json());
     if (status === 'success') {
       // trying to do optimistic updates without relying on the sever response of updated data
       let new_data = deepCopy(data, true);

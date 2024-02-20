@@ -1,11 +1,10 @@
 <script lang="ts">
   import { get_utc_date, normaliseDate } from '@tools/date';
-  import { fetch_post } from '@tools/fetch';
   import { MONTH_NAMES } from '@tools/date';
   import { onMount } from 'svelte';
   import Spinner from '@components/Spinner.svelte';
-  import { z } from 'zod';
   import { slide, scale } from 'svelte/transition';
+  import { client } from '@api/client';
 
   export let passKey: string;
 
@@ -27,24 +26,16 @@
 
   const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
-    const req = fetch_post('/api/add/submit', {
-      json: {
-        passKey: passKey,
-        date: get_utc_date(date),
-        amount: amount,
-        month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
-      }
-    });
     submit_spinner_show = true;
-    const res = await req;
+    const { status } = await client.add_data.submit_data.mutate({
+      password: passKey,
+      date: get_utc_date(date),
+      amount: amount,
+      month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
+    });
     submit_spinner_show = false;
-    if (!res.ok) return;
-    const { status } = z.object({ status: z.string() }).parse(await res.json());
-    if (status === 'success') {
-      submitted = true;
-    }
+    if (status === 'success') submitted = true;
   };
-
   let amount_input_elmt: HTMLInputElement;
 
   onMount(() => {

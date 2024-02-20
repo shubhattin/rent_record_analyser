@@ -1,4 +1,4 @@
-import { client, queryClient } from './client';
+import { dbClient_ext, queryClient } from './client';
 import { readFile } from 'fs/promises';
 import { dbMode, take_input } from '@tools/kry';
 import {
@@ -28,13 +28,15 @@ const main = async () => {
     })
     .parse(JSON.parse((await readFile(`./out/${in_file_name}`)).toString()));
 
-  await client.insert(rent_data_table).values(data.rent_data);
+  await dbClient_ext.insert(rent_data_table).values(data.rent_data);
   console.log('Successfully added values into table `rent_data`');
-  await client.insert(others_table).values(data.others);
+  await dbClient_ext.insert(others_table).values(data.others);
   console.log('Successfully added values into table `others`');
 
   // resetting the SERIAL
-  await client.execute(sql`SELECT setval('rent_data_id_seq', (select MAX(id) from rent_data))`);
+  await dbClient_ext.execute(
+    sql`SELECT setval('rent_data_id_seq', (select MAX(id) from rent_data))`
+  );
 };
 main().then(() => {
   queryClient.end();
