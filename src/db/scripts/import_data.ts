@@ -1,4 +1,4 @@
-import { client, queryClient } from './client';
+import { dbClient_ext, queryClient } from './client';
 import { writeFile } from 'fs/promises';
 import { dbMode, make_dir, take_input } from '@tools/kry';
 
@@ -7,8 +7,8 @@ const main = async () => {
 
   console.log(`Fetching Data from ${dbMode} Database...`);
 
-  const rent_data = await client.query.rent_data.findMany();
-  const others = await client.query.others.findMany();
+  const rent_data = await dbClient_ext.query.rent_data.findMany();
+  const others = await dbClient_ext.query.others.findMany();
 
   const json_data = {
     rent_data,

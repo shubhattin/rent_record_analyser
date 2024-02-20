@@ -34,11 +34,14 @@
     "@neondatabase/serverless": "^0.8.1",
     "@picocss/pico": "^1.5.11",
     "@sveltejs/adapter-vercel": "^5.1.0",
+    "@trpc/client": "^10.45.1",
+    "@trpc/server": "^10.45.1",
     "dotenv": "^16.4.4",
     "drizzle-orm": "^0.29.3",
     "drizzle-zod": "^0.5.1",
     "postgres": "^3.4.3",
     "sass": "^1.70.0",
+    "trpc-sveltekit": "^3.5.26",
     "zod": "^3.22.4"
   }
 }

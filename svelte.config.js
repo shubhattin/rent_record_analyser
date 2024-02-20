@@ -13,7 +13,7 @@ const config = {
       '@tools/*': 'src/tools/*',
       '@components/*': 'src/components/*',
       '@db/*': 'src/db/*',
-      '@db': 'src/db/index.ts'
+      '@api/*': 'src/api/*'
     }
   }
 };

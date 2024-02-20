@@ -1,7 +1,6 @@
 <script lang="ts">
   import Edit from './Edit.svelte';
-  import { fetch_post } from '@tools/fetch';
-  import { z } from 'zod';
+  import { client } from '@api/client';
   import { writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
   import Modal from '@components/Modal.svelte';
@@ -31,21 +30,13 @@
   }
   const check_pass = async () => {
     if ($passKey === '') return;
-    const req = fetch_post('/api/edit/verify_pass', {
-      json: {
-        key: $passKey
-      }
-    });
     pass_verify_spinner_show = true;
-    const resp = await req;
+    const { verified } = await client.edit_data.verify_pass.query({ password: $passKey });
     pass_verify_spinner_show = false;
-    if (!resp.ok) {
+    if (!verified) {
       $passKey = '';
       return;
-    }
-    const { verified } = z.object({ verified: z.boolean() }).parse(await resp.json());
-    if (!verified) $passKey = '';
-    else {
+    } else {
       $pass_enterer_status = false;
       $editable = true;
     }
