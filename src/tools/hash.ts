@@ -1,22 +1,49 @@
-import { createHash } from 'node:crypto';
+const str_to_array_buffer = (str: string) => {
+  const buf = new ArrayBuffer(str.length);
+  const bufView = new Uint8Array(buf);
+  for (let i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+};
+const array_buffer_to_str = (buff: ArrayBuffer) => {
+  return Array.from(new Uint8Array(buff))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+};
+const do_hash = async (value: string, algorithm: string) => {
+  const buffer = str_to_array_buffer(value); // Fix
+  const hash_bytes = await crypto.subtle.digest(algorithm, buffer);
+  const hash = array_buffer_to_str(hash_bytes);
+  return hash;
+};
 
 /**
- * Cryptographic Hash for `SHA3-256`
+ * Cryptographic Hash for `SHA-512`
  */
-export function hash_sha256(content: string) {
-  return createHash('sha3-256').update(content).digest('hex');
-}
+export const hash_512 = async (str: string) => {
+  // length :- 128
+  return await do_hash(str, 'SHA-512');
+};
+
 /**
- * Cryptographic Hash for `SHA3-512`
+ * Cryptographic Hash for `SHA-256`
  */
-export function hash_sha512(content: string) {
-  return createHash('sha3-512').update(content).digest('hex');
-}
+export const hash_256 = async (str: string) => {
+  // length :- 64
+  return await do_hash(str, 'SHA-256');
+};
+
 /**
- * Verifier for `SHA3-256` hash with salt appended at the end
+ * Generate a random salt of length `32`
  */
-export const puShTi = (val: string, hash_salt: string) => {
-  const hash = hash_salt.substring(0, 64);
-  const salt = hash_salt.substring(64);
-  return hash_sha256(val + salt) === hash;
+export const salt = () => {
+  return array_buffer_to_str(crypto.getRandomValues(new Uint8Array(16)));
+};
+
+/** Hash verifier for `sha-256` */
+export const puShTi = async (pass: string, hash: string) => {
+  const salt = hash.substring(64);
+  const hsh = hash.substring(0, 64);
+  return hsh === (await hash_256(pass + salt));
 };
