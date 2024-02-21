@@ -10,7 +10,6 @@ const get_drizzle_instance_dev = async () => {
   // using local postgres to allow edge environment in the edge
   const postgres = await import('postgres');
   const { drizzle } = await import('drizzle-orm/postgres-js');
-  console.log('Using Postgresjs');
   return drizzle(postgres.default(DB_URL), { schema });
 };
 
