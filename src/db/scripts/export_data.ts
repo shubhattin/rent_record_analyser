@@ -1,12 +1,7 @@
 import { dbClient_ext, queryClient } from './client';
 import { readFile } from 'fs/promises';
 import { dbMode, take_input } from '@tools/kry';
-import {
-  rent_data_table,
-  others_table,
-  selectRentDataSchema,
-  selectOthersSchema
-} from '@db/schema';
+import { rent_data, others, selectRentDataSchema, selectOthersSchema } from '@db/schema';
 import { z } from 'zod';
 import { sql } from 'drizzle-orm';
 
@@ -28,9 +23,9 @@ const main = async () => {
     })
     .parse(JSON.parse((await readFile(`./out/${in_file_name}`)).toString()));
 
-  await dbClient_ext.insert(rent_data_table).values(data.rent_data);
+  await dbClient_ext.insert(rent_data).values(data.rent_data);
   console.log('Successfully added values into table `rent_data`');
-  await dbClient_ext.insert(others_table).values(data.others);
+  await dbClient_ext.insert(others).values(data.others);
   console.log('Successfully added values into table `others`');
 
   // resetting the SERIAL

@@ -2,7 +2,7 @@ import { db } from '@db/db';
 import { t } from '../trpc_init';
 import { z } from 'zod';
 import { puShTi } from '@tools/hash';
-import { rent_data_table } from '@db/schema';
+import { rent_data } from '@db/schema';
 
 const get_pass_verify_status = async (password: string) => {
   const hash = (await db.query.others.findFirst({
@@ -33,7 +33,7 @@ const submit_data = password_procedure
       return {
         status: 'wrong_key'
       };
-    await db.insert(rent_data_table).values({
+    await db.insert(rent_data).values({
       amount: amount,
       month: month,
       date: date

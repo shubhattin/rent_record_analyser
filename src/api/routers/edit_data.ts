@@ -2,7 +2,7 @@ import { db } from '@db/db';
 import { t } from '../trpc_init';
 import { z } from 'zod';
 import { puShTi } from '@tools/hash';
-import { rent_data_table } from '@db/schema';
+import { rent_data } from '@db/schema';
 import { eq, inArray } from 'drizzle-orm';
 
 const get_pass_verify_status = async (password: string) => {
@@ -44,9 +44,9 @@ const submit_data = password_procedure
     const operations: Promise<any>[] = [];
 
     for (let dt of to_change)
-      operations.push(db.update(rent_data_table).set(dt).where(eq(rent_data_table.id, dt.id)));
+      operations.push(db.update(rent_data).set(dt).where(eq(rent_data.id, dt.id)));
     if (to_delete.length !== 0) {
-      const delete_resp = db.delete(rent_data_table).where(inArray(rent_data_table.id, to_delete));
+      const delete_resp = db.delete(rent_data).where(inArray(rent_data.id, to_delete));
       operations.push(delete_resp);
     }
     if (operations.length !== 0) await Promise.all(operations);
