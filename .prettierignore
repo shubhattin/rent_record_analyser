@@ -6,5 +6,4 @@ build
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
 
-src/db/migrations
-src/db/scripts/out/
+prisma

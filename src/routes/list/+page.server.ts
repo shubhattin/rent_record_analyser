@@ -1,9 +1,10 @@
-import { db } from '@db/db';
+import prisma from '$lib/server/prisma';
 
 export const load = async () => {
-  // const data = await db.select().from(rent_data).orderBy(desc(rent_data.date));
-  const data = await db.query.rent_data.findMany({
-    orderBy: ({ date }, { desc }) => [desc(date)]
+  const data = await prisma.rent_data.findMany({
+    orderBy: {
+      date: 'desc'
+    }
   });
   return { rent_data: data };
 };

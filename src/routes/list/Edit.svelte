@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { RentData } from '@db/schema';
+  import type { RentData } from '$lib/server/prisma';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';

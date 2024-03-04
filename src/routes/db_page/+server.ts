@@ -1,10 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '@db/db';
-import { eq } from 'drizzle-orm';
-import { others_table } from '@db/schema';
+import prisma from '$lib/server/prisma';
 
 export const GET: RequestHandler = async () => {
-  const link = (await db.query.others.findFirst({ where: eq(others_table.key, 'db_page') }))!.value;
+  const link = (await prisma.others.findFirst({ where: { key: { equals: 'db_page' } } }))!.value;
   return redirect(302, link);
 };

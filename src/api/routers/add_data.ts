@@ -1,12 +1,15 @@
-import { db } from '@db/db';
+import prisma from '$lib/server/prisma';
 import { t } from '../trpc_init';
 import { z } from 'zod';
 import { puShTi } from '@tools/hash';
-import { rent_data_table } from '@db/schema';
 
 const get_pass_verify_status = async (password: string) => {
-  const hash = (await db.query.others.findFirst({
-    where: ({ key }, { eq }) => eq(key, 'passKey')
+  const hash = (await prisma.others.findFirst({
+    where: {
+      key: {
+        equals: 'passKey'
+      }
+    }
   }))!.value;
   const verified = puShTi(password, hash);
   return verified;
@@ -33,10 +36,12 @@ const submit_data = password_procedure
       return {
         status: 'wrong_key'
       };
-    await db.insert(rent_data_table).values({
-      amount: amount,
-      month: month,
-      date: date
+    await prisma.rent_data.create({
+      data: {
+        amount: amount,
+        month: month,
+        date: date
+      }
     });
     return {
       status: 'success'

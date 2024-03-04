@@ -1,13 +1,15 @@
-import { db } from '@db/db';
+import prisma from '$lib/server/prisma';
 import { t } from '../trpc_init';
 import { z } from 'zod';
 import { puShTi } from '@tools/hash';
-import { rent_data_table } from '@db/schema';
-import { eq, inArray } from 'drizzle-orm';
 
 const get_pass_verify_status = async (password: string) => {
-  const hash = (await db.query.others.findFirst({
-    where: ({ key }, { eq }) => eq(key, 'passKey')
+  const hash = (await prisma.others.findFirst({
+    where: {
+      key: {
+        equals: 'passKey'
+      }
+    }
   }))!.value;
   const verified = puShTi(password, hash);
   return verified;
@@ -44,9 +46,22 @@ const submit_data = password_procedure
     const operations: Promise<any>[] = [];
 
     for (let dt of to_change)
-      operations.push(db.update(rent_data_table).set(dt).where(eq(rent_data_table.id, dt.id)));
+      operations.push(
+        prisma.rent_data.update({
+          data: dt,
+          where: {
+            id: dt.id
+          }
+        })
+      );
     if (to_delete.length !== 0) {
-      const delete_resp = db.delete(rent_data_table).where(inArray(rent_data_table.id, to_delete));
+      const delete_resp = prisma.rent_data.deleteMany({
+        where: {
+          id: {
+            in: to_delete
+          }
+        }
+      });
       operations.push(delete_resp);
     }
     if (operations.length !== 0) await Promise.all(operations);
