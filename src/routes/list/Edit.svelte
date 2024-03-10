@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { RentData } from '@db/schema';
   import { z } from 'zod';
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
@@ -7,8 +6,9 @@
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
   import { client } from '@api/client';
+  import type { PageData } from './$types';
 
-  export let data: RentData[];
+  export let data: PageData['rent_data'];
   export let editable: Writable<boolean>;
   export let passKey: Writable<string>;
 

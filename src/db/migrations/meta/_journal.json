@@ -8,6 +8,13 @@
       "when": 1708235232108,
       "tag": "0000_illegal_vector",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710049120398,
+      "tag": "0001_burly_romulus",
+      "breakpoints": true
     }
   ]
 }
