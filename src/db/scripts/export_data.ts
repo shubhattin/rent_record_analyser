@@ -1,7 +1,7 @@
 import { dbClient_ext, queryClient } from './client';
 import { readFile } from 'fs/promises';
 import { dbMode, take_input } from '@tools/kry';
-import { rent_data, others, selectRentDataSchema, selectOthersSchema } from '@db/schema';
+import { rent_data, others, RentDataSchemaZod, OthersSchemaZod } from '@db/schema';
 import { z } from 'zod';
 import { sql } from 'drizzle-orm';
 
@@ -18,8 +18,8 @@ const main = async () => {
 
   const data = z
     .object({
-      others: selectOthersSchema.array(),
-      rent_data: selectRentDataSchema.array()
+      others: OthersSchemaZod.array(),
+      rent_data: RentDataSchemaZod.array()
     })
     .parse(JSON.parse((await readFile(`./out/${in_file_name}`)).toString()));
 

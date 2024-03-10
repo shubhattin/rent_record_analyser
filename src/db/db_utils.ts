@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { env } from '$env/dynamic/private';
 
 export const get_db_url = (env: any): string => {
   let url: string = null!;
@@ -13,3 +14,10 @@ export const get_db_url = (env: any): string => {
   if (!url_parse.success) throw new Error('Please set `PG_DATABASE_URL`');
   return url_parse.data;
 };
+
+export const JWT_SECRET = (() => {
+  const token = env.JWT_SECRET;
+  const jwt_token_parse = z.string().safeParse(token);
+  if (!jwt_token_parse.success) throw new Error('Please set `JWT_SECRET`');
+  return jwt_token_parse.data;
+})();

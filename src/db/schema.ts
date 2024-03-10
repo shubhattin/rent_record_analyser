@@ -37,8 +37,9 @@ export const schema = {
 
 export type RentData = typeof rent_data.$inferSelect;
 
-export const selectRentDataSchema = createSelectSchema(rent_data, {
+export const RentDataSchemaZod = createSelectSchema(rent_data, {
   date: z.coerce.date(),
   month: z.coerce.date()
 });
-export const selectOthersSchema = createSelectSchema(others);
+export const OthersSchemaZod = createSelectSchema(others);
+export const UsersSchemaZod = createSelectSchema(users);

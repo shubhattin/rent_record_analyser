@@ -8,20 +8,14 @@
 
   $: users = data.users;
 
-  let selected_user = writable(1); // 1st user(admin)
   let pass_unlocked = writable(false);
-  let password = writable('');
+  let jwt_token = writable('');
 </script>
 
 <svelte:head>
   <title>Add Rent Record</title>
 </svelte:head>
-<AuthenticatePassword
-  users_data={users}
-  user_id={selected_user}
-  is_verified={pass_unlocked}
-  {password}
-/>
+<AuthenticatePassword users_data={users} {jwt_token} is_verified={pass_unlocked} />
 {#if $pass_unlocked}
-  <AddRentData password={$password} user_id={$selected_user} />
+  <AddRentData jwt_token={$jwt_token} />
 {/if}
