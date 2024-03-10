@@ -43,7 +43,7 @@ const submit_data = password_procedure
     };
   });
 
-export const addDataRouter = t.router({
+export const add_data_router = t.router({
   verify_pass: password_procedure
     .output(z.object({ verified: z.boolean() }))
     .query(async ({ input: { password } }) => {

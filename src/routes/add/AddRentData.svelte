@@ -6,7 +6,8 @@
   import { slide, scale } from 'svelte/transition';
   import { client } from '@api/client';
 
-  export let passKey: string;
+  export let password: string;
+  export let user_id: number;
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -28,7 +29,7 @@
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
     const { status } = await client.add_data.submit_data.mutate({
-      password: passKey,
+      password: password,
       date: get_utc_date(date),
       amount: amount,
       month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
