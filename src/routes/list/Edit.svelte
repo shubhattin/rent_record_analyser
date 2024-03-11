@@ -8,9 +8,14 @@
   import { client } from '@api/client';
   import type { PageData } from './$types';
 
-  export let data: PageData['rent_data'];
+  export let all_data: PageData;
   export let editable: Writable<boolean>;
-  export let passKey: Writable<string>;
+  export let jwt_token: Writable<string>;
+
+  let data = all_data.rent_data;
+  let verification_request_ids = all_data.verification_requests;
+  $: data = all_data.rent_data;
+  $: verification_request_ids = all_data.verification_requests;
 
   let save_spinner_show = false;
 
@@ -30,6 +35,7 @@
 
   let to_change_list = new Set<number>();
   let to_delete_list = new Set<number>();
+  let to_verify_list = new Set<number>();
 
   $: {
     if (editable) {
@@ -64,17 +70,18 @@
     return -1;
   };
 
-  $: is_savable = to_delete_list.size + to_change_list.size !== 0;
+  $: is_savable = to_delete_list.size + to_change_list.size + to_verify_list.size !== 0;
 
   const save_data = async () => {
     if (!is_savable) return;
     const to_change = Array.from(to_change_list).map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
     save_spinner_show = true;
-    const { status } = await client.edit_data.submit_data.mutate({
+    const { status } = await client.edit_data.mutate({
+      jwt_token: $jwt_token,
+      to_verify: Array.from(to_verify_list),
       to_delete: to_delete,
-      to_change: to_change,
-      password: $passKey
+      to_change: to_change
     });
     save_spinner_show = false;
     if (status === 'success') {
@@ -86,13 +93,15 @@
       }
       new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
       new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
+      verification_request_ids = verification_request_ids.filter((v) => !to_verify_list.has(v));
 
       // resetting values
       data = deepCopy(new_data, true);
       prev_data = deepCopy(data, true);
       to_change_list = new Set<number>();
       to_delete_list = new Set<number>();
-      $passKey = '';
+      to_verify_list = new Set<number>();
+      $jwt_token = '';
       $editable = false;
     }
   };
@@ -106,7 +115,9 @@
 >
   <h6>Are you sure to Save Changes ?</h6>
   <strong>
-    <div>Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}</div>
+    <div>
+      Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
+    </div>
   </strong>
 </Modal>
 {#if $editable}
@@ -127,17 +138,27 @@
       <th scope="col"><strong>Date</strong></th>
       <th scope="col"><strong>Amount</strong></th>
       <th scope="col"><strong>Month</strong></th>
+      <th scope="col"><strong class="small">User</strong></th>
       <th scope="col"><strong class="small">ID</strong></th>
     </tr>
   </thead>
   <tbody>
     {#each data as dt, i (dt.id)}
+      {@const is_verify_request = verification_request_ids.includes(dt.id)}
       {@const to_change_status = to_change_list.has(dt.id)}
       {@const to_delete_status = to_delete_list.has(dt.id)}
-      {@const clss = to_delete_status ? 'to_delete' : to_change_status ? 'changed' : ''}
+      {@const to_verify_status = to_verify_list.has(dt.id)}
+      {@const clss = to_delete_status
+        ? 'to_delete'
+        : to_change_status
+          ? 'changed'
+          : to_verify_status
+            ? 'to_verify'
+            : ''}
+      {@const is_editable_row = $editable && !is_verify_request}
       <tr class={clss}>
         <td
-          contenteditable={$editable}
+          contenteditable={is_editable_row}
           on:input={(e) =>
             set_val_from_input(e, (val) => {
               const str_val = z
@@ -157,16 +178,24 @@
             })}>{get_date_string(dt.date)}</td
         >
         <td
-          contenteditable={$editable}
+          contenteditable={is_editable_row}
           on:input={(e) =>
             set_val_from_input(e, (val) => {
               const parse_val = z.coerce.number().int().safeParse(val);
               if (parse_val.success) dt.amount = parse_val.data;
               // else dt.amount=prev_data[i].amount
-            })}>{dt.amount}</td
+            })}
         >
+          {#if is_verify_request}
+            <u>
+              {dt.amount}
+            </u>
+          {:else}
+            {dt.amount}
+          {/if}
+        </td>
         <td
-          contenteditable={$editable}
+          contenteditable={is_editable_row}
           on:input={(e) =>
             set_val_from_input(e, (val) => {
               const str_val = z
@@ -184,9 +213,14 @@
         >
         <td>
           <span class="small">
+            {dt.user_id || 'NA'}
+          </span>
+        </td>
+        <td>
+          <span class="small">
             {dt.id}
           </span>
-          {#if $editable}
+          {#if is_editable_row}
             {@const values_edited =
               get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
               prev_data[i].amount !== data[i].amount ||
@@ -216,6 +250,27 @@
               >
             {/if}
           {/if}
+          {#if $editable && is_verify_request}
+            {#if !to_verify_status}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-no-static-element-interactions -->
+              <span
+                on:click={() => {
+                  to_verify_list.add(dt.id);
+                  to_verify_list = to_verify_list;
+                }}>➕</span
+              >
+            {:else}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-no-static-element-interactions -->
+              <span
+                on:click={() => {
+                  to_verify_list.delete(dt.id);
+                  to_verify_list = to_verify_list;
+                }}>❌</span
+              >
+            {/if}
+          {/if}
         </td>
       </tr>
     {/each}
@@ -228,6 +283,9 @@
   }
   .to_delete {
     border: 2px dashed #ff0000;
+  }
+  .to_verify {
+    border: 2px dashed lightgreen;
   }
   td {
     outline: none;

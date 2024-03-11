@@ -1,9 +1,8 @@
 import { db } from '@db/db';
 import { t } from '../trpc_init';
 import { z } from 'zod';
-import { rent_data, users, UsersSchemaZod, verification_requests } from '@db/schema';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '@db/db_utils';
+import { rent_data, UsersSchemaZod, verification_requests } from '@db/schema';
+import { get_user_info_from_jwt } from './verify_pass';
 
 export const add_data_router = t.procedure
   .input(
@@ -16,11 +15,6 @@ export const add_data_router = t.procedure
       jwt_token: z.string()
     })
   )
-  .output(
-    z.object({
-      status: z.union([z.literal('wrong_key'), z.literal('success'), z.literal('failed')])
-    })
-  )
   .mutation(
     async ({
       input: {
@@ -28,17 +22,9 @@ export const add_data_router = t.procedure
         data: { month, amount, date }
       }
     }) => {
-      // if (!(await get_pass_verify_status(password)))
-      //   return {
-      //     status: 'wrong_key'
-      //   };
-      const jwt_payload_schema = UsersSchemaZod.pick({
-        id: true,
-        is_admin: true
-      });
-      let payload: z.infer<typeof jwt_payload_schema>;
+      let user_info: ReturnType<typeof get_user_info_from_jwt>;
       try {
-        payload = jwt_payload_schema.parse(jwt.verify(jwt_token, JWT_SECRET));
+        user_info = get_user_info_from_jwt(jwt_token);
       } catch {
         return {
           status: 'wrong_key'
@@ -50,13 +36,13 @@ export const add_data_router = t.procedure
           amount: amount,
           month: month,
           date: date,
-          user_id: payload.id
+          user_id: user_info.id
         })
         .returning();
 
       const id = returned_data[0].id;
 
-      if (!payload.is_admin)
+      if (!user_info.is_admin)
         await db.insert(verification_requests).values({
           id: id
         });

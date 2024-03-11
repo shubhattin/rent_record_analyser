@@ -1,10 +1,14 @@
 <script lang="ts">
   import { client } from '@api/client';
-  import { type Writable } from 'svelte/store';
+  import { writable, type Writable } from 'svelte/store';
   import Spinner from './Spinner.svelte';
 
   export let jwt_token: Writable<string>;
+  export let on_verify: (verified: boolean, jwt_token: string) => void = null!;
   export let is_verified: Writable<boolean>;
+  export let show_always = false;
+  export let pass_input_element: Writable<HTMLInputElement> = writable(null!);
+
   export let users_data: {
     id: number;
     name: string;
@@ -26,11 +30,12 @@
     else {
       $jwt_token = res.jwt_token;
       $is_verified = true;
+      if (on_verify) on_verify($is_verified, $jwt_token);
     }
   };
 </script>
 
-{#if !$is_verified}
+{#if show_always || !$is_verified}
   <form on:submit|preventDefault={check_pass} class="grid">
     <select bind:value={user_id}>
       {#each users_data as user}
@@ -41,10 +46,23 @@
         </option>
       {/each}
     </select>
-    <input type="password" bind:value={password} placeholder="गूढपद" required />
+    <input
+      type="password"
+      bind:value={password}
+      placeholder="गूढपद"
+      required
+      bind:this={$pass_input_element}
+    />
     <button type="submit">
       <Spinner show={pass_input_spinner_show} />
       Submit
     </button>
+    <div>
+      <a href="/reset_pass">
+        <small>
+          <small>Reset Password</small>
+        </small>
+      </a>
+    </div>
   </form>
 {/if}

@@ -4,8 +4,9 @@ import { puShTi } from '@tools/hash';
 import { z } from 'zod';
 import { JWT_SECRET } from '@db/db_utils';
 import jwt from 'jsonwebtoken';
+import { UsersSchemaZod } from '@db/schema';
 
-export const get_pass_verify_status = async (user_id: number, password: string) => {
+const get_pass_verify_status = async (user_id: number, password: string) => {
   const query = await db.query.users.findFirst({
     columns: { password: true },
     where: ({ id }, { eq }) => eq(id, user_id)
@@ -14,6 +15,16 @@ export const get_pass_verify_status = async (user_id: number, password: string) 
   const hash = query.password;
   const verified = puShTi(password, hash);
   return verified;
+};
+
+export const get_user_info_from_jwt = (jwt_token: string) => {
+  const jwt_payload_schema = UsersSchemaZod.pick({
+    id: true,
+    is_admin: true
+  });
+  let payload: z.infer<typeof jwt_payload_schema>;
+  payload = jwt_payload_schema.parse(jwt.verify(jwt_token, JWT_SECRET));
+  return payload;
 };
 
 export const verify_pass_router = t.procedure
@@ -33,6 +44,6 @@ export const verify_pass_router = t.procedure
       },
       where: ({ id }, { eq }) => eq(id, user_id)
     }))!;
-    const jwt_token = jwt.sign(payload, JWT_SECRET, { expiresIn: '10sec' });
+    const jwt_token = jwt.sign(payload, JWT_SECRET, { expiresIn: '5min' });
     return { verified, jwt_token };
   });
