@@ -10,7 +10,9 @@ export const load = async () => {
     columns: {
       id: true,
       name: true
-    }
+    },
+    where: ({ is_admin }, { eq }) => eq(is_admin, true)
+    // only fetching admin details as they are only authorized to make changes
   });
 
   const [data, pending_requests, users] = await Promise.all([

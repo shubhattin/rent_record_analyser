@@ -6,7 +6,6 @@
   import type { PageData } from './$types';
   import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
   import { slide } from 'svelte/transition';
-  import { z } from 'zod';
 
   export let data: PageData;
 
@@ -25,11 +24,6 @@
   });
 
   let pass_input_elmnt: Writable<HTMLInputElement> = writable(null!);
-  const user_info_schema = z.object({
-    id: z.number().int(),
-    is_admin: z.boolean()
-  });
-  let user_info: z.infer<typeof user_info_schema> = null!;
 </script>
 
 <svelte:head>
@@ -44,14 +38,9 @@
       users_data={data.users}
       {jwt_token}
       pass_input_element={pass_input_elmnt}
-      on_verify={(verified, jwt_token) => {
+      on_verify={(verified) => {
         if (verified) {
-          user_info = user_info_schema.parse(JSON.parse(window.atob(jwt_token.split('.')[1])));
           $pass_enterer_status = false;
-          if (!user_info.is_admin) {
-            // editing not supported for non-admin users
-            return;
-          }
           $editable = true;
         }
       }}
