@@ -36,7 +36,7 @@
 </script>
 
 {#if show_always || !$is_verified}
-  <form on:submit|preventDefault={check_pass} class="grid">
+  <form on:submit|preventDefault={check_pass}>
     <select bind:value={user_id}>
       {#each users_data as user}
         <option value={user.id}>
