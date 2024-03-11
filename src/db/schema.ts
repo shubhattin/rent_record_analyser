@@ -35,11 +35,10 @@ export const schema = {
   verification_requests: verification_requests
 };
 
-export type RentData = typeof rent_data.$inferSelect;
-
 export const RentDataSchemaZod = createSelectSchema(rent_data, {
   date: z.coerce.date(),
   month: z.coerce.date()
 });
 export const OthersSchemaZod = createSelectSchema(others);
 export const UsersSchemaZod = createSelectSchema(users);
+export const VerficationRequestsSchemaZod = createSelectSchema(verification_requests);

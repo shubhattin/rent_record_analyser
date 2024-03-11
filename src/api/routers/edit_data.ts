@@ -57,7 +57,9 @@ export const edit_data_router = t.procedure
       operations.push(delete_resp);
     }
     if (to_verify.length !== 0) {
-      const veriiable_items_remove_resp = db.delete(verification_requests).where(inArray(verification_requests.id, to_verify));
+      const veriiable_items_remove_resp = db
+        .delete(verification_requests)
+        .where(inArray(verification_requests.id, to_verify));
       operations.push(veriiable_items_remove_resp);
     }
     if (to_delete.length !== 0) {

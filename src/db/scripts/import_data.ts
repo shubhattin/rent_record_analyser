@@ -1,18 +1,22 @@
-import { dbClient_ext, queryClient } from './client';
+import { dbClient_ext as db, queryClient } from './client';
 import { writeFile } from 'fs/promises';
-import { dbMode, make_dir, take_input } from '@tools/kry';
+import { dbMode, make_dir, take_input } from '@tools/kry_server';
 
 const main = async () => {
   if (!(await confirm_environemnt())) return;
 
   console.log(`Fetching Data from ${dbMode} Database...`);
 
-  const rent_data = await dbClient_ext.query.rent_data.findMany();
-  const others = await dbClient_ext.query.others.findMany();
+  const rent_data = await db.query.rent_data.findMany();
+  const others = await db.query.others.findMany();
+  const users = await db.query.users.findMany();
+  const verification_requests = await db.query.verification_requests.findMany();
 
   const json_data = {
+    users,
+    others,
     rent_data,
-    others
+    verification_requests
   };
 
   await make_dir('./out');

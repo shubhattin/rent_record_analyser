@@ -37,7 +37,7 @@ export const hash_256 = async (str: string) => {
 /**
  * Generate a random salt of length `32`
  */
-export const salt = () => {
+export const gen_salt = () => {
   return array_buffer_to_str(crypto.getRandomValues(new Uint8Array(16)));
 };
 

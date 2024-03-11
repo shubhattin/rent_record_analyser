@@ -2,7 +2,7 @@ import { t } from '@api/trpc_init';
 import { db } from '@db/db';
 import { puShTi } from '@tools/hash';
 import { z } from 'zod';
-import { JWT_SECRET } from '@db/db_utils';
+import { JWT_SECRET } from '@tools/jwt';
 import jwt from 'jsonwebtoken';
 import { UsersSchemaZod } from '@db/schema';
 
