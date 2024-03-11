@@ -1,28 +1,9 @@
-import readline from 'readline';
-import { existsSync } from 'fs';
-import { mkdir } from 'fs/promises';
-
-export async function take_input(prompt: string) {
-  return new Promise<string>((resolve) => {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-    rl.question(prompt, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-}
-
-export async function make_dir(folderPath: string) {
-  if (!existsSync(folderPath)) await mkdir(folderPath, { recursive: true });
-}
-
-export const dbMode = (() => {
-  const args = process.argv.slice(2);
-  if (args.length !== 0)
-    if (args[0] === '--prod') return 'PROD';
-    else if (args[0] === '--preview') return 'PREVIEW';
-  return 'LOCAL';
-})();
+export const search_with_key = <T>(data_list: T[], key: keyof T, value: T[typeof key]) => {
+  // this function can also be used in frontend despite of this file using node modules (using treeshaking)
+  for (let i = 0; i < data_list.length; i++) if (data_list[i][key] === value) return i;
+  return -1;
+};
+export const get_with_key = <T>(data_list: T[], key: keyof T, value: T[typeof key]) => {
+  const index = search_with_key(data_list, key, value);
+  if (index !== -1) return data_list[index];
+};

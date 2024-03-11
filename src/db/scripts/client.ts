@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { schema } from '@db/schema';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { dbMode } from '@tools/kry';
+import { dbMode } from '@tools/kry_server';
 
 dotenv.config({ path: '../../../.env.local' });
 

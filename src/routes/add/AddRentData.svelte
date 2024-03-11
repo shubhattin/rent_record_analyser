@@ -6,7 +6,7 @@
   import { slide, scale } from 'svelte/transition';
   import { client } from '@api/client';
 
-  export let passKey: string;
+  export let jwt_token: string;
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -27,11 +27,13 @@
   const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
-    const { status } = await client.add_data.submit_data.mutate({
-      password: passKey,
-      date: get_utc_date(date),
-      amount: amount,
-      month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
+    const { status } = await client.add_data.mutate({
+      jwt_token: jwt_token,
+      data: {
+        date: get_utc_date(date),
+        amount: amount,
+        month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
+      }
     });
     submit_spinner_show = false;
     if (status === 'success') submitted = true;

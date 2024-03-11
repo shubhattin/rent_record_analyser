@@ -6,7 +6,9 @@
 
   export let data: PageData;
   let rent_data = data.rent_data;
+
   $: rent_data = data.rent_data;
+  $: verifaction_requests = data.verifaction_requests;
 
   // all lists are already formatted in
   const get_year_list = () => {
@@ -38,9 +40,10 @@
     return [months, amounts];
   };
 
-  const get_date_list = (year: number, month: number): [Date[], number[][]] => {
+  const get_date_list = (year: number, month: number): [Date[], number[][], number[][]] => {
     const dates: Date[] = [];
     const amounts: number[][] = [];
+    const ids: number[][] = [];
     for (let dt of rent_data) {
       if (year !== dt.month.getUTCFullYear()) continue;
       if (month !== dt.month.getUTCMonth() + 1) continue;
@@ -53,9 +56,13 @@
       if (index === -1) {
         dates.push(dt.date);
         amounts.push([dt.amount]);
-      } else amounts[index].push(dt.amount);
+        ids.push([dt.id]);
+      } else {
+        amounts[index].push(dt.amount);
+        ids[index].push(dt.id);
+      }
     }
-    return [dates, amounts];
+    return [dates, amounts, ids];
   };
 
   const [year_list, amount_yr_list] = get_year_list();
@@ -88,7 +95,7 @@
   <!-- Monthly -->
   {@const [month_list, amount_mn_list] = get_month_list(yr)}
   {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list] = get_date_list(yr, mn)}
+    {@const [date_list, amount_dt_list, id_list] = get_date_list(yr, mn)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
@@ -105,7 +112,11 @@
               {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
             </td>
             <td>
-              {amount_dt_list[i_dt].map((v) => `₹ ${v}`).join(', ')}
+              {@html amount_dt_list[i_dt]
+                .map((v, i) =>
+                  verifaction_requests.includes(id_list[i_dt][i]) ? `<u>₹ ${v}</u>` : `₹ ${v}`
+                )
+                .join(', ')}
             </td>
           </tr>
         {/each}

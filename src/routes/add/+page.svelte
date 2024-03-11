@@ -1,33 +1,21 @@
 <script lang="ts">
   import AddRentData from './AddRentData.svelte';
-  import Spinner from '@components/Spinner.svelte';
-  import { client } from '@api/client';
+  import type { PageData } from './$types';
+  import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
+  import { writable } from 'svelte/store';
 
-  let passUnlocked = false;
-  let pass_input_spinner_show = false;
-  let passKey = '';
+  export let data: PageData;
 
-  const check_pass = async () => {
-    if (passKey === '') return;
-    pass_input_spinner_show = true;
-    const { verified } = await client.add_data.verify_pass.query({ password: passKey });
-    pass_input_spinner_show = false;
-    if (!verified) passKey = '';
-    else passUnlocked = true;
-  };
+  $: users = data.users;
+
+  let pass_unlocked = writable(false);
+  let jwt_token = writable('');
 </script>
 
 <svelte:head>
   <title>Add Rent Record</title>
 </svelte:head>
-{#if !passUnlocked}
-  <form on:submit|preventDefault={check_pass} class="grid">
-    <input type="password" bind:value={passKey} placeholder="गूढपद" required />
-    <button type="submit">
-      <Spinner show={pass_input_spinner_show} />
-      Submit
-    </button>
-  </form>
-{:else}
-  <AddRentData {passKey} />
+<AuthenticatePassword users_data={users} {jwt_token} is_verified={pass_unlocked} />
+{#if $pass_unlocked}
+  <AddRentData jwt_token={$jwt_token} />
 {/if}
