@@ -1,6 +1,5 @@
 import { pgTable, serial, date, varchar, integer, text, boolean, char } from 'drizzle-orm/pg-core';
-import { createSelectSchema } from 'drizzle-zod';
-import { z } from 'zod';
+import { relations } from 'drizzle-orm';
 
 export const rent_data = pgTable('rent_data', {
   id: serial('id').primaryKey(),
@@ -28,17 +27,17 @@ export const verification_requests = pgTable('verification_requests', {
     .references(() => rent_data.id, { onDelete: 'cascade' })
 });
 
-export const schema = {
-  others: others,
-  rent_data: rent_data,
-  users: users,
-  verification_requests: verification_requests
-};
+/* The relations defined below are only for the `query` API of drizzle */
 
-export const RentDataSchemaZod = createSelectSchema(rent_data, {
-  date: z.coerce.date(),
-  month: z.coerce.date()
-});
-export const OthersSchemaZod = createSelectSchema(others);
-export const UsersSchemaZod = createSelectSchema(users);
-export const VerficationRequestsSchemaZod = createSelectSchema(verification_requests);
+export const dataUserRelation = relations(rent_data, ({ one }) => ({
+  user_info: one(users, { fields: [rent_data.user_id], references: [users.id] })
+}));
+
+export const userDataRelation = relations(users, ({ many }) => ({
+  rent_data: many(rent_data)
+  // here relation was auto-inferred as rent_data.user_id -> users.id
+}));
+
+export const verificationDataRelation = relations(verification_requests, ({ one }) => ({
+  rent_data: one(rent_data, { fields: [verification_requests.id], references: [rent_data.id] })
+}));

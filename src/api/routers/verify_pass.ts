@@ -4,7 +4,7 @@ import { puShTi } from '@tools/hash';
 import { z } from 'zod';
 import { JWT_SECRET } from '@tools/jwt';
 import jwt from 'jsonwebtoken';
-import { UsersSchemaZod } from '@db/schema';
+import { UsersSchemaZod } from '@db/schema_zod';
 
 const get_pass_verify_status = async (user_id: number, password: string) => {
   const query = await db.query.users.findFirst({

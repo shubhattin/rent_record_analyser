@@ -1,7 +1,7 @@
 import { db } from '@db/db';
 import { t } from '../trpc_init';
 import { z } from 'zod';
-import { rent_data, UsersSchemaZod, verification_requests } from '@db/schema';
+import { rent_data, verification_requests } from '@db/schema';
 import { get_user_info_from_jwt } from './verify_pass';
 
 export const add_data_router = t.procedure
