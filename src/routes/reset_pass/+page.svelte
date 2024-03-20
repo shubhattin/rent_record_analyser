@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from '@components/Spinner.svelte';
   import type { PageData } from './$types';
-  import { client } from '@api/client';
+  import { client, setJwtToken } from '@api/client';
   import { get_with_key } from '@tools/kry';
 
   export let data: PageData;
@@ -11,8 +11,6 @@
   let user: number;
   let old_password: string;
   let new_password: string;
-
-  let jwt_token = '';
 
   let is_old_pass_verified = false;
   let pass_reset_status = false;
@@ -29,15 +27,14 @@
       submit_spinner_show_status = false;
       if (!resp.verified) old_password = '';
       else {
-        jwt_token = resp.jwt_token;
+        setJwtToken(resp.jwt_token);
         is_old_pass_verified = true;
       }
     } else {
       if (new_password === '') return;
       submit_spinner_show_status = true;
       const { status } = await client.reset_pass.mutate({
-        new_password,
-        jwt_token
+        new_password
       });
       submit_spinner_show_status = false;
       if (status !== 'success') new_password = '';

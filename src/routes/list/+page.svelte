@@ -11,7 +11,6 @@
 
   let editable = writable(false);
   let pass_enterer_status = writable(false);
-  let jwt_token = writable('');
 
   onMount(() => {
     window.addEventListener('beforeunload', function (e) {
@@ -36,7 +35,6 @@
       is_verified={writable(false)}
       show_always={true}
       users_data={data.users}
-      {jwt_token}
       pass_input_element={pass_input_elmnt}
       on_verify={(verified) => {
         if (verified) {
@@ -65,7 +63,7 @@
   {/if}
 {/if}
 
-<Edit all_data={data} {editable} {jwt_token} />
+<Edit all_data={data} {editable} />
 
 <style>
   .edit_btn {

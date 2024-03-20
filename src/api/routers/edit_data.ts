@@ -3,12 +3,11 @@ import { t } from '../trpc_init';
 import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
 import { eq, inArray } from 'drizzle-orm';
-import { get_user_info_from_jwt } from './verify_pass';
+import { INVALID_USER_ERROR } from './verify_pass';
 
 export const edit_data_router = t.procedure
   .input(
     z.object({
-      jwt_token: z.string(),
       to_verify: z.array(z.number().int()),
       to_delete: z.number().int().array(),
       to_change: z
@@ -31,18 +30,10 @@ export const edit_data_router = t.procedure
       ])
     })
   )
-  .mutation(async ({ input }) => {
-    const { jwt_token } = input;
-    let user_info: ReturnType<typeof get_user_info_from_jwt>;
-    try {
-      user_info = get_user_info_from_jwt(jwt_token);
-    } catch {
-      return {
-        status: 'wrong_key'
-      };
-    }
+  .mutation(async ({ input, ctx: { user } }) => {
+    if (!user) throw INVALID_USER_ERROR;
 
-    if (!user_info.is_admin)
+    if (!user.is_admin)
       return {
         status: 'unauthorized'
       };

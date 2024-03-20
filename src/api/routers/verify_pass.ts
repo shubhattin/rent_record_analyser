@@ -4,7 +4,7 @@ import { puShTi } from '@tools/hash';
 import { z } from 'zod';
 import { JWT_SECRET } from '@tools/jwt';
 import jwt from 'jsonwebtoken';
-import { UsersSchemaZod } from '@db/schema_zod';
+import { TRPCError } from '@trpc/server';
 
 const get_pass_verify_status = async (user_id: number, password: string) => {
   const query = await db.query.users.findFirst({
@@ -17,15 +17,10 @@ const get_pass_verify_status = async (user_id: number, password: string) => {
   return verified;
 };
 
-export const get_user_info_from_jwt = (jwt_token: string) => {
-  const jwt_payload_schema = UsersSchemaZod.pick({
-    id: true,
-    is_admin: true
-  });
-  let payload: z.infer<typeof jwt_payload_schema>;
-  payload = jwt_payload_schema.parse(jwt.verify(jwt_token, JWT_SECRET));
-  return payload;
-};
+export const INVALID_USER_ERROR = new TRPCError({
+  code: 'UNAUTHORIZED',
+  message: 'Unauthorised user'
+});
 
 export const verify_pass_router = t.procedure
   .input(z.object({ user_id: z.number().int(), password: z.string() }))

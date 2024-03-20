@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { client } from '@api/client';
+  import { client, setJwtToken } from '@api/client';
   import { writable, type Writable } from 'svelte/store';
   import Spinner from './Spinner.svelte';
 
-  export let jwt_token: Writable<string>;
   export let on_verify: (verified: boolean, jwt_token: string) => void = null!;
   export let is_verified: Writable<boolean>;
   export let show_always = false;
@@ -28,9 +27,9 @@
     pass_input_spinner_show = false;
     if (!res.verified) password = '';
     else {
-      $jwt_token = res.jwt_token;
       $is_verified = true;
-      if (on_verify) on_verify($is_verified, $jwt_token);
+      setJwtToken(res.jwt_token);
+      if (on_verify) on_verify($is_verified, res.jwt_token);
     }
   };
 </script>

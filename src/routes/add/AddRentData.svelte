@@ -6,8 +6,6 @@
   import { slide, scale } from 'svelte/transition';
   import { client } from '@api/client';
 
-  export let jwt_token: string;
-
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
   const current_year = todays_date.getFullYear();
@@ -28,7 +26,6 @@
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
     const { status } = await client.add_data.mutate({
-      jwt_token: jwt_token,
       data: {
         date: get_utc_date(date),
         amount: amount,

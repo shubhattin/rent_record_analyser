@@ -5,12 +5,11 @@
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
   import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
-  import { client } from '@api/client';
+  import { client, setJwtToken } from '@api/client';
   import type { PageData } from './$types';
 
   export let all_data: PageData;
   export let editable: Writable<boolean>;
-  export let jwt_token: Writable<string>;
 
   let data = all_data.rent_data;
   let verification_request_ids = all_data.verification_requests;
@@ -78,7 +77,6 @@
     const to_delete = Array.from(to_delete_list);
     save_spinner_show = true;
     const { status } = await client.edit_data.mutate({
-      jwt_token: $jwt_token,
       to_verify: Array.from(to_verify_list),
       to_delete: to_delete,
       to_change: to_change
@@ -101,7 +99,7 @@
       to_change_list = new Set<number>();
       to_delete_list = new Set<number>();
       to_verify_list = new Set<number>();
-      $jwt_token = '';
+      setJwtToken('');
       $editable = false;
     }
   };
