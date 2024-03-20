@@ -8,7 +8,6 @@
   let rent_data = data.rent_data;
 
   $: rent_data = data.rent_data;
-  $: verifaction_requests = data.verifaction_requests;
 
   // all lists are already formatted in
   const get_year_list = () => {
@@ -40,10 +39,13 @@
     return [months, amounts];
   };
 
-  const get_date_list = (year: number, month: number): [Date[], number[][], number[][]] => {
+  const get_date_list = (
+    year: number,
+    month: number
+  ): [Date[], number[][], PageData['rent_data'][0][][]] => {
     const dates: Date[] = [];
     const amounts: number[][] = [];
-    const ids: number[][] = [];
+    const refs: PageData['rent_data'][0][][] = [];
     for (let dt of rent_data) {
       if (year !== dt.month.getUTCFullYear()) continue;
       if (month !== dt.month.getUTCMonth() + 1) continue;
@@ -56,13 +58,13 @@
       if (index === -1) {
         dates.push(dt.date);
         amounts.push([dt.amount]);
-        ids.push([dt.id]);
+        refs.push([dt]);
       } else {
         amounts[index].push(dt.amount);
-        ids[index].push(dt.id);
+        refs[index].push(dt);
       }
     }
-    return [dates, amounts, ids];
+    return [dates, amounts, refs];
   };
 
   const [year_list, amount_yr_list] = get_year_list();
@@ -95,7 +97,7 @@
   <!-- Monthly -->
   {@const [month_list, amount_mn_list] = get_month_list(yr)}
   {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list, id_list] = get_date_list(yr, mn)}
+    {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
@@ -113,9 +115,7 @@
             </td>
             <td>
               {@html amount_dt_list[i_dt]
-                .map((v, i) =>
-                  verifaction_requests.includes(id_list[i_dt][i]) ? `<u>₹ ${v}</u>` : `₹ ${v}`
-                )
+                .map((v, i) => (ref_list[i_dt][i].is_not_verified ? `<u>₹ ${v}</u>` : `₹ ${v}`))
                 .join(', ')}
             </td>
           </tr>

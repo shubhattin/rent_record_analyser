@@ -30,7 +30,8 @@ export const verification_requests = pgTable('verification_requests', {
 /* The relations defined below are only for the `query` API of drizzle */
 
 export const dataUserRelation = relations(rent_data, ({ one }) => ({
-  user_info: one(users, { fields: [rent_data.user_id], references: [users.id] })
+  user_info: one(users, { fields: [rent_data.user_id], references: [users.id] }),
+  verification_requests: one(verification_requests)
 }));
 
 export const userDataRelation = relations(users, ({ many }) => ({
