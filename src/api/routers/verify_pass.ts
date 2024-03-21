@@ -1,10 +1,9 @@
-import { t } from '@api/trpc_init';
+import { public_procedure } from '@api/trpc_init';
 import { db } from '@db/db';
 import { puShTi } from '@tools/hash';
 import { z } from 'zod';
 import { JWT_SECRET } from '@tools/jwt';
 import jwt from 'jsonwebtoken';
-import { TRPCError } from '@trpc/server';
 
 const get_pass_verify_status = async (user_id: number, password: string) => {
   const query = await db.query.users.findFirst({
@@ -17,12 +16,7 @@ const get_pass_verify_status = async (user_id: number, password: string) => {
   return verified;
 };
 
-export const INVALID_USER_ERROR = new TRPCError({
-  code: 'UNAUTHORIZED',
-  message: 'Unauthorised user'
-});
-
-export const verify_pass_router = t.procedure
+export const verify_pass_router = public_procedure
   .input(z.object({ user_id: z.number().int(), password: z.string() }))
   .output(
     z

@@ -1,10 +1,9 @@
 import { db } from '@db/db';
-import { t } from '../trpc_init';
+import { protected_procedure } from '@api/trpc_init';
 import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
-import { INVALID_USER_ERROR } from './verify_pass';
 
-export const add_data_router = t.procedure
+export const add_data_router = protected_procedure
   .input(
     z.object({
       data: z.object({
@@ -21,8 +20,6 @@ export const add_data_router = t.procedure
       },
       ctx: { user }
     }) => {
-      if (!user) throw INVALID_USER_ERROR;
-
       const returned_data = await db
         .insert(rent_data)
         .values({

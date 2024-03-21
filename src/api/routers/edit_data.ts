@@ -1,11 +1,10 @@
 import { db } from '@db/db';
-import { t } from '../trpc_init';
+import { protected_admin_procedure } from '@api/trpc_init';
 import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
 import { eq, inArray } from 'drizzle-orm';
-import { INVALID_USER_ERROR } from './verify_pass';
 
-export const edit_data_router = t.procedure
+export const edit_data_router = protected_admin_procedure
   .input(
     z.object({
       to_verify: z.array(z.number().int()),
@@ -22,22 +21,10 @@ export const edit_data_router = t.procedure
   )
   .output(
     z.object({
-      status: z.union([
-        z.literal('wrong_key'),
-        z.literal('success'),
-        z.literal('failed'),
-        z.literal('unauthorized')
-      ])
+      status: z.union([z.literal('success'), z.literal('failed')])
     })
   )
   .mutation(async ({ input, ctx: { user } }) => {
-    if (!user) throw INVALID_USER_ERROR;
-
-    if (!user.is_admin)
-      return {
-        status: 'unauthorized'
-      };
-
     const { to_change, to_delete, to_verify } = input;
     const operations: Promise<any>[] = [];
 

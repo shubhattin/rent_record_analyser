@@ -24,7 +24,6 @@ export async function createContext(event: RequestEvent) {
   }
 
   const user = await getUserFromHeader();
-
   return {
     user
   };
