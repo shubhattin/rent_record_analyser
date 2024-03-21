@@ -1,4 +1,4 @@
-import { public_procedure } from '@api/trpc_init';
+import { publicProcedure } from '@api/trpc_init';
 import { db } from '@db/db';
 import { puShTi } from '@tools/hash';
 import { z } from 'zod';
@@ -16,7 +16,7 @@ const get_pass_verify_status = async (user_id: number, password: string) => {
   return verified;
 };
 
-export const verify_pass_router = public_procedure
+export const verify_pass_router = publicProcedure
   .input(z.object({ user_id: z.number().int(), password: z.string() }))
   .output(
     z

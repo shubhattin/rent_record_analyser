@@ -2,7 +2,7 @@
   import Spinner from '@components/Spinner.svelte';
   import type { PageData } from './$types';
   import { client, setJwtToken } from '@api/client';
-  import { get_with_key } from '@tools/kry';
+  import { get_val_with_key } from '@tools/kry';
 
   export let data: PageData;
   let users = data.users;
@@ -78,6 +78,6 @@
     {/if}
   </form>
 {:else}
-  {@const user_info = get_with_key(users, 'id', user)}
+  {@const user_info = get_val_with_key('id', user, users)}
   Password Successfully Changed for User {user_info?.id} → {user_info?.name}
 {/if}
