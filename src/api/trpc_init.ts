@@ -3,9 +3,9 @@ import { TRPCError, initTRPC } from '@trpc/server';
 
 export const t = initTRPC.context<Context>().create();
 
-export const public_procedure = t.procedure;
+export const publicProcedure = t.procedure;
 
-export const protected_procedure = public_procedure.use(async function isAuthed({
+export const protectedProcedure = publicProcedure.use(async function isAuthed({
   next,
   ctx: { user }
 }) {
@@ -15,7 +15,7 @@ export const protected_procedure = public_procedure.use(async function isAuthed(
   });
 });
 
-export const protected_admin_procedure = protected_procedure.use(async function isAuthed({
+export const protectedAdminProcedure = protectedProcedure.use(async function isAuthed({
   next,
   ctx: { user }
 }) {

@@ -1,11 +1,11 @@
 import { db } from '@db/db';
-import { protected_procedure } from '../trpc_init';
+import { protectedProcedure } from '../trpc_init';
 import { z } from 'zod';
 import { users } from '@db/schema';
 import { gen_salt, hash_256 } from '@tools/hash';
 import { eq } from 'drizzle-orm';
 
-export const reset_pass_router = protected_procedure
+export const reset_pass_router = protectedProcedure
   .input(
     z.object({
       new_password: z.string()

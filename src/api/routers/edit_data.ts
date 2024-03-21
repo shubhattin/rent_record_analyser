@@ -1,10 +1,10 @@
 import { db } from '@db/db';
-import { protected_admin_procedure } from '@api/trpc_init';
+import { protectedAdminProcedure } from '@api/trpc_init';
 import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
 import { eq, inArray } from 'drizzle-orm';
 
-export const edit_data_router = protected_admin_procedure
+export const edit_data_router = protectedAdminProcedure
   .input(
     z.object({
       to_verify: z.array(z.number().int()),

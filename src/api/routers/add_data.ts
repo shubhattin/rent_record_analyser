@@ -1,9 +1,9 @@
 import { db } from '@db/db';
-import { protected_procedure } from '@api/trpc_init';
+import { protectedProcedure } from '@api/trpc_init';
 import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
 
-export const add_data_router = protected_procedure
+export const add_data_router = protectedProcedure
   .input(
     z.object({
       data: z.object({
