@@ -103,7 +103,7 @@
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
       </summary>
       <!-- DateWise -->
-      <table class="table reset_css">
+      <table class="reset_css table">
         {#each date_list as dt, i_dt (dt)}
           {@const date = dt.getUTCDate()}
           <tr>

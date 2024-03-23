@@ -1,7 +1,7 @@
 <script>
-  import '@picocss/pico';
+  import '../app.pcss';
 </script>
 
-<div class="container">
+<div class="container mx-auto">
   <slot />
 </div>
