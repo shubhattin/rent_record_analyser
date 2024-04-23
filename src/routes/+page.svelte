@@ -6,8 +6,10 @@
 
   export let data: PageData;
   let rent_data = data.rent_data;
+  let electricity_data = data.electricity_data;
 
   $: rent_data = data.rent_data;
+  $: electricity_data = data.electricity_data;
 
   // all lists are already formatted in
   const get_year_list = () => {
@@ -102,6 +104,13 @@
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
       </summary>
+      {#each electricity_data as el}
+        {@const el_mn = el.month.getUTCMonth() + 1}
+        {@const el_yr = el.month.getUTCFullYear()}
+        {#if yr === el_yr && el_mn === mn}
+          <div>⚡ ₹ {el.amount}</div>
+        {/if}
+      {/each}
       <!-- DateWise -->
       <table class="table reset_css">
         {#each date_list as dt, i_dt (dt)}

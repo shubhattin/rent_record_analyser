@@ -20,7 +20,7 @@
   const check_pass = async () => {
     if (password === '') return;
     pass_input_spinner_show = true;
-    const res = await client.verify_pass.query({
+    const res = await client.pass.verify_pass.query({
       user_id: user_id,
       password: password
     });

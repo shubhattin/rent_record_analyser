@@ -21,11 +21,15 @@
   let amount: number;
   let errorStatus = false;
   let submitted = false;
+  let electric_bill_already_exists_show = false;
+  let bill_type: 'rent' | 'electricity' = 'rent';
 
   const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
-    const { status } = await client.add_data.mutate({
+    electric_bill_already_exists_show = false;
+    const { status } = await client.data.add_data.mutate({
+      bill_type,
       data: {
         date: get_utc_date(date),
         amount: amount,
@@ -34,6 +38,7 @@
     });
     submit_spinner_show = false;
     if (status === 'success') submitted = true;
+    else if (status === 'already_exists') electric_bill_already_exists_show = true;
   };
   let amount_input_elmt: HTMLInputElement;
 
@@ -46,6 +51,13 @@
   <h4>Add New Entry</h4>
   {#if !errorStatus && !submitted}
     <form transition:slide on:submit|preventDefault={submit_data}>
+      <label>
+        Bill type
+        <select bind:value={bill_type}>
+          <option value="rent" selected>🏠 Rent</option>
+          <option value="electricity">⚡ Electricity</option>
+        </select>
+      </label>
       <input type="date" required bind:value={date} />
       <div class="grid">
         <label>
@@ -72,6 +84,9 @@
         bind:value={amount}
         bind:this={amount_input_elmt}
       />
+      {#if electric_bill_already_exists_show}
+        <div>Electricity Bill of the Selected Month Already Exists</div>
+      {/if}
       <button type="submit">
         <Spinner show={submit_spinner_show} />
         Submit

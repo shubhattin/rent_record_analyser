@@ -1,14 +1,10 @@
-import { add_data_router } from './routers/add_data';
-import { edit_data_router } from './routers/edit_data';
-import { verify_pass_router } from './routers/verify_pass';
-import { reset_pass_router } from './routers/reset_pass';
+import { data_add_edit_router } from './routers/add_edit_data';
+import { pass_verify_reset_router } from './routers/verify_reset_pass';
 import { t } from './trpc_init';
 
 export const router = t.router({
-  add_data: add_data_router,
-  edit_data: edit_data_router,
-  verify_pass: verify_pass_router,
-  reset_pass: reset_pass_router
+  data: data_add_edit_router,
+  pass: pass_verify_reset_router
 });
 
 export type Router = typeof router;

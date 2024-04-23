@@ -9,6 +9,14 @@ export const rent_data = pgTable('rent_data', {
   user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' })
 });
 
+export const electricity_bills = pgTable('electricity_bills', {
+  id: serial('id').primaryKey(),
+  amount: integer('amount').notNull(),
+  date: date('date', { mode: 'date' }).notNull(),
+  month: date('month', { mode: 'date' }).unique().notNull(),
+  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' })
+});
+
 export const others = pgTable('others', {
   key: varchar('key', { length: 20 }).primaryKey(),
   value: text('value').notNull()
@@ -29,16 +37,20 @@ export const verification_requests = pgTable('verification_requests', {
 
 /* The relations defined below are only for the `query` API of drizzle */
 
-export const dataUserRelation = relations(rent_data, ({ one }) => ({
+export const dataRelation = relations(rent_data, ({ one }) => ({
   user_info: one(users, { fields: [rent_data.user_id], references: [users.id] }),
   verification_requests: one(verification_requests)
 }));
 
-export const userDataRelation = relations(users, ({ many }) => ({
+export const electricityDataRelation = relations(electricity_bills, ({ one }) => ({
+  user_info: one(users, { fields: [electricity_bills.user_id], references: [users.id] })
+}));
+
+export const userRelation = relations(users, ({ many }) => ({
   rent_data: many(rent_data)
   // here relation was auto-inferred as rent_data.user_id -> users.id
 }));
 
-export const verificationDataRelation = relations(verification_requests, ({ one }) => ({
+export const verificationRelation = relations(verification_requests, ({ one }) => ({
   rent_data: one(rent_data, { fields: [verification_requests.id], references: [rent_data.id] })
 }));

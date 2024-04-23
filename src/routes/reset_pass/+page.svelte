@@ -20,7 +20,7 @@
     if (!is_old_pass_verified) {
       if (old_password === '') return;
       submit_spinner_show_status = true;
-      const resp = await client.verify_pass.query({
+      const resp = await client.pass.verify_pass.query({
         password: old_password,
         user_id: user
       });
@@ -33,7 +33,7 @@
     } else {
       if (new_password === '') return;
       submit_spinner_show_status = true;
-      const { status } = await client.reset_pass.mutate({
+      const { status } = await client.pass.reset_pass.mutate({
         new_password
       });
       submit_spinner_show_status = false;

@@ -76,7 +76,7 @@
     const to_change = Array.from(to_change_list).map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
     save_spinner_show = true;
-    const { status } = await client.edit_data.mutate({
+    const { status } = await client.data.edit_data.mutate({
       to_verify: Array.from(to_verify_list),
       to_delete: to_delete,
       to_change: to_change
