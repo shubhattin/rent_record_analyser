@@ -136,8 +136,7 @@
       <th scope="col"><strong>Date</strong></th>
       <th scope="col"><strong>Amount</strong></th>
       <th scope="col"><strong>Month</strong></th>
-      <th scope="col"><strong class="small">User</strong></th>
-      <th scope="col"><strong class="small">ID</strong></th>
+      <th scope="col"><strong class="small">Type, User, ID</strong></th>
     </tr>
   </thead>
   <tbody>
@@ -211,12 +210,7 @@
         >
         <td>
           <span class="small">
-            {dt.user_id || 'NA'}
-          </span>
-        </td>
-        <td>
-          <span class="small">
-            {dt.id}
+            🏠, {dt.user_id || 'NA'}, {dt.id}
           </span>
           {#if is_editable_row}
             {@const values_edited =

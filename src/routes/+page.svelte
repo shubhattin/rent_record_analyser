@@ -71,7 +71,9 @@
 
   const [year_list, amount_yr_list] = get_year_list();
 
-  const total = rent_data.reduce((total, item) => total + item.amount, 0);
+  const total =
+    rent_data.reduce((total, item) => total + item.amount, 0) +
+    electricity_data.reduce((total, item) => total + item.amount, 0);
 
   onMount(() => {
     if (import.meta.env.PROD)
@@ -94,7 +96,10 @@
       i_yr === 0 ? 'color: var(--h2-color);' : 'color: var(--h6-color);'
     }`}
   >
-    Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
+    Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr] +
+      electricity_data
+        .filter((item) => item.month.getFullYear() === yr)
+        .reduce((total, item) => total + item.amount, 0)}
   </h5>
   <!-- Monthly -->
   {@const [month_list, amount_mn_list] = get_month_list(yr)}
@@ -102,7 +107,12 @@
     {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
-        {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
+        {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn] +
+          electricity_data
+            .filter(
+              (item) => item.month.getFullYear() === yr && item.month.getUTCMonth() + 1 === mn
+            )
+            .reduce((total, item) => total + item.amount, 0)}
       </summary>
       {#each electricity_data as el}
         {@const el_mn = el.month.getUTCMonth() + 1}
