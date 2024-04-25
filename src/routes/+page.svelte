@@ -111,7 +111,7 @@
         <div>⚡ ₹ {electricity.amount}</div>
       {/if}
       <!-- DateWise -->
-      <table class="table reset_css">
+      <table class="reset_css table">
         {#each date_list as dt, i_dt (dt)}
           {@const date = dt.getUTCDate()}
           <tr>
