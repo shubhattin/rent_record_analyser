@@ -11,22 +11,19 @@ export const load = async () => {
       id: true,
       name: true
     },
-    where: ({ is_admin }, { eq }) => eq(is_admin, true)
+    where: ({ user_type }, { eq }) => eq(user_type, 'admin')
     // only fetching admin details as they are only authorized to make changes
   });
-  const electricity_query = db.query.electricity_bills.findMany();
 
-  const [data, pending_requests, users, electricity_data] = await Promise.all([
+  const [data, pending_requests, users] = await Promise.all([
     data_query,
     pending_requests_query,
-    users_query,
-    electricity_query
+    users_query
   ]);
 
   return {
     rent_data: data,
     verification_requests: pending_requests.map((v) => v.id),
-    users,
-    electricity_data
+    users
   };
 };

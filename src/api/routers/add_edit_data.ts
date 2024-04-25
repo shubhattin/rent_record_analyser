@@ -1,18 +1,14 @@
 import { protectedProcedure, t, protectedAdminProcedure } from '@api/trpc_init';
 import { db } from '@db/db';
 import { z } from 'zod';
-import { electricity_bills, rent_data, verification_requests } from '@db/schema';
-import { eq, inArray } from 'drizzle-orm';
+import { rent_data, verification_requests } from '@db/schema';
+import { eq, inArray, sql } from 'drizzle-orm';
+import { RentDataSchemaZod } from '@db/schema_zod';
 
 export const add_data_router = protectedProcedure
   .input(
     z.object({
-      bill_type: z.union([z.literal('rent'), z.literal('electricity')]),
-      data: z.object({
-        date: z.coerce.date(),
-        month: z.coerce.date(),
-        amount: z.number().int()
-      })
+      data: RentDataSchemaZod.omit({ id: true, user_id: true })
     })
   )
   .output(
@@ -23,51 +19,40 @@ export const add_data_router = protectedProcedure
   .mutation(
     async ({
       input: {
-        data: { month, amount, date },
-        bill_type
+        data: { month, amount, date, rent_type }
       },
       ctx: { user }
     }) => {
-      if (bill_type === 'rent') {
-        const returned_data = await db
-          .insert(rent_data)
-          .values({
-            amount: amount,
-            month: month,
-            date: date,
-            user_id: user.id
-          })
-          .returning();
-
-        const id = returned_data[0].id;
-
-        if (!user.is_admin)
-          await db.insert(verification_requests).values({
-            id: id
-          });
-        return {
-          status: 'success'
-        };
+      if (rent_type === 'electricity') {
+        const el_data = await db.query.rent_data.findFirst({
+          where: (dt, { eq, and, gte, lte }) =>
+            and(gte(dt.month, month), lte(dt.month, month), eq(dt.rent_type, 'electricity'))
+        });
+        if (el_data)
+          return {
+            status: 'already_exists'
+          };
       }
-      // else if (bill_type === 'electricity') {
-      const prev_data = await db.query.electricity_bills.findFirst({
-        where: (dt, { eq }) => eq(dt.month, month)
-      });
-      if (!!prev_data) {
-        return {
-          status: 'already_exists'
-        };
-      }
-      await db.insert(electricity_bills).values({
-        amount: amount,
-        month: month,
-        date: date,
-        user_id: user.id
-      });
+      const returned_data = await db
+        .insert(rent_data)
+        .values({
+          amount: amount,
+          month: month,
+          date: date,
+          rent_type: rent_type,
+          user_id: user.id
+        })
+        .returning();
+
+      const id = returned_data[0].id;
+
+      if (rent_type !== 'electricity' && user.user_type !== 'admin')
+        await db.insert(verification_requests).values({
+          id: id
+        });
       return {
         status: 'success'
       };
-      // }
     }
   );
 
@@ -76,14 +61,7 @@ export const edit_data_router = protectedAdminProcedure
     z.object({
       to_verify: z.array(z.number().int()),
       to_delete: z.number().int().array(),
-      to_change: z
-        .object({
-          id: z.number().int(),
-          date: z.coerce.date(),
-          month: z.coerce.date(),
-          amount: z.number().int()
-        })
-        .array()
+      to_change: RentDataSchemaZod.omit({ rent_type: true, user_id: true }).array()
     })
   )
   .output(

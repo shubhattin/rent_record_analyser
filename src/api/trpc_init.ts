@@ -19,7 +19,8 @@ export const protectedAdminProcedure = protectedProcedure.use(async function isA
   next,
   ctx: { user }
 }) {
-  if (!user.is_admin) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Not a Admin User' });
+  if (user.user_type !== 'admin')
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Not a Admin User' });
   return next({
     ctx: { user }
   });

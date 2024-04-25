@@ -8,6 +8,7 @@ export const load = async () => {
       amount: rent_data.amount,
       date: rent_data.date,
       month: rent_data.month,
+      rent_type: rent_data.rent_type,
       is_not_verified: verification_requests.id
     })
     .from(rent_data)
@@ -16,8 +17,7 @@ export const load = async () => {
   // getting pre sorted data
   // sorting with month first and date then will make it easy for us to display data later on
   // as we won't need to sort in then
-  const electricity_query = db.query.electricity_bills.findMany();
 
-  const [data, electricity_data] = await Promise.all([data_query, electricity_query]);
-  return { rent_data: data, electricity_data };
+  const [data] = await Promise.all([data_query]);
+  return { rent_data: data };
 };

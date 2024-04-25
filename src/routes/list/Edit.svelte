@@ -210,7 +210,8 @@
         >
         <td>
           <span class="small">
-            🏠, {dt.user_id || 'NA'}, {dt.id}
+            {#if dt.rent_type === 'rent'}🏠{:else if dt.rent_type === 'electricity'}⚡{/if}, {dt.user_id ||
+              'NA'}, {dt.id}
           </span>
           {#if is_editable_row}
             {@const values_edited =

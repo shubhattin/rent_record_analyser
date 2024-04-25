@@ -22,15 +22,15 @@
   let errorStatus = false;
   let submitted = false;
   let electric_bill_already_exists_show = false;
-  let bill_type: 'rent' | 'electricity' = 'rent';
+  let rent_type: 'rent' | 'electricity' = 'rent';
 
   const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
     electric_bill_already_exists_show = false;
     const { status } = await client.data.add_data.mutate({
-      bill_type,
       data: {
+        rent_type: rent_type,
         date: get_utc_date(date),
         amount: amount,
         month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
@@ -53,7 +53,7 @@
     <form transition:slide on:submit|preventDefault={submit_data}>
       <label>
         Bill type
-        <select bind:value={bill_type}>
+        <select bind:value={rent_type}>
           <option value="rent" selected>🏠 Rent</option>
           <option value="electricity">⚡ Electricity</option>
         </select>

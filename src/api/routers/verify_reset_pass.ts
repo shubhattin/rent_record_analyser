@@ -31,7 +31,7 @@ export const verify_pass_router = publicProcedure
     const payload = (await db.query.users.findFirst({
       columns: {
         id: true,
-        is_admin: true
+        user_type: true
       },
       where: ({ id }, { eq }) => eq(id, user_id)
     }))!;

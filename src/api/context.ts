@@ -7,7 +7,7 @@ import type { inferAsyncReturnType } from '@trpc/server';
 
 const jwt_payload_schema = UsersSchemaZod.pick({
   id: true,
-  is_admin: true
+  user_type: true
 });
 
 export async function createContext(event: RequestEvent) {

@@ -1,20 +1,15 @@
-import { pgTable, serial, date, varchar, integer, text, boolean, char } from 'drizzle-orm/pg-core';
+import { pgTable, serial, date, varchar, integer, text, char, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+
+export const rentTypeEnum = pgEnum('rent_type', ['rent', 'electricity']);
 
 export const rent_data = pgTable('rent_data', {
   id: serial('id').primaryKey(),
   amount: integer('amount').notNull(),
   date: date('date', { mode: 'date' }).notNull(),
   month: date('month', { mode: 'date' }).notNull(),
-  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' })
-});
-
-export const electricity_bills = pgTable('electricity_bills', {
-  id: serial('id').primaryKey(),
-  amount: integer('amount').notNull(),
-  date: date('date', { mode: 'date' }).notNull(),
-  month: date('month', { mode: 'date' }).unique().notNull(),
-  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' })
+  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
+  rent_type: rentTypeEnum('rent_type').default('rent').notNull()
 });
 
 export const others = pgTable('others', {
@@ -22,11 +17,13 @@ export const others = pgTable('others', {
   value: text('value').notNull()
 });
 
+export const userTypeEnum = pgEnum('user_type', ['admin', 'non-admin']);
+
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 15 }).notNull(),
   password: char('password', { length: 96 }).notNull(), // SHA-256 hash + salt of length 32
-  is_admin: boolean('is_admin').notNull().default(false)
+  user_type: userTypeEnum('user_type').default('non-admin').notNull()
 });
 
 export const verification_requests = pgTable('verification_requests', {
@@ -40,10 +37,6 @@ export const verification_requests = pgTable('verification_requests', {
 export const dataRelation = relations(rent_data, ({ one }) => ({
   user_info: one(users, { fields: [rent_data.user_id], references: [users.id] }),
   verification_requests: one(verification_requests)
-}));
-
-export const electricityDataRelation = relations(electricity_bills, ({ one }) => ({
-  user_info: one(users, { fields: [electricity_bills.user_id], references: [users.id] })
 }));
 
 export const userRelation = relations(users, ({ many }) => ({

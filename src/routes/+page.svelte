@@ -6,10 +6,8 @@
 
   export let data: PageData;
   let rent_data = data.rent_data;
-  let electricity_data = data.electricity_data;
 
   $: rent_data = data.rent_data;
-  $: electricity_data = data.electricity_data;
 
   // all lists are already formatted in
   const get_year_list = () => {
@@ -44,10 +42,11 @@
   const get_date_list = (
     year: number,
     month: number
-  ): [Date[], number[][], PageData['rent_data'][0][][]] => {
+  ): [Date[], number[][], PageData['rent_data'][0][][], PageData['rent_data'][0] | null] => {
     const dates: Date[] = [];
     const amounts: number[][] = [];
     const refs: PageData['rent_data'][0][][] = [];
+    let electricity: PageData['rent_data'][0] | null = null;
     for (let dt of rent_data) {
       if (year !== dt.month.getUTCFullYear()) continue;
       if (month !== dt.month.getUTCMonth() + 1) continue;
@@ -57,23 +56,25 @@
         for (let i = 0; i < dates.length; i++) if (dates[i].toLocaleDateString() === date) return i;
         return -1;
       })();
-      if (index === -1) {
-        dates.push(dt.date);
-        amounts.push([dt.amount]);
-        refs.push([dt]);
-      } else {
-        amounts[index].push(dt.amount);
-        refs[index].push(dt);
+      if (dt.rent_type === 'electricity') {
+        electricity = dt;
+      } else if (dt.rent_type === 'rent') {
+        if (index === -1) {
+          dates.push(dt.date);
+          amounts.push([dt.amount]);
+          refs.push([dt]);
+        } else {
+          amounts[index].push(dt.amount);
+          refs[index].push(dt);
+        }
       }
     }
-    return [dates, amounts, refs];
+    return [dates, amounts, refs, electricity];
   };
 
   const [year_list, amount_yr_list] = get_year_list();
 
-  const total =
-    rent_data.reduce((total, item) => total + item.amount, 0) +
-    electricity_data.reduce((total, item) => total + item.amount, 0);
+  const total = rent_data.reduce((total, item) => total + item.amount, 0);
 
   onMount(() => {
     if (import.meta.env.PROD)
@@ -96,31 +97,19 @@
       i_yr === 0 ? 'color: var(--h2-color);' : 'color: var(--h6-color);'
     }`}
   >
-    Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr] +
-      electricity_data
-        .filter((item) => item.month.getFullYear() === yr)
-        .reduce((total, item) => total + item.amount, 0)}
+    Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
   </h5>
   <!-- Monthly -->
   {@const [month_list, amount_mn_list] = get_month_list(yr)}
   {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
+    {@const [date_list, amount_dt_list, ref_list, electricity] = get_date_list(yr, mn)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
-        {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn] +
-          electricity_data
-            .filter(
-              (item) => item.month.getFullYear() === yr && item.month.getUTCMonth() + 1 === mn
-            )
-            .reduce((total, item) => total + item.amount, 0)}
+        {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
       </summary>
-      {#each electricity_data as el}
-        {@const el_mn = el.month.getUTCMonth() + 1}
-        {@const el_yr = el.month.getUTCFullYear()}
-        {#if yr === el_yr && el_mn === mn}
-          <div>⚡ ₹ {el.amount}</div>
-        {/if}
-      {/each}
+      {#if electricity}
+        <div>⚡ ₹ {electricity.amount}</div>
+      {/if}
       <!-- DateWise -->
       <table class="table reset_css">
         {#each date_list as dt, i_dt (dt)}
