@@ -52,7 +52,7 @@
   {#if !errorStatus && !submitted}
     <form transition:slide on:submit|preventDefault={submit_data}>
       <label>
-        Bill type
+        Rent Type
         <select bind:value={rent_type}>
           <option value="rent" selected>🏠 Rent</option>
           <option value="electricity">⚡ Electricity</option>
