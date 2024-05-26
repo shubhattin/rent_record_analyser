@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
 
   export let data: PageData;
+  export let electricity_page = false;
   let rent_data = data.rent_data;
 
   $: rent_data = data.rent_data;
@@ -42,11 +43,10 @@
   const get_date_list = (
     year: number,
     month: number
-  ): [Date[], number[][], PageData['rent_data'][0][][], PageData['rent_data'][0] | null] => {
+  ): [Date[], number[][], PageData['rent_data'][0][][]] => {
     const dates: Date[] = [];
     const amounts: number[][] = [];
     const refs: PageData['rent_data'][0][][] = [];
-    let electricity: PageData['rent_data'][0] | null = null;
     for (let dt of rent_data) {
       if (year !== dt.month.getUTCFullYear()) continue;
       if (month !== dt.month.getUTCMonth() + 1) continue;
@@ -56,20 +56,16 @@
         for (let i = 0; i < dates.length; i++) if (dates[i].toLocaleDateString() === date) return i;
         return -1;
       })();
-      if (dt.rent_type === 'electricity') {
-        electricity = dt;
-      } else if (dt.rent_type === 'rent') {
-        if (index === -1) {
-          dates.push(dt.date);
-          amounts.push([dt.amount]);
-          refs.push([dt]);
-        } else {
-          amounts[index].push(dt.amount);
-          refs[index].push(dt);
-        }
+      if (index === -1) {
+        dates.push(dt.date);
+        amounts.push([dt.amount]);
+        refs.push([dt]);
+      } else {
+        amounts[index].push(dt.amount);
+        refs[index].push(dt);
       }
     }
-    return [dates, amounts, refs, electricity];
+    return [dates, amounts, refs];
   };
 
   const [year_list, amount_yr_list] = get_year_list();
@@ -102,14 +98,11 @@
   <!-- Monthly -->
   {@const [month_list, amount_mn_list] = get_month_list(yr)}
   {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list, ref_list, electricity] = get_date_list(yr, mn)}
+    {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
     <details open={i_mn === 0 && i_yr === 0}>
       <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
         {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
       </summary>
-      {#if electricity}
-        <div>⚡ ₹ {electricity.amount}</div>
-      {/if}
       <!-- DateWise -->
       <table class="table reset_css">
         {#each date_list as dt, i_dt (dt)}
@@ -137,6 +130,11 @@
 </small>
 
 <div class="links">
+  {#if !electricity_page}
+    <a href="/electricity">⚡</a>
+  {:else}
+    <a href="/">🏚️</a>
+  {/if}
   <a href="/list">✏️</a>
   <a href="/add">➕</a>
 </div>

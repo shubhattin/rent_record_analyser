@@ -2,7 +2,7 @@ import { protectedProcedure, t, protectedAdminProcedure } from '@api/trpc_init';
 import { db } from '@db/db';
 import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
-import { eq, inArray, sql } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { RentDataSchemaZod } from '@db/schema_zod';
 
 export const add_data_router = protectedProcedure
@@ -23,16 +23,6 @@ export const add_data_router = protectedProcedure
       },
       ctx: { user }
     }) => {
-      if (rent_type === 'electricity') {
-        const el_data = await db.query.rent_data.findFirst({
-          where: (dt, { eq, and, gte, lte }) =>
-            and(gte(dt.month, month), lte(dt.month, month), eq(dt.rent_type, 'electricity'))
-        });
-        if (el_data)
-          return {
-            status: 'already_exists'
-          };
-      }
       const returned_data = await db
         .insert(rent_data)
         .values({
