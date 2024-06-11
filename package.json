@@ -38,12 +38,14 @@
     "@trpc/client": "^10.45.1",
     "@trpc/server": "^10.45.1",
     "@types/jsonwebtoken": "^9.0.6",
+    "devalue": "^5.0.0",
     "dotenv": "^16.4.4",
     "drizzle-orm": "^0.29.3",
     "drizzle-zod": "^0.5.1",
     "jsonwebtoken": "^9.0.2",
     "postgres": "^3.4.3",
     "sass": "^1.70.0",
+    "superjson": "^2.2.1",
     "trpc-sveltekit": "^3.5.26",
     "zod": "^3.22.4"
   }

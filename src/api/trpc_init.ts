@@ -1,7 +1,10 @@
 import type { Context } from './context';
 import { TRPCError, initTRPC } from '@trpc/server';
+import transformer from './transformer';
 
-export const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<Context>().create({
+  transformer
+});
 
 export const publicProcedure = t.procedure;
 
