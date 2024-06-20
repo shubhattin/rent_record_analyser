@@ -1,13 +1,23 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Accordion, AccordionItem, AppBar, popup } from '@skeletonlabs/skeleton';
+  import {
+    Accordion,
+    AccordionItem,
+    AppBar,
+    popup,
+    RadioGroup,
+    RadioItem
+  } from '@skeletonlabs/skeleton';
   import { preloadData } from '$app/navigation';
   import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
   import { cl_join } from '@tools/cl_join';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { FiEdit } from 'svelte-icons-pack/fi';
+  import { OiHome16 } from 'svelte-icons-pack/oi';
   import Icon from '@tools/Icon.svelte';
+  import ModeChanger from '@components/ModeChanger.svelte';
+  import Zap from 'lucide-svelte/icons/zap';
 
   export let data: PageData;
   let rent_data = data.rent_data;
@@ -88,6 +98,7 @@
         preloadData('/list');
       }, 2000);
   });
+  let selected_page: 'rent' | 'electricity' = 'rent';
 </script>
 
 <svelte:head>
@@ -97,16 +108,52 @@
 
 <AppBar>
   <svelte:fragment slot="lead">
-    <!-- This will replaced by Radio Gruoup for seperate Electric and rent data after merge of PR -->
-    <span class="text-2xl font-bold">Rent</span>
+    <RadioGroup>
+      <RadioItem
+        bind:group={selected_page}
+        name="rent_page"
+        value="rent"
+        class="fill-white active:fill-black"
+      >
+        <Icon src={OiHome16} class="text-2xl" />
+      </RadioItem>
+      <RadioItem bind:group={selected_page} name="rent_page" value="electricity" class="text-2xl">
+        <Zap />
+      </RadioItem>
+    </RadioGroup>
   </svelte:fragment>
   <svelte:fragment slot="trail">
-    <a class="text-xl" href="/list">
-      <Icon src={FiEdit} class="text-xl" />
+    <a
+      class="text-xl"
+      href="/list"
+      use:popup={{
+        event: 'hover',
+        target: 'edit_popup',
+        placement: 'bottom'
+      }}
+    >
+      <Icon src={FiEdit} class="text-2xl" />
+      <div data-popup="edit_popup" class="variant-ghost-tertiary px-1 text-base">
+        Edit Records
+        <div class="bg-surface-100-800-token arrow" />
+      </div>
     </a>
-    <a class="text-xl" href="/add">
+    <a
+      class="text-xl"
+      href="/add"
+      use:popup={{
+        event: 'hover',
+        target: 'add_popup',
+        placement: 'bottom'
+      }}
+    >
       <Icon src={RiSystemAddLargeLine} class="text-2xl" />
+      <div data-popup="add_popup" class="variant-ghost-tertiary px-1 text-base">
+        Add Record
+        <div class="bg-surface-100-800-token arrow" />
+      </div>
     </a>
+    <ModeChanger />
   </svelte:fragment>
 </AppBar>
 <div class="px-2">
