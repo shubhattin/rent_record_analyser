@@ -17,6 +17,8 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@skeletonlabs/skeleton": "^2.10.1",
+    "@skeletonlabs/tw-plugin": "^0.4.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "autoprefixer": "^10.4.16",
@@ -42,6 +44,7 @@
     "@trpc/client": "^10.45.1",
     "@trpc/server": "^10.45.1",
     "@types/jsonwebtoken": "^9.0.6",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.4",
     "drizzle-orm": "^0.29.3",
     "drizzle-zod": "^0.5.1",
@@ -49,6 +52,7 @@
     "mode-watcher": "^0.3.0",
     "postgres": "^3.4.3",
     "sass": "^1.70.0",
+    "tailwind-merge": "^2.3.0",
     "trpc-sveltekit": "^3.5.26",
     "zod": "^3.22.4"
   }
