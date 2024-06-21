@@ -20,6 +20,7 @@
   import Zap from 'lucide-svelte/icons/zap';
 
   export let data: PageData;
+  export let page_name: 'rent' | 'electricity' = 'rent';
   let rent_data = data.rent_data;
 
   $: rent_data = data.rent_data;
@@ -57,11 +58,10 @@
   const get_date_list = (
     year: number,
     month: number
-  ): [Date[], number[][], PageData['rent_data'][0][][], PageData['rent_data'][0] | null] => {
+  ): [Date[], number[][], PageData['rent_data'][0][][]] => {
     const dates: Date[] = [];
     const amounts: number[][] = [];
     const refs: PageData['rent_data'][0][][] = [];
-    let electricity: PageData['rent_data'][0] | null = null;
     for (let dt of rent_data) {
       if (year !== dt.month.getUTCFullYear()) continue;
       if (month !== dt.month.getUTCMonth() + 1) continue;
@@ -71,20 +71,16 @@
         for (let i = 0; i < dates.length; i++) if (dates[i].toLocaleDateString() === date) return i;
         return -1;
       })();
-      if (dt.rent_type === 'electricity') {
-        electricity = dt;
-      } else if (dt.rent_type === 'rent') {
-        if (index === -1) {
-          dates.push(dt.date);
-          amounts.push([dt.amount]);
-          refs.push([dt]);
-        } else {
-          amounts[index].push(dt.amount);
-          refs[index].push(dt);
-        }
+      if (index === -1) {
+        dates.push(dt.date);
+        amounts.push([dt.amount]);
+        refs.push([dt]);
+      } else {
+        amounts[index].push(dt.amount);
+        refs[index].push(dt);
       }
     }
-    return [dates, amounts, refs, electricity];
+    return [dates, amounts, refs];
   };
 
   const [year_list, amount_yr_list] = get_year_list();
@@ -98,7 +94,6 @@
         preloadData('/list');
       }, 2000);
   });
-  let selected_page: 'rent' | 'electricity' = 'rent';
 </script>
 
 <svelte:head>
@@ -110,14 +105,14 @@
   <svelte:fragment slot="lead">
     <RadioGroup>
       <RadioItem
-        bind:group={selected_page}
+        bind:group={page_name}
         name="rent_page"
         value="rent"
         class="fill-white active:fill-black"
       >
         <Icon src={OiHome16} class="text-2xl" />
       </RadioItem>
-      <RadioItem bind:group={selected_page} name="rent_page" value="electricity" class="text-2xl">
+      <RadioItem bind:group={page_name} name="rent_page" value="electricity" class="text-2xl">
         <Zap />
       </RadioItem>
     </RadioGroup>
