@@ -8,7 +8,7 @@
     RadioGroup,
     RadioItem
   } from '@skeletonlabs/skeleton';
-  import { preloadData } from '$app/navigation';
+  import { goto, preloadData } from '$app/navigation';
   import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
   import { cl_join } from '@tools/cl_join';
@@ -18,6 +18,7 @@
   import Icon from '@tools/Icon.svelte';
   import ModeChanger from '@components/ModeChanger.svelte';
   import Zap from 'lucide-svelte/icons/zap';
+  import { browser } from '$app/environment';
 
   export let data: PageData;
   export let page_name: 'rent' | 'electricity' = 'rent';
@@ -25,6 +26,20 @@
 
   $: rent_data = data.rent_data;
 
+  onMount(() => {
+    if (import.meta.env.PROD)
+      setTimeout(() => {
+        preloadData('/add');
+        preloadData('/list');
+      }, 2000);
+  });
+  $: {
+    if (browser) {
+      const new_url = { rent: '/', electricity: '/electricity' }[page_name];
+      const current_url = window.location.pathname;
+      if (new_url !== current_url) goto(new_url);
+    }
+  }
   // all lists are already formatted in
   const get_year_list = () => {
     const years: number[] = [];
@@ -86,14 +101,6 @@
   const [year_list, amount_yr_list] = get_year_list();
 
   const total = rent_data.reduce((total, item) => total + item.amount, 0);
-
-  onMount(() => {
-    if (import.meta.env.PROD)
-      setTimeout(() => {
-        preloadData('/add');
-        preloadData('/list');
-      }, 2000);
-  });
 </script>
 
 <svelte:head>
