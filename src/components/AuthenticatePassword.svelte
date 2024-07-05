@@ -2,6 +2,7 @@
   import { client, setJwtToken } from '@api/client';
   import { writable, type Writable } from 'svelte/store';
   import Spinner from './Spinner.svelte';
+  import { delay } from '@tools/delay';
 
   export let on_verify: (verified: boolean, jwt_token: string) => void = null!;
   export let is_verified: Writable<boolean>;
@@ -24,6 +25,7 @@
       user_id: user_id,
       password: password
     });
+    // await delay(2000);
     pass_input_spinner_show = false;
     if (!res.verified) password = '';
     else {
@@ -35,10 +37,10 @@
 </script>
 
 {#if show_always || !$is_verified}
-  <form on:submit|preventDefault={check_pass}>
-    <select bind:value={user_id}>
+  <form on:submit|preventDefault={check_pass} class="mt-2 space-y-2.5">
+    <select bind:value={user_id} class="select select-none rounded-xl font-bold">
       {#each users_data as user}
-        <option value={user.id}>
+        <option value={user.id} class="font-semibold">
           {user.id}
           →
           {user.name}
@@ -46,21 +48,26 @@
       {/each}
     </select>
     <input
+      class="input variant-form-material"
       type="password"
       bind:value={password}
       placeholder="गूढपद"
       required
       bind:this={$pass_input_element}
     />
-    <button type="submit">
+    <button
+      type="submit"
+      class="rounded-lg bg-secondary-700 py-2 pr-4 font-semibold text-white dark:text-white"
+    >
       <Spinner show={pass_input_spinner_show} />
       Submit
     </button>
     <div>
-      <a href="/reset_pass">
-        <small>
-          <small>Reset Password</small>
-        </small>
+      <a
+        class="rounded-lg bg-tertiary-700 px-1.5 py-1 text-sm text-white dark:text-white"
+        href="/reset_pass"
+      >
+        Reset Password
       </a>
     </div>
   </form>

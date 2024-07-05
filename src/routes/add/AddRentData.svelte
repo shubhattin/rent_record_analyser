@@ -5,6 +5,9 @@
   import Spinner from '@components/Spinner.svelte';
   import { slide, scale } from 'svelte/transition';
   import { client } from '@api/client';
+  import Icon from '@tools/Icon.svelte';
+  import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
+  import { AiOutlineHome } from 'svelte-icons-pack/ai';
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -19,15 +22,12 @@
   let month = current_month.toString();
   let year = current_year.toString();
   let amount: number;
-  let errorStatus = false;
   let submitted = false;
-  let electric_bill_already_exists_show = false;
   let rent_type: 'rent' | 'electricity' = 'rent';
 
   const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
-    electric_bill_already_exists_show = false;
     const { status } = await client.data.add_data.mutate({
       data: {
         rent_type: rent_type,
@@ -38,7 +38,6 @@
     });
     submit_spinner_show = false;
     if (status === 'success') submitted = true;
-    else if (status === 'already_exists') electric_bill_already_exists_show = true;
   };
   let amount_input_elmt: HTMLInputElement;
 
@@ -47,89 +46,78 @@
   });
 </script>
 
-<section>
-  <h4>Add New Entry</h4>
-  {#if !errorStatus && !submitted}
-    <form transition:slide on:submit|preventDefault={submit_data}>
-      <label>
-        Rent Type
-        <select bind:value={rent_type}>
-          <option value="rent" selected>🏠 Rent</option>
-          <option value="electricity">⚡ Electricity</option>
-        </select>
-      </label>
-      <input type="date" required bind:value={date} />
-      <div class="grid">
-        <label>
-          Month
-          <select bind:value={month}>
-            {#each MONTH_NAMES as mn_nm, i}
-              <option value={`${i + 1}`}>{mn_nm}</option>
-            {/each}
-          </select>
-        </label>
-        <label>
-          Year
-          <select bind:value={year}>
-            <option value={`${current_year - 1}`}>{current_year - 1}</option>
-            <option value={`${current_year}`}>{current_year}</option>
-            <option value={`${current_year + 1}`}>{current_year + 1}</option>
-          </select>
-        </label>
-      </div>
-      <input
-        type="number"
-        placeholder="Amount"
-        required
-        bind:value={amount}
-        bind:this={amount_input_elmt}
-      />
-      {#if electric_bill_already_exists_show}
-        <div>Electricity Bill of the Selected Month Already Exists</div>
-      {/if}
-      <button type="submit">
-        <Spinner show={submit_spinner_show} />
-        Submit
-      </button>
-    </form>
-  {:else if errorStatus}
+{#if !submitted}
+  <form transition:slide on:submit|preventDefault={submit_data} class="space-y-2">
+    <label class="label">
+      <span>Rent Type</span>
+      <select class="select" bind:value={rent_type}>
+        <option value="rent" selected>🏠 Rent</option>
+        <option value="electricity">⚡ Electricity</option>
+      </select>
+    </label>
+    <label class="label">
+      <span>Date</span>
+      <input class="input" type="date" required bind:value={date} />
+    </label>
+    <label class="label">
+      <span>Month</span>
+      <select class="select" bind:value={month}>
+        {#each MONTH_NAMES as mn_nm, i}
+          <option value={`${i + 1}`}>{mn_nm}</option>
+        {/each}
+      </select>
+    </label>
+    <label class="label">
+      <span>Year</span>
+      <select class="select" bind:value={year}>
+        <option value={`${current_year - 1}`}>{current_year - 1}</option>
+        <option value={`${current_year}`}>{current_year}</option>
+        <option value={`${current_year + 1}`}>{current_year + 1}</option>
+      </select>
+    </label>
     <input
-      type="text"
-      readonly
-      aria-invalid="true"
-      value="Cannot Add Record before the Last Date"
+      class="input"
+      type="number"
+      placeholder="Amount"
+      required
+      bind:value={amount}
+      bind:this={amount_input_elmt}
     />
-  {:else if submitted}
-    <div transition:scale>
-      <a href="/">
-        <button style="width:fit-content;">Home Page</button>
-      </a>
-      <div>
-        <strong>
-          Successfully Added Record of ₹ {amount} dated{' '}
-          {normaliseDate(date)}.
-        </strong>
-      </div>
-      <br />
-      <!-- svelte-ignore a11y-missing-attribute -->
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <a
-        style="width:fit-content;"
-        on:click|preventDefault={() => {
-          // resetting this component
-          date = get_todays_date();
-          month = current_month.toString();
-          year = current_year.toString();
-          // @ts-ignore
-          amount = null;
-          errorStatus = false;
-          submitted = false;
-          setTimeout(() => {
-            amount_input_elmt.focus();
-          }, 300);
-        }}>Add More</a
-      >
+    <button
+      type="submit"
+      class="rounded-lg bg-secondary-700 py-2 pr-4 font-semibold text-white dark:text-white"
+    >
+      <Spinner show={submit_spinner_show} />
+      Submit
+    </button>
+  </form>
+{:else if submitted}
+  <div transition:scale class="space-y-1.5">
+    <a href="/" class="rounded-md bg-tertiary-600 p-1 text-white dark:text-white">
+      <Icon class="-mt-1" src={AiOutlineHome} />
+      Home Page
+    </a>
+    <div class="font-semibold">
+      Successfully Added Record of ₹ {amount} dated{' '}
+      {normaliseDate(date)}.
     </div>
-  {/if}
-</section>
+    <button
+      class="rounded-md bg-secondary-600 px-1 text-white dark:text-white"
+      on:click={() => {
+        // resetting this component
+        date = get_todays_date();
+        month = current_month.toString();
+        year = current_year.toString();
+        // @ts-ignore
+        amount = null;
+        submitted = false;
+        setTimeout(() => {
+          amount_input_elmt.focus();
+        }, 300);
+      }}
+    >
+      <Icon class="-my-2" src={RiSystemAddLargeLine} />
+      Add More
+    </button>
+  </div>
+{/if}

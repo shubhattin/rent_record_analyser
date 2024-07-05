@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { IconType } from 'svelte-icons-pack';
+  import { cl_join } from './cl_join';
   export let src: IconType;
   export let title: string | undefined = undefined;
   export let outerClass: string | undefined = undefined;
@@ -18,7 +19,7 @@
     stroke="currentColor"
     fill="currentColor"
     stroke-width="0"
-    class={className}
+    class={cl_join('inline-block', className)}
     {viewBox}
     height="1em"
     width="1em"
