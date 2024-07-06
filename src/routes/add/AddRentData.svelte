@@ -8,6 +8,7 @@
   import Icon from '@tools/Icon.svelte';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
+  import { delay } from '@tools/delay';
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -36,6 +37,7 @@
         month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
       }
     });
+    await delay(500);
     submit_spinner_show = false;
     if (status === 'success') submitted = true;
   };
@@ -85,7 +87,7 @@
     />
     <button
       type="submit"
-      class="rounded-lg bg-secondary-700 py-2 pr-4 font-semibold text-white dark:text-white"
+      class="btn rounded-lg bg-secondary-700 px-3 py-2 font-semibold text-white dark:text-white"
     >
       <Spinner show={submit_spinner_show} />
       Submit
@@ -93,7 +95,7 @@
   </form>
 {:else if submitted}
   <div transition:scale class="space-y-1.5">
-    <a href="/" class="rounded-md bg-tertiary-600 p-1 text-white dark:text-white">
+    <a href="/" class="btn rounded-md bg-tertiary-600 px-1 py-[0.12rem] text-white dark:text-white">
       <Icon class="-mt-1" src={AiOutlineHome} />
       Home Page
     </a>
@@ -102,7 +104,7 @@
       {normaliseDate(date)}.
     </div>
     <button
-      class="rounded-md bg-secondary-600 px-1 text-white dark:text-white"
+      class="btn rounded-md bg-secondary-600 px-1 py-1 text-white dark:text-white"
       on:click={() => {
         // resetting this component
         date = get_todays_date();

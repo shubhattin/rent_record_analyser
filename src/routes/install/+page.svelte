@@ -22,4 +22,10 @@
   <title>Rent App Installer</title>
 </svelte:head>
 
-<button disabled={!event_fired} on:click={install_PWA}>Install</button>
+<div class="my-5 flex justify-center">
+  <button
+    disabled={!event_fired}
+    class="rounded-xl px-2 py-1 text-xl font-bold dark:bg-lime-400 dark:text-amber-900"
+    on:click={install_PWA}>Install</button
+  >
+</div>

@@ -1,13 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import {
-    Accordion,
-    AccordionItem,
-    AppBar,
-    popup,
-    RadioGroup,
-    RadioItem
-  } from '@skeletonlabs/skeleton';
+  import { Accordion, AccordionItem, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
   import { goto, preloadData } from '$app/navigation';
   import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
