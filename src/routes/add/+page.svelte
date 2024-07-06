@@ -15,10 +15,8 @@
 <svelte:head>
   <title>Add Rent Record</title>
 </svelte:head>
-<MainAppBar page_name={'add'}>
-  <h4 slot="start" class="mb-2.5 text-xl font-bold text-indigo-800 dark:text-blue-300">
-    Add New Entry
-  </h4>
+<MainAppBar page_name="add">
+  <h4 slot="start" class="text-xl font-bold text-indigo-800 dark:text-blue-300">Add New Entry</h4>
 </MainAppBar>
 <AuthenticatePassword users_data={users} is_verified={pass_unlocked} />
 {#if $pass_unlocked}

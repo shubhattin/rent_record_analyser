@@ -5,7 +5,8 @@ export const load = async () => {
     columns: {
       id: true,
       name: true
-    }
+    },
+    orderBy: ({ id }, { asc }) => asc(id)
   });
 
   const [users] = await Promise.all([users_query]);

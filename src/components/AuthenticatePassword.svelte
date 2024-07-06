@@ -63,7 +63,7 @@
     />
     <button
       type="submit"
-      class="btn rounded-lg bg-secondary-700 py-2 pr-4 font-semibold text-white dark:text-white"
+      class="btn rounded-lg bg-secondary-700 py-1 pl-0 pr-4 font-semibold text-white dark:text-white"
     >
       <Spinner show={pass_input_spinner_show} />
       Submit

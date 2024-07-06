@@ -5,9 +5,8 @@
   import { BiArrowBack } from 'svelte-icons-pack/bi';
   import ModeChanger from './ModeChanger.svelte';
   import Icon from '@tools/Icon.svelte';
-  import type { page_types } from './page_types';
 
-  export let page_name: page_types;
+  export let page_name: 'rent' | 'electricity' | 'add' | 'edit' | 'reset_pass';
 </script>
 
 <AppBar>
@@ -24,7 +23,7 @@
       >
         <Icon
           src={BiArrowBack}
-          class="-mt-2.5 mr-1 text-2xl hover:fill-red-700 dark:hover:fill-sky-500"
+          class="-mt-1 mr-1 text-2xl hover:fill-red-700 dark:hover:fill-sky-500"
         />
         <div data-popup="home_popup" class="variant-ghost-tertiary px-1 text-base">
           Home Page

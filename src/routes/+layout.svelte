@@ -2,6 +2,7 @@
   import { ModeWatcher } from 'mode-watcher';
   import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
   import { storePopup } from '@skeletonlabs/skeleton';
+  import '@fontsource/roboto/latin.css';
   import '../app.pcss';
 
   // set up the floating UI for popups
