@@ -63,16 +63,13 @@
     />
     <button
       type="submit"
-      class="btn rounded-lg bg-secondary-700 py-1 pl-0 pr-4 font-semibold text-white dark:text-white"
+      class="variant-filled-secondary btn rounded-lg py-1 pl-0 pr-4 font-semibold"
     >
       <Spinner show={pass_input_spinner_show} />
       Submit
     </button>
     <div>
-      <a
-        class="btn rounded-lg bg-tertiary-700 px-1.5 py-1 text-sm text-white dark:text-white"
-        href="/reset_pass"
-      >
+      <a class="py- variant-filled-tertiary btn rounded-lg px-1.5 py-0 text-sm" href="/reset_pass">
         Reset Password
       </a>
     </div>

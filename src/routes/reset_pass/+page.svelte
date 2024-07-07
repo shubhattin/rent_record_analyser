@@ -84,10 +84,7 @@
       disabled={is_old_pass_verified}
     />
     {#if !is_old_pass_verified}
-      <button
-        type="submit"
-        class="btn rounded-lg bg-tertiary-700 py-1 pl-0 pr-1.5 text-white dark:text-white"
-      >
+      <button type="submit" class="variant-filled-tertiary btn rounded-lg py-1 pl-0 pr-1.5">
         <Spinner show={submit_spinner_show_status} />
         Verify Old Password
       </button>
@@ -99,10 +96,7 @@
         placeholder="नवगूढपद"
         required
       />
-      <button
-        type="submit"
-        class="btn bg-secondary-500 py-1 pl-0 pr-1.5 font-semibold text-white dark:text-white"
-      >
+      <button type="submit" class="variant-filled-secondary btn py-1 pl-0 pr-1.5 font-semibold">
         <Spinner show={submit_spinner_show_status} />
         Set New Password
       </button>

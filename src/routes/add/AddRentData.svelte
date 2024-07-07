@@ -9,6 +9,8 @@
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
   import { delay } from '@tools/delay';
+  import { OiHome16 } from 'svelte-icons-pack/oi';
+  import { TiFlashOutline } from 'svelte-icons-pack/ti';
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -50,13 +52,18 @@
 
 {#if !submitted}
   <form transition:slide on:submit|preventDefault={submit_data} class="space-y-2">
-    <label class="label">
-      <span>Rent Type</span>
-      <select class="select" bind:value={rent_type}>
-        <option value="rent" selected>🏠 Rent</option>
-        <option value="electricity">⚡ Electricity</option>
-      </select>
-    </label>
+    <div class="mt-2 space-x-3">
+      <label class="inline-flex items-center space-x-2">
+        <input class="radio rounded-xl" type="radio" bind:group={rent_type} checked value="rent" />
+        <Icon src={OiHome16} class="text-xl" />
+        <span class="mt-1">Rent</span>
+      </label>
+      <label class="inline-flex items-center space-x-2">
+        <input class="radio rounded-xl" type="radio" bind:group={rent_type} value="electricity" />
+        <Icon src={TiFlashOutline} class="text-xl" />
+        <span class="mt-1">Electricity</span>
+      </label>
+    </div>
     <label class="label">
       <span>Date</span>
       <input class="input" type="date" required bind:value={date} />
@@ -85,17 +92,14 @@
       bind:value={amount}
       bind:this={amount_input_elmt}
     />
-    <button
-      type="submit"
-      class="btn rounded-lg bg-secondary-700 px-3 py-2 font-semibold text-white dark:text-white"
-    >
+    <button type="submit" class="variant-filled-secondary btn rounded-lg px-3 py-1.5 font-semibold">
       <Spinner show={submit_spinner_show} />
       Submit
     </button>
   </form>
 {:else if submitted}
   <div transition:scale class="space-y-1.5">
-    <a href="/" class="btn rounded-md bg-tertiary-600 px-1 py-[0.12rem] text-white dark:text-white">
+    <a href="/" class="variant-filled-tertiary btn rounded-md px-1 py-[0.12rem]">
       <Icon class="-mt-1" src={AiOutlineHome} />
       Home Page
     </a>
@@ -104,7 +108,7 @@
       {normaliseDate(date)}.
     </div>
     <button
-      class="btn rounded-md bg-secondary-600 px-1 py-1 text-white dark:text-white"
+      class="variant-filled-secondary btn rounded-md px-1 py-1"
       on:click={() => {
         // resetting this component
         date = get_todays_date();

@@ -110,7 +110,7 @@
       >
         <Icon src={OiHome16} class="text-2xl" />
       </RadioItem>
-      <RadioItem bind:group={page_name} name="rent_page" value="electricity" class="text-2xl">
+      <RadioItem bind:group={page_name} name="rent_page" value="electricity">
         <Zap />
       </RadioItem>
     </RadioGroup>
@@ -144,10 +144,12 @@
                 <td class="px-1 py-0.5 text-start text-sm">
                   {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
                 </td>
-                <td class="px-1 py-0.5 text-start text-sm">
-                  {@html amount_dt_list[i_dt]
-                    .map((v, i) => (ref_list[i_dt][i].is_not_verified ? `<u>₹ ${v}</u>` : `₹ ${v}`))
-                    .join(', ')}
+                <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                  {#each amount_dt_list[i_dt] as amount, i}
+                    <span class:underline={ref_list[i_dt][i].is_not_verified}
+                      >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
+                    >
+                  {/each}
                 </td>
               </tr>
             {/each}

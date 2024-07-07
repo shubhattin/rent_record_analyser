@@ -10,6 +10,6 @@
 </script>
 
 <ModeWatcher />
-<div class="container mx-auto mb-1 px-2">
+<div class="contaiiner mx-auto mb-1 max-w-screen-lg">
   <slot />
 </div>

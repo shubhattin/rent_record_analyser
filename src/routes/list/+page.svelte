@@ -6,6 +6,7 @@
   import type { PageData } from './$types';
   import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
   import { slide } from 'svelte/transition';
+  import MainAppBar from '@components/MainAppBar.svelte';
 
   export let data: PageData;
 
@@ -28,6 +29,8 @@
 <svelte:head>
   <title>Rent Record Editor</title>
 </svelte:head>
+
+<MainAppBar page_name="edit" />
 
 {#if !$editable}
   <Modal modal_open={pass_enterer_status}>
@@ -62,8 +65,9 @@
     </div>
   {/if}
 {/if}
-
-<Edit all_data={data} {editable} />
+<div class="my-8">
+  <Edit all_data={data} {editable} />
+</div>
 
 <style>
   .edit_btn {

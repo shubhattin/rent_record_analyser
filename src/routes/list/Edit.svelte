@@ -7,6 +7,9 @@
   import Spinner from '@components/Spinner.svelte';
   import { client, setJwtToken } from '@api/client';
   import type { PageData } from './$types';
+  import ImageSpan from '@components/ImageSpan.svelte';
+  import HomeIcon from '@components/icons/home.svg';
+  import FlashIcon from '@components/icons/flash.svg';
 
   export let all_data: PageData;
   export let editable: Writable<boolean>;
@@ -130,145 +133,145 @@
     <Spinner show={save_spinner_show} />
   </div>
 {/if}
-<table role="grid">
-  <thead>
-    <tr>
-      <th scope="col"><strong>Date</strong></th>
-      <th scope="col"><strong>Amount</strong></th>
-      <th scope="col"><strong>Month</strong></th>
-      <th scope="col"><strong class="small">Type, User, ID</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each data as dt, i (dt.id)}
-      {@const is_verify_request = verification_request_ids.includes(dt.id)}
-      {@const to_change_status = to_change_list.has(dt.id)}
-      {@const to_delete_status = to_delete_list.has(dt.id)}
-      {@const to_verify_status = to_verify_list.has(dt.id)}
-      {@const clss = to_delete_status
-        ? 'to_delete'
-        : to_change_status
-          ? 'changed'
-          : to_verify_status
-            ? 'to_verify'
-            : ''}
-      {@const is_editable_row = $editable && !is_verify_request}
-      <tr class={clss}>
-        <td
-          contenteditable={is_editable_row}
-          on:input={(e) =>
-            set_val_from_input(e, (val) => {
-              const str_val = z
-                .string()
-                .regex(/^\d{1,2}\/\d{1,2}\/\d{4}$/)
-                .safeParse(val);
-              if (!str_val.success) {
-                // dt.date = clone_date(prev_data[i].date);
-                return;
-              }
-              val = str_val.data;
-              // val is in dd/mm/yyyy to convert to yyyy-mm-dd
-              const vals = val.split('/');
-              val = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`);
-              const parse_val = z.coerce.date().safeParse(val);
-              if (parse_val.success) dt.date = parse_val.data;
-            })}>{get_date_string(dt.date)}</td
-        >
-        <td
-          contenteditable={is_editable_row}
-          on:input={(e) =>
-            set_val_from_input(e, (val) => {
-              const parse_val = z.coerce.number().int().safeParse(val);
-              if (parse_val.success) dt.amount = parse_val.data;
-              // else dt.amount=prev_data[i].amount
-            })}
-        >
-          {#if is_verify_request}
-            <u>
-              {dt.amount}
-            </u>
-          {:else}
-            {dt.amount}
-          {/if}
-        </td>
-        <td
-          contenteditable={is_editable_row}
-          on:input={(e) =>
-            set_val_from_input(e, (val) => {
-              const str_val = z
-                .string()
-                .regex(/^\d{4}-\d{1,2}$/)
-                .safeParse(val);
-              if (!str_val.success) {
-                // dt.month=clone_date(prev_data[i].clo)
-                return;
-              }
-              val = str_val.data;
-              const parse_val = z.coerce.date().safeParse(get_utc_date_string(val + '-1'));
-              if (parse_val.success) dt.month = parse_val.data;
-            })}>{`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}</td
-        >
-        <td>
-          <span class="small">
-            {#if dt.rent_type === 'rent'}🏠{:else if dt.rent_type === 'electricity'}⚡{/if}, {dt.user_id ||
-              'NA'}, {dt.id}
-          </span>
-          {#if is_editable_row}
-            {@const values_edited =
-              get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
-              prev_data[i].amount !== data[i].amount ||
-              get_date_string(prev_data[i].month) !== get_date_string(data[i].month)}
-            {#if !to_delete_status && values_edited}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <span on:click={() => (data[i] = deepCopy(prev_data[i], false))}>🔄</span>
-            {/if}
-            {#if !to_delete_status}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <span
-                on:click={() => {
-                  to_delete_list.add(dt.id);
-                  to_delete_list = to_delete_list;
-                }}>❌</span
-              >
-            {:else}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <span
-                on:click={() => {
-                  to_delete_list.delete(dt.id);
-                  to_delete_list = to_delete_list;
-                }}>✅️</span
-              >
-            {/if}
-          {/if}
-          {#if $editable && is_verify_request}
-            {#if !to_verify_status}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <span
-                on:click={() => {
-                  to_verify_list.add(dt.id);
-                  to_verify_list = to_verify_list;
-                }}>➕</span
-              >
-            {:else}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-no-static-element-interactions -->
-              <span
-                on:click={() => {
-                  to_verify_list.delete(dt.id);
-                  to_verify_list = to_verify_list;
-                }}>❌</span
-              >
-            {/if}
-          {/if}
-        </td>
+<div class="table-container">
+  <table class="table table-hover text-center outline-none">
+    <thead>
+      <tr>
+        <th class="text-center">Date</th>
+        <th class="text-center">Amount</th>
+        <th class="text-center">Month</th>
+        <th class="text-center text-xs">Type, User, ID</th>
       </tr>
-    {/each}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {#each data as dt, i (dt.id)}
+        {@const is_verify_request = verification_request_ids.includes(dt.id)}
+        {@const to_change_status = to_change_list.has(dt.id)}
+        {@const to_delete_status = to_delete_list.has(dt.id)}
+        {@const to_verify_status = to_verify_list.has(dt.id)}
+        {@const clss = to_delete_status
+          ? 'to_delete'
+          : to_change_status
+            ? 'changed'
+            : to_verify_status
+              ? 'to_verify'
+              : ''}
+        {@const is_editable_row = $editable && !is_verify_request}
+        <tr class={clss}>
+          <td
+            contenteditable={is_editable_row}
+            on:input={(e) =>
+              set_val_from_input(e, (val) => {
+                const str_val = z
+                  .string()
+                  .regex(/^\d{1,2}\/\d{1,2}\/\d{4}$/)
+                  .safeParse(val);
+                if (!str_val.success) {
+                  // dt.date = clone_date(prev_data[i].date);
+                  return;
+                }
+                val = str_val.data;
+                // val is in dd/mm/yyyy to convert to yyyy-mm-dd
+                const vals = val.split('/');
+                val = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`);
+                const parse_val = z.coerce.date().safeParse(val);
+                if (parse_val.success) dt.date = parse_val.data;
+              })}>{get_date_string(dt.date)}</td
+          >
+          <td
+            contenteditable={is_editable_row}
+            on:input={(e) =>
+              set_val_from_input(e, (val) => {
+                const parse_val = z.coerce.number().int().safeParse(val);
+                if (parse_val.success) dt.amount = parse_val.data;
+                // else dt.amount=prev_data[i].amount
+              })}
+          >
+            <span class:underline={is_verify_request}>{dt.amount}</span>
+          </td>
+          <td
+            contenteditable={is_editable_row}
+            on:input={(e) =>
+              set_val_from_input(e, (val) => {
+                const str_val = z
+                  .string()
+                  .regex(/^\d{4}-\d{1,2}$/)
+                  .safeParse(val);
+                if (!str_val.success) {
+                  // dt.month=clone_date(prev_data[i].clo)
+                  return;
+                }
+                val = str_val.data;
+                const parse_val = z.coerce.date().safeParse(get_utc_date_string(val + '-1'));
+                if (parse_val.success) dt.month = parse_val.data;
+              })}>{`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}</td
+          >
+          <td>
+            <span class="small inline-flex items-center">
+              {#if dt.rent_type === 'rent'}
+                <ImageSpan
+                  src={HomeIcon}
+                  class="h-4 w-4"
+                />{:else if dt.rent_type === 'electricity'}
+                <ImageSpan src={FlashIcon} class="h-4 w-4" />{/if}, {dt.user_id || 'NA'}, {dt.id}
+            </span>
+            {#if is_editable_row}
+              {@const values_edited =
+                get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
+                prev_data[i].amount !== data[i].amount ||
+                get_date_string(prev_data[i].month) !== get_date_string(data[i].month)}
+              {#if !to_delete_status && values_edited}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <span on:click={() => (data[i] = deepCopy(prev_data[i], false))}>🔄</span>
+              {/if}
+              {#if !to_delete_status}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <span
+                  on:click={() => {
+                    to_delete_list.add(dt.id);
+                    to_delete_list = to_delete_list;
+                  }}>❌</span
+                >
+              {:else}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <span
+                  on:click={() => {
+                    to_delete_list.delete(dt.id);
+                    to_delete_list = to_delete_list;
+                  }}>✅️</span
+                >
+              {/if}
+            {/if}
+            {#if $editable && is_verify_request}
+              {#if !to_verify_status}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <span
+                  on:click={() => {
+                    to_verify_list.add(dt.id);
+                    to_verify_list = to_verify_list;
+                  }}>➕</span
+                >
+              {:else}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
+                <span
+                  on:click={() => {
+                    to_verify_list.delete(dt.id);
+                    to_verify_list = to_verify_list;
+                  }}>❌</span
+                >
+              {/if}
+            {/if}
+          </td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
 
 <style>
   .changed {
@@ -279,18 +282,5 @@
   }
   .to_verify {
     border: 2px dashed lightgreen;
-  }
-  td {
-    outline: none;
-  }
-  td,
-  th {
-    text-align: center;
-  }
-  .small {
-    font-size: 0.55rem;
-  }
-  strong.small {
-    font-size: 0.6rem;
   }
 </style>
