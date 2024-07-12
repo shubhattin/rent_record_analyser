@@ -1,15 +1,36 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { preloadData } from '$app/navigation';
+  import { Accordion, AccordionItem, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
+  import { goto, preloadData } from '$app/navigation';
   import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
+  import { cl_join } from '@tools/cl_join';
+  import { OiHome16 } from 'svelte-icons-pack/oi';
+  import Icon from '@tools/Icon.svelte';
+  import Zap from 'lucide-svelte/icons/zap';
+  import { browser } from '$app/environment';
+  import MainAppBar from '@components/MainAppBar.svelte';
 
   export let data: PageData;
-  export let electricity_page = false;
+  export let page_name: 'rent' | 'electricity' = 'rent';
   let rent_data = data.rent_data;
 
   $: rent_data = data.rent_data;
 
+  onMount(() => {
+    if (import.meta.env.PROD)
+      setTimeout(() => {
+        preloadData('/add');
+        preloadData('/list');
+      }, 2000);
+  });
+  $: {
+    if (browser) {
+      const new_url = { rent: '/', electricity: '/electricity' }[page_name];
+      const current_url = window.location.pathname;
+      if (new_url !== current_url) goto(new_url);
+    }
+  }
   // all lists are already formatted in
   const get_year_list = () => {
     const years: number[] = [];
@@ -71,14 +92,6 @@
   const [year_list, amount_yr_list] = get_year_list();
 
   const total = rent_data.reduce((total, item) => total + item.amount, 0);
-
-  onMount(() => {
-    if (import.meta.env.PROD)
-      setTimeout(() => {
-        preloadData('/add');
-        preloadData('/list');
-      }, 2000);
-  });
 </script>
 
 <svelte:head>
@@ -86,98 +99,70 @@
   <meta name="description" content="A Simple House Rent Record Analyser" />
 </svelte:head>
 
-<!-- Yearly -->
-{#each year_list as yr, i_yr (yr)}
-  <h5
-    style={`margin-bottom: 10px; ${
-      i_yr === 0 ? 'color: var(--h2-color);' : 'color: var(--h6-color);'
-    }`}
-  >
-    Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
-  </h5>
-  <!-- Monthly -->
-  {@const [month_list, amount_mn_list] = get_month_list(yr)}
-  {#each month_list as mn, i_mn (mn)}
-    {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
-    <details open={i_mn === 0 && i_yr === 0}>
-      <summary style={i_mn === 0 && i_yr === 0 ? 'font-weight: bold;' : ''}>
-        {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
-      </summary>
-      <!-- DateWise -->
-      <table class="table reset_css">
-        {#each date_list as dt, i_dt (dt)}
-          {@const date = dt.getUTCDate()}
-          <tr>
-            <td>
-              {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
-            </td>
-            <td>
-              {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
-            </td>
-            <td>
-              {@html amount_dt_list[i_dt]
-                .map((v, i) => (ref_list[i_dt][i].is_not_verified ? `<u>₹ ${v}</u>` : `₹ ${v}`))
-                .join(', ')}
-            </td>
-          </tr>
-        {/each}
-      </table>
-    </details>
+<MainAppBar {page_name}>
+  <svelte:fragment slot="start">
+    <RadioGroup>
+      <RadioItem
+        bind:group={page_name}
+        name="rent_page"
+        value="rent"
+        class="fill-white active:fill-black"
+      >
+        <Icon src={OiHome16} class="text-2xl" />
+      </RadioItem>
+      <RadioItem bind:group={page_name} name="rent_page" value="electricity">
+        <Zap />
+      </RadioItem>
+    </RadioGroup>
+  </svelte:fragment>
+</MainAppBar>
+
+<div>
+  <!-- Yearly -->
+  {#each year_list as yr, i_yr (yr)}
+    <h5 class="h5 mt-3 font-bold">
+      Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
+    </h5>
+    <Accordion class="mt-1">
+      <!-- Monthly -->
+      {@const [month_list, amount_mn_list] = get_month_list(yr)}
+      {#each month_list as mn, i_mn (mn)}
+        <AccordionItem open={i_mn === 0 && i_yr === 0}>
+          <svelte:fragment slot="summary">
+            <span class={cl_join({ 'font-bold': i_mn === 0 && i_yr === 0 })}>
+              {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
+            </span>
+          </svelte:fragment>
+          <!-- DateWise -->
+          <svelte:fragment slot="content">
+            {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
+            <table>
+              {#each date_list as dt, i_dt (dt)}
+                {@const date = dt.getUTCDate()}
+                <tr>
+                  <td class="px-1 py-0.5 text-start text-sm">
+                    {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
+                  </td>
+                  <td class="px-1 py-0.5 text-start text-sm">
+                    {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                  </td>
+                  <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                    {#each amount_dt_list[i_dt] as amount, i}
+                      <span class:underline={ref_list[i_dt][i].is_not_verified}
+                        >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
+                      >
+                    {/each}
+                  </td>
+                </tr>
+              {/each}
+            </table>
+          </svelte:fragment>
+        </AccordionItem>
+      {/each}
+    </Accordion>
   {/each}
-{/each}
-<small>
-  Total = ₹ {total}
-</small>
 
-<div class="links">
-  {#if !electricity_page}
-    <a href="/electricity">⚡</a>
-  {:else}
-    <a href="/">🏚️</a>
-  {/if}
-  <a href="/list">✏️</a>
-  <a href="/add">➕</a>
+  <small>
+    Total = ₹ {total}
+  </small>
 </div>
-
-<style lang="scss">
-  /* retaining the  color even after open */
-  details[open] > summary:not([role]):not(:focus) {
-    color: var(--h4-color);
-  }
-  .links {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    font-size: 1.25rem;
-  }
-  .reset_css {
-    all: unset;
-  }
-  details {
-    margin-bottom: 0.4rem;
-    padding-bottom: 0.5rem;
-
-    summary {
-      margin-bottom: 0.45rem;
-      padding-top: 0.1rem;
-    }
-  }
-  .table {
-    display: table;
-    td {
-      padding-left: 0.25rem;
-      padding-right: 0.25rem;
-      padding-top: 0.1rem;
-      padding-bottom: 0.1rem;
-      text-align: start;
-      font-size: 0.875rem;
-    }
-    tr {
-      display: table-row;
-    }
-
-    td {
-      display: table-cell;
-    }
-  }
-</style>

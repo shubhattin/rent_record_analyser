@@ -11,7 +11,8 @@ export const load = async () => {
       id: true,
       name: true
     },
-    where: ({ user_type }, { eq }) => eq(user_type, 'admin')
+    where: ({ user_type }, { eq }) => eq(user_type, 'admin'),
+    orderBy: ({ id }, { asc }) => asc(id)
     // only fetching admin details as they are only authorized to make changes
   });
 

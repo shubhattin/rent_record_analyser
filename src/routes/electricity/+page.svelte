@@ -5,4 +5,4 @@
   export let data: PageData;
 </script>
 
-<HomePage {data} electricity_page={true} />
+<HomePage {data} page_name="electricity" />
