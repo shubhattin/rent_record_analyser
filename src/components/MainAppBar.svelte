@@ -3,7 +3,7 @@
   import { FiEdit } from 'svelte-icons-pack/fi';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { BiArrowBack } from 'svelte-icons-pack/bi';
-  import ModeChanger from './ModeChanger.svelte';
+  import ThemeChanger from './ThemeChanger.svelte';
   import Icon from '@tools/Icon.svelte';
 
   export let page_name: 'rent' | 'electricity' | 'add' | 'edit' | 'reset_pass';
@@ -76,6 +76,6 @@
         </a>
       {/if}
     </slot>
-    <ModeChanger />
+    <ThemeChanger />
   </svelte:fragment>
 </AppBar>

@@ -16,10 +16,8 @@
   import { TiTick } from 'svelte-icons-pack/ti';
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '@tools/cl_join';
-  import { getModalStore } from '@skeletonlabs/skeleton';
   import { delay } from '@tools/delay';
-
-  const modalStore = getModalStore();
+  import Modal from '@components/Modal.svelte';
 
   export let all_data: PageData;
   export let editable: Writable<boolean>;
@@ -30,6 +28,7 @@
   $: verification_request_ids = all_data.verification_requests;
 
   let save_spinner_show = false;
+  let save_modal_opened = writable(false);
 
   function deepCopy<T>(value: T, is_array: boolean): T {
     const source = value as any;
@@ -116,23 +115,26 @@
       $editable = false;
     }
   };
-
-  function trigger_save_modal() {
-    modalStore.trigger({
-      type: 'confirm',
-      title: 'Are you sure to Save Changes ?',
-      body: `Edits ➔ ${to_change_list.size}, Deletions ➔ ${to_delete_list.size}, Verifications ➔ ${to_verify_list.size}`,
-      buttonTextCancel: '❌ Close',
-      buttonTextConfirm: '✅ Confirm',
-      response: (response: boolean) => response && save_data()
-    });
-  }
 </script>
+
+<Modal
+  modal_open={save_modal_opened}
+  cancel_btn_txt="❌ Close"
+  confirm_btn_txt="✅ Confirm"
+  onConfirm={save_data}
+>
+  <h6>Are you sure to Save Changes ?</h6>
+  <strong>
+    <div>
+      Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
+    </div>
+  </strong>
+</Modal>
 
 {#if $editable}
   <div transition:slide class="mb-5">
     <button
-      on:click={trigger_save_modal}
+      on:click={() => ($save_modal_opened = true)}
       class="variant-filled-secondary btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold"
       disabled={!is_savable}
     >
@@ -292,12 +294,12 @@
 
 <style lang="postcss">
   .changed {
-    @apply ring ring-inset ring-yellow-600 dark:ring-yellow-400;
+    @apply ring ring-inset ring-yellow-500 dark:ring-yellow-400;
   }
   .to_delete {
-    @apply ring ring-inset ring-red-600 dark:ring-red-400;
+    @apply ring ring-inset ring-red-500 dark:ring-red-400;
   }
   .to_verify {
-    @apply ring ring-inset ring-green-600 dark:ring-green-400;
+    @apply ring ring-inset ring-green-500 dark:ring-green-400;
   }
 </style>
