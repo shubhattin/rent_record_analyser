@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "dev:prod": "cross-env DB_MODE=PROD vite dev",
     "build": "vite build",
     "preview": "vite preview",

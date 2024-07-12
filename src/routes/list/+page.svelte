@@ -7,6 +7,8 @@
   import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
   import { slide } from 'svelte/transition';
   import MainAppBar from '@components/MainAppBar.svelte';
+  import { FiEdit3 } from 'svelte-icons-pack/fi';
+  import Icon from '@tools/Icon.svelte';
 
   export let data: PageData;
 
@@ -48,12 +50,9 @@
     />
   </Modal>
   {#if !$pass_enterer_status}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div
+    <button
       transition:slide
-      class="edit_btn"
+      class="fixed bottom-2 right-2 cursor-default text-3xl"
       on:click={() => {
         $pass_enterer_status = true;
         setTimeout(() => {
@@ -61,19 +60,10 @@
         }, 500);
       }}
     >
-      ✏️
-    </div>
+      <Icon src={FiEdit3} class="hover:text-blue-500 active:text-red-500" />
+    </button>
   {/if}
 {/if}
 <div class="my-8">
   <Edit all_data={data} {editable} />
 </div>
-
-<style>
-  .edit_btn {
-    font-size: 1.75rem;
-    position: fixed;
-    right: 0;
-    bottom: 0;
-  }
-</style>

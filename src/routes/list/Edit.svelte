@@ -3,13 +3,23 @@
   import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
-  import Modal from '@components/Modal.svelte';
   import Spinner from '@components/Spinner.svelte';
   import { client, setJwtToken } from '@api/client';
   import type { PageData } from './$types';
   import ImageSpan from '@components/ImageSpan.svelte';
   import HomeIcon from '@components/icons/home.svg';
   import FlashIcon from '@components/icons/flash.svg';
+  import { FiSave } from 'svelte-icons-pack/fi';
+  import Icon from '@tools/Icon.svelte';
+  import { AiOutlineClose } from 'svelte-icons-pack/ai';
+  import { BiReset } from 'svelte-icons-pack/bi';
+  import { TiTick } from 'svelte-icons-pack/ti';
+  import { VscAdd } from 'svelte-icons-pack/vsc';
+  import { cl_join } from '@tools/cl_join';
+  import { getModalStore } from '@skeletonlabs/skeleton';
+  import { delay } from '@tools/delay';
+
+  const modalStore = getModalStore();
 
   export let all_data: PageData;
   export let editable: Writable<boolean>;
@@ -33,7 +43,6 @@
   }
 
   let prev_data = deepCopy(data, true);
-  let save_modal_opened = writable(false);
 
   let to_change_list = new Set<number>();
   let to_delete_list = new Set<number>();
@@ -84,6 +93,7 @@
       to_delete: to_delete,
       to_change: to_change
     });
+    await delay(500);
     save_spinner_show = false;
     if (status === 'success') {
       // trying to do optimistic updates without relying on the sever response of updated data
@@ -106,29 +116,28 @@
       $editable = false;
     }
   };
+
+  function trigger_save_modal() {
+    modalStore.trigger({
+      type: 'confirm',
+      title: 'Are you sure to Save Changes ?',
+      body: `Edits ➔ ${to_change_list.size}, Deletions ➔ ${to_delete_list.size}, Verifications ➔ ${to_verify_list.size}`,
+      buttonTextCancel: '❌ Close',
+      buttonTextConfirm: '✅ Confirm',
+      response: (response: boolean) => response && save_data()
+    });
+  }
 </script>
 
-<Modal
-  modal_open={save_modal_opened}
-  cancel_btn_txt="❌ Close"
-  confirm_btn_txt="✅ Confirm"
-  onConfirm={save_data}
->
-  <h6>Are you sure to Save Changes ?</h6>
-  <strong>
-    <div>
-      Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
-    </div>
-  </strong>
-</Modal>
 {#if $editable}
-  <div transition:slide>
+  <div transition:slide class="mb-5">
     <button
-      on:click={() => ($save_modal_opened = true)}
-      style="width:fit-content; display:inline-block; margin-left:2px;"
+      on:click={trigger_save_modal}
+      class="variant-filled-secondary btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold"
       disabled={!is_savable}
     >
-      💾 Save
+      <Icon src={FiSave} class="-mt-1 mr-1" />
+      Save
     </button>
     <Spinner show={save_spinner_show} />
   </div>
@@ -157,7 +166,7 @@
               ? 'to_verify'
               : ''}
         {@const is_editable_row = $editable && !is_verify_request}
-        <tr class={clss}>
+        <tr class={cl_join(clss)}>
           <td
             contenteditable={is_editable_row}
             on:input={(e) =>
@@ -221,48 +230,56 @@
                 prev_data[i].amount !== data[i].amount ||
                 get_date_string(prev_data[i].month) !== get_date_string(data[i].month)}
               {#if !to_delete_status && values_edited}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <span on:click={() => (data[i] = deepCopy(prev_data[i], false))}>🔄</span>
+                <button on:click={() => (data[i] = deepCopy(prev_data[i], false))}
+                  ><Icon src={BiReset} class="-mt-2 text-xl hover:fill-amber-600" /></button
+                >
               {/if}
               {#if !to_delete_status}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <span
+                <button
                   on:click={() => {
                     to_delete_list.add(dt.id);
                     to_delete_list = to_delete_list;
-                  }}>❌</span
+                  }}
+                  ><Icon
+                    src={AiOutlineClose}
+                    class="-mt-2 fill-[red] text-xl hover:fill-red-400"
+                  /></button
                 >
               {:else}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <span
+                <button
                   on:click={() => {
                     to_delete_list.delete(dt.id);
                     to_delete_list = to_delete_list;
-                  }}>✅️</span
+                  }}
+                  ><Icon
+                    src={TiTick}
+                    class="-mt-2 fill-green-600 text-xl hover:fill-green-500 dark:fill-green-400 dark:hover:fill-green-500"
+                  /></button
                 >
               {/if}
             {/if}
             {#if $editable && is_verify_request}
               {#if !to_verify_status}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <span
+                <button
                   on:click={() => {
                     to_verify_list.add(dt.id);
                     to_verify_list = to_verify_list;
-                  }}>➕</span
+                  }}
+                  ><Icon
+                    src={VscAdd}
+                    class="-mt-2 fill-blue-600 text-xl hover:fill-sky-500 dark:fill-sky-500 dark:hover:fill-sky-300"
+                  /></button
                 >
               {:else}
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <span
+                <button
                   on:click={() => {
                     to_verify_list.delete(dt.id);
                     to_verify_list = to_verify_list;
-                  }}>❌</span
+                  }}
+                  ><Icon
+                    src={AiOutlineClose}
+                    class="-mt-2 fill-[red] text-xl hover:fill-red-400"
+                  /></button
                 >
               {/if}
             {/if}
@@ -273,14 +290,14 @@
   </table>
 </div>
 
-<style>
+<style lang="postcss">
   .changed {
-    border: 2px dashed yellow;
+    @apply ring ring-inset ring-yellow-600 dark:ring-yellow-400;
   }
   .to_delete {
-    border: 2px dashed #ff0000;
+    @apply ring ring-inset ring-red-600 dark:ring-red-400;
   }
   .to_verify {
-    border: 2px dashed lightgreen;
+    @apply ring ring-inset ring-green-600 dark:ring-green-400;
   }
 </style>

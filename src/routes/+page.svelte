@@ -116,50 +116,53 @@
     </RadioGroup>
   </svelte:fragment>
 </MainAppBar>
-<!-- Yearly -->
-{#each year_list as yr, i_yr (yr)}
-  <h5 class="h5 mt-3 font-bold">
-    Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
-  </h5>
-  <Accordion class="mt-1">
-    <!-- Monthly -->
-    {@const [month_list, amount_mn_list] = get_month_list(yr)}
-    {#each month_list as mn, i_mn (mn)}
-      <AccordionItem open={i_mn === 0 && i_yr === 0}>
-        <svelte:fragment slot="summary">
-          <span class={cl_join({ 'font-bold': i_mn === 0 && i_yr === 0 })}>
-            {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
-          </span>
-        </svelte:fragment>
-        <!-- DateWise -->
-        <svelte:fragment slot="content">
-          {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
-          <table>
-            {#each date_list as dt, i_dt (dt)}
-              {@const date = dt.getUTCDate()}
-              <tr>
-                <td class="px-1 py-0.5 text-start text-sm">
-                  {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
-                </td>
-                <td class="px-1 py-0.5 text-start text-sm">
-                  {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
-                </td>
-                <td class="space-x-1 px-1 py-0.5 text-start text-sm">
-                  {#each amount_dt_list[i_dt] as amount, i}
-                    <span class:underline={ref_list[i_dt][i].is_not_verified}
-                      >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
-                    >
-                  {/each}
-                </td>
-              </tr>
-            {/each}
-          </table>
-        </svelte:fragment>
-      </AccordionItem>
-    {/each}
-  </Accordion>
-{/each}
 
-<small>
-  Total = ₹ {total}
-</small>
+<div>
+  <!-- Yearly -->
+  {#each year_list as yr, i_yr (yr)}
+    <h5 class="h5 mt-3 font-bold">
+      Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
+    </h5>
+    <Accordion class="mt-1">
+      <!-- Monthly -->
+      {@const [month_list, amount_mn_list] = get_month_list(yr)}
+      {#each month_list as mn, i_mn (mn)}
+        <AccordionItem open={i_mn === 0 && i_yr === 0}>
+          <svelte:fragment slot="summary">
+            <span class={cl_join({ 'font-bold': i_mn === 0 && i_yr === 0 })}>
+              {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
+            </span>
+          </svelte:fragment>
+          <!-- DateWise -->
+          <svelte:fragment slot="content">
+            {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
+            <table>
+              {#each date_list as dt, i_dt (dt)}
+                {@const date = dt.getUTCDate()}
+                <tr>
+                  <td class="px-1 py-0.5 text-start text-sm">
+                    {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
+                  </td>
+                  <td class="px-1 py-0.5 text-start text-sm">
+                    {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                  </td>
+                  <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                    {#each amount_dt_list[i_dt] as amount, i}
+                      <span class:underline={ref_list[i_dt][i].is_not_verified}
+                        >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
+                      >
+                    {/each}
+                  </td>
+                </tr>
+              {/each}
+            </table>
+          </svelte:fragment>
+        </AccordionItem>
+      {/each}
+    </Accordion>
+  {/each}
+
+  <small>
+    Total = ₹ {total}
+  </small>
+</div>
