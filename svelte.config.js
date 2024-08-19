@@ -8,7 +8,9 @@ const config = {
   preprocess: [vitePreprocess({})],
 
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      runtime: 'edge'
+    }),
     alias: {
       '@tools/*': 'src/tools/*',
       '@components/*': 'src/components/*',
