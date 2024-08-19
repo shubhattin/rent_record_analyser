@@ -5,7 +5,9 @@ import { eq } from 'drizzle-orm';
 import { db } from '@db/db';
 import { z } from 'zod';
 import { JWT_SECRET } from '@tools/jwt';
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
+
+const JWT_EXPIRATION_TIME = '10min';
 
 const get_pass_verify_status = async (user_id: number, password: string) => {
   const query = await db.query.users.findFirst({
@@ -35,7 +37,14 @@ export const verify_pass_router = publicProcedure
       },
       where: ({ id }, { eq }) => eq(id, user_id)
     }))!;
-    const jwt_token = jwt.sign(payload, JWT_SECRET, { expiresIn: '5min' });
+    // const jwt_token = jwt.sign(payload, JWT_SECRET, { expiresIn: '5min' });
+    const jwt_token = await new SignJWT(payload)
+      .setProtectedHeader({
+        alg: 'HS256'
+      })
+      .setIssuedAt()
+      .setExpirationTime(JWT_EXPIRATION_TIME)
+      .sign(JWT_SECRET);
     return { verified, jwt_token };
   });
 
