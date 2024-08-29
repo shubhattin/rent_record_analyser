@@ -16,7 +16,6 @@
   import { TiTick } from 'svelte-icons-pack/ti';
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '@tools/cl_join';
-  import { delay } from '@tools/delay';
   import Modal from '@components/Modal.svelte';
 
   export let all_data: PageData;
@@ -27,7 +26,6 @@
   $: data = all_data.rent_data;
   $: verification_request_ids = all_data.verification_requests;
 
-  let save_spinner_show = false;
   let save_modal_opened = writable(false);
 
   function deepCopy<T>(value: T, is_array: boolean): T {
@@ -82,38 +80,42 @@
 
   $: is_savable = to_delete_list.size + to_change_list.size + to_verify_list.size !== 0;
 
-  const save_data = async () => {
+  const edit_data = client.data.edit_data.mutation();
+
+  const save_data_func = async () => {
     if (!is_savable) return;
     const to_change = Array.from(to_change_list).map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
-    save_spinner_show = true;
-    const { status } = await client.data.edit_data.mutate({
-      to_verify: Array.from(to_verify_list),
-      to_delete: to_delete,
-      to_change: to_change
-    });
-    await delay(500);
-    save_spinner_show = false;
-    if (status === 'success') {
-      // trying to do optimistic updates without relying on the sever response of updated data
-      let new_data = deepCopy(data, true);
-      for (let dt of to_change) {
-        const index = get_key_index_in_data(dt.id, new_data);
-        new_data[index] = deepCopy(dt, false);
-      }
-      new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
-      new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
-      verification_request_ids = verification_request_ids.filter((v) => !to_verify_list.has(v));
+    const to_verify = Array.from(to_verify_list);
+    $edit_data.mutate(
+      { to_change, to_delete, to_verify },
+      {
+        onSuccess: (_data) => {
+          if (_data.status === 'success') {
+            // trying to do optimistic updates without relying on the sever response of updated data
+            let new_data = deepCopy(data, true);
+            for (let dt of to_change) {
+              const index = get_key_index_in_data(dt.id, new_data);
+              new_data[index] = deepCopy(dt, false);
+            }
+            new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
+            new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
+            verification_request_ids = verification_request_ids.filter(
+              (v) => !to_verify_list.has(v)
+            );
 
-      // resetting values
-      data = deepCopy(new_data, true);
-      prev_data = deepCopy(data, true);
-      to_change_list = new Set<number>();
-      to_delete_list = new Set<number>();
-      to_verify_list = new Set<number>();
-      setJwtToken('');
-      $editable = false;
-    }
+            // resetting values
+            data = deepCopy(new_data, true);
+            prev_data = deepCopy(data, true);
+            to_change_list = new Set<number>();
+            to_delete_list = new Set<number>();
+            to_verify_list = new Set<number>();
+            setJwtToken('');
+            $editable = false;
+          }
+        }
+      }
+    );
   };
 </script>
 
@@ -121,7 +123,7 @@
   modal_open={save_modal_opened}
   cancel_btn_txt="❌ Close"
   confirm_btn_txt="✅ Confirm"
-  onConfirm={save_data}
+  onConfirm={save_data_func}
 >
   <h6>Are you sure to Save Changes ?</h6>
   <strong>
@@ -141,7 +143,7 @@
       <Icon src={FiSave} class="-mt-1 mr-1" />
       Save
     </button>
-    <Spinner show={save_spinner_show} />
+    <Spinner show={$edit_data.isPending} />
   </div>
 {/if}
 <div class="table-container">

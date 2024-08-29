@@ -6,6 +6,7 @@ import { db } from '@db/db';
 import { z } from 'zod';
 import { JWT_SECRET } from '@tools/jwt';
 import { SignJWT } from 'jose';
+import { delay } from '@tools/delay';
 
 const JWT_EXPIRATION_TIME = '10min';
 
@@ -27,7 +28,8 @@ export const verify_pass_router = publicProcedure
       .object({ verified: z.literal(false) })
       .or(z.object({ verified: z.literal(true), jwt_token: z.string() }))
   )
-  .query(async ({ input: { password, user_id } }) => {
+  .mutation(async ({ input: { password, user_id } }) => {
+    await delay(500);
     const verified = await get_pass_verify_status(user_id, password);
     if (!verified) return { verified };
     const payload = (await db.query.users.findFirst({

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
 import { eq, inArray } from 'drizzle-orm';
 import { RentDataSchemaZod } from '@db/schema_zod';
+import { delay } from '@tools/delay';
 
 export const add_data_router = protectedProcedure
   .input(
@@ -23,6 +24,7 @@ export const add_data_router = protectedProcedure
       },
       ctx: { user }
     }) => {
+      await delay(500);
       const returned_data = await db
         .insert(rent_data)
         .values({
@@ -60,6 +62,7 @@ export const edit_data_router = protectedAdminProcedure
     })
   )
   .mutation(async ({ input, ctx: { user } }) => {
+    await delay(500);
     const { to_change, to_delete, to_verify } = input;
     const operations: Promise<any>[] = [];
 

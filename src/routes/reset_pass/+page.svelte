@@ -4,7 +4,6 @@
   import { client, setJwtToken } from '@api/client';
   import { get_val_with_key } from '@tools/kry';
   import MainAppBar from '@components/MainAppBar.svelte';
-  import { delay } from '@tools/delay';
   import { cl_join } from '@tools/cl_join';
 
   export let data: PageData;
@@ -15,39 +14,34 @@
   let old_password: string;
   let new_password: string;
 
-  let is_old_pass_verified = false;
   let wrong_pass_status = false;
   $: wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 800);
-  let pass_reset_status = false;
-  let submit_spinner_show_status = false;
 
-  const handle_sumbit = async () => {
-    if (!is_old_pass_verified) {
-      if (old_password === '') return;
-      submit_spinner_show_status = true;
-      const resp = await client.pass.verify_pass.query({
-        password: old_password,
-        user_id: user
-      });
-      await delay(500);
-      submit_spinner_show_status = false;
-      if (!resp.verified) {
+  const verify_pass = client.pass.verify_pass.mutation({
+    onSuccess: (data) => {
+      if (data.verified) {
+        setJwtToken(data.jwt_token);
+      } else {
         old_password = '';
         wrong_pass_status = true;
-      } else {
-        setJwtToken(resp.jwt_token);
-        is_old_pass_verified = true;
       }
+    }
+  });
+  $: is_old_pass_verified = $verify_pass.isSuccess && $verify_pass.data.verified;
+
+  const reset_pass = client.pass.reset_pass.mutation({
+    onSuccess: (data) => {
+      if (data.status !== 'success') new_password = '';
+    }
+  });
+
+  const handle_sumbit_func = async () => {
+    if (!is_old_pass_verified) {
+      if (old_password === '') return;
+      $verify_pass.mutate({ password: old_password, user_id: user });
     } else {
       if (new_password === '') return;
-      submit_spinner_show_status = true;
-      const { status } = await client.pass.reset_pass.mutate({
-        new_password
-      });
-      await delay(500);
-      submit_spinner_show_status = false;
-      if (status !== 'success') new_password = '';
-      else pass_reset_status = true;
+      $reset_pass.mutate({ new_password });
     }
   };
 </script>
@@ -60,8 +54,8 @@
     Reset Password
   </span>
 </MainAppBar>
-{#if !pass_reset_status}
-  <form on:submit|preventDefault={handle_sumbit} class="space-y-3">
+{#if !($reset_pass.isSuccess && $reset_pass.data.status === 'success')}
+  <form on:submit|preventDefault={handle_sumbit_func} class="space-y-3">
     <select class="select" bind:value={user} disabled={is_old_pass_verified}>
       {#each users as user}
         <option value={user.id}>
@@ -85,7 +79,7 @@
     />
     {#if !is_old_pass_verified}
       <button type="submit" class="variant-filled-tertiary btn rounded-lg py-1 pl-0 pr-1.5">
-        <Spinner show={submit_spinner_show_status} />
+        <Spinner show={$verify_pass.isPending} />
         Verify Old Password
       </button>
     {:else}
@@ -97,7 +91,7 @@
         required
       />
       <button type="submit" class="variant-filled-secondary btn py-1 pl-0 pr-1.5 font-semibold">
-        <Spinner show={submit_spinner_show_status} />
+        <Spinner show={$reset_pass.isPending} />
         Set New Password
       </button>
     {/if}
