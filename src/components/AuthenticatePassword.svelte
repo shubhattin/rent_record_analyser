@@ -4,6 +4,7 @@
   import Spinner from './Spinner.svelte';
   import { cl_join } from '@tools/cl_join';
 
+  export let show_always = false;
   export let on_verify: (verified: boolean, jwt_token: string) => void = null!;
   export let is_verified: Writable<boolean>;
   export let pass_input_element: Writable<HTMLInputElement> = writable(null!);
@@ -38,7 +39,7 @@
   };
 </script>
 
-{#if !$is_verified}
+{#if show_always || !$is_verified}
   <div class="font-bold text-orange-600 dark:text-yellow-500">Authentication</div>
   <form on:submit|preventDefault={check_pass_func} class="mt-2 space-y-2.5">
     <select bind:value={user_id} class="select select-none rounded-xl font-bold">

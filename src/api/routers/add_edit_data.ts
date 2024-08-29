@@ -62,6 +62,7 @@ export const edit_data_router = protectedAdminProcedure
     })
   )
   .mutation(async ({ input, ctx: { user } }) => {
+    await delay(500);
     const { to_change, to_delete, to_verify } = input;
     const operations: Promise<any>[] = [];
 
