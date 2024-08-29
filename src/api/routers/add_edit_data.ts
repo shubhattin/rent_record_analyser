@@ -24,6 +24,7 @@ export const add_data_router = protectedProcedure
       },
       ctx: { user }
     }) => {
+      await delay(500);
       const returned_data = await db
         .insert(rent_data)
         .values({
@@ -41,7 +42,6 @@ export const add_data_router = protectedProcedure
         await db.insert(verification_requests).values({
           id: id
         });
-      await delay(500);
       return {
         status: 'success'
       };
