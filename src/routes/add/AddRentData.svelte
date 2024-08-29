@@ -4,7 +4,7 @@
   import { onMount } from 'svelte';
   import Spinner from '@components/Spinner.svelte';
   import { slide, scale } from 'svelte/transition';
-  import { client } from '@api/client';
+  import { client_raw } from '@api/client';
   import Icon from '@tools/Icon.svelte';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
@@ -31,7 +31,7 @@
   const submit_data = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     submit_spinner_show = true;
-    const { status } = await client.data.add_data.mutate({
+    const { status } = await client_raw.data.add_data.mutate({
       data: {
         rent_type: rent_type,
         date: get_utc_date(date),

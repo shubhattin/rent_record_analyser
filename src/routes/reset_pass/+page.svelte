@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from '@components/Spinner.svelte';
   import type { PageData } from './$types';
-  import { client, setJwtToken } from '@api/client';
+  import { client_raw, setJwtToken } from '@api/client';
   import { get_val_with_key } from '@tools/kry';
   import MainAppBar from '@components/MainAppBar.svelte';
   import { delay } from '@tools/delay';
@@ -25,7 +25,7 @@
     if (!is_old_pass_verified) {
       if (old_password === '') return;
       submit_spinner_show_status = true;
-      const resp = await client.pass.verify_pass.query({
+      const resp = await client_raw.pass.verify_pass.query({
         password: old_password,
         user_id: user
       });
@@ -41,7 +41,7 @@
     } else {
       if (new_password === '') return;
       submit_spinner_show_status = true;
-      const { status } = await client.pass.reset_pass.mutate({
+      const { status } = await client_raw.pass.reset_pass.mutate({
         new_password
       });
       await delay(500);

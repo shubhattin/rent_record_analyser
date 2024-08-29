@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { client, setJwtToken } from '@api/client';
+  import { client_raw, setJwtToken } from '@api/client';
   import { writable, type Writable } from 'svelte/store';
   import Spinner from './Spinner.svelte';
   import { delay } from '@tools/delay';
@@ -24,7 +24,7 @@
   const check_pass = async () => {
     if (password === '') return;
     pass_input_spinner_show = true;
-    const res = await client.pass.verify_pass.query({
+    const res = await client_raw.pass.verify_pass.query({
       user_id: user_id,
       password: password
     });

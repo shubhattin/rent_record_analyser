@@ -4,7 +4,7 @@
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
   import Spinner from '@components/Spinner.svelte';
-  import { client, setJwtToken } from '@api/client';
+  import { client_raw, setJwtToken } from '@api/client';
   import type { PageData } from './$types';
   import ImageSpan from '@components/ImageSpan.svelte';
   import HomeIcon from '@components/icons/home.svg';
@@ -87,7 +87,7 @@
     const to_change = Array.from(to_change_list).map((id) => data[get_key_index_in_data(id)]);
     const to_delete = Array.from(to_delete_list);
     save_spinner_show = true;
-    const { status } = await client.data.edit_data.mutate({
+    const { status } = await client_raw.data.edit_data.mutate({
       to_verify: Array.from(to_verify_list),
       to_delete: to_delete,
       to_change: to_change
