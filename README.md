@@ -1,6 +1,6 @@
 ### A Simple Rent Record Analyser.
 
-Made Using _[SvelteKit](https://kit.svelte.dev/)_ and [TailwindCSS](https://tailwindcss.com/) along with [Skeleton UI](https://www.skeleton.dev/) for design. Also using [tRPC](https://trpc.io/) for API endpoints with [Tanstack query for Svelte](https://tanstack.com/query/latest) for better async state management.
+Made Using _[SvelteKit](https://kit.svelte.dev/)_ and [TailwindCSS](https://tailwindcss.com/) along with [Skeleton UI](https://www.skeleton.dev/) for design. Also using [tRPC](https://trpc.io/) for API endpoints with [Tanstack Query for Svelte](https://tanstack.com/query/latest) for better async state management.
 
 Using [PostgreSQL](https://www.postgresql.org/) hosted at [Neon](https://neon.tech/) as database, previously was using [Deta Base](https://deta.space/developers) untill [this commit](https://github.com/shubhattin/rent_record_analyser/tree/249bd7eb68a30d04d433be0e690823a21eae3b8f).
 
