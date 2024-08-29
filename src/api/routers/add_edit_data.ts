@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { rent_data, verification_requests } from '@db/schema';
 import { eq, inArray } from 'drizzle-orm';
 import { RentDataSchemaZod } from '@db/schema_zod';
+import { delay } from '@tools/delay';
 
 export const add_data_router = protectedProcedure
   .input(
@@ -40,6 +41,7 @@ export const add_data_router = protectedProcedure
         await db.insert(verification_requests).values({
           id: id
         });
+      await delay(500);
       return {
         status: 'success'
       };
