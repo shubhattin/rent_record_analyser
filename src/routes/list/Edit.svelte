@@ -296,12 +296,12 @@
 
 <style lang="postcss">
   .changed {
-    @apply ring ring-inset ring-yellow-500 dark:ring-yellow-400;
+    @apply ring ring-inset ring-yellow-500;
   }
   .to_delete {
-    @apply ring ring-inset ring-red-500 dark:ring-red-400;
+    @apply ring ring-inset ring-red-500;
   }
   .to_verify {
-    @apply ring ring-inset ring-green-500 dark:ring-green-400;
+    @apply ring ring-inset ring-green-500;
   }
 </style>

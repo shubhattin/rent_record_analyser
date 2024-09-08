@@ -27,7 +27,7 @@
         />
         <div data-popup="home_popup" class="variant-ghost-tertiary px-1 text-base">
           Home Page
-          <div class="bg-surface-100-800-token arrow" />
+          <div class="bg-surface-100-800-token arrow"></div>
         </div>
       </a>
     {/if}
@@ -54,7 +54,7 @@
           />
           <div data-popup="add_popup" class="variant-ghost-tertiary px-1 text-base">
             Add Record
-            <div class="bg-surface-100-800-token arrow" />
+            <div class="bg-surface-100-800-token arrow"></div>
           </div>
         </a>
       {/if}
@@ -71,7 +71,7 @@
           <Icon src={FiEdit} class="text-2xl hover:text-zinc-400 active:text-blue-600" />
           <div data-popup="edit_popup" class="variant-ghost-tertiary px-1 text-base">
             Edit Records
-            <div class="bg-surface-100-800-token arrow" />
+            <div class="bg-surface-100-800-token arrow"></div>
           </div>
         </a>
       {/if}

@@ -16,5 +16,5 @@
       show ? 'opacity-100' : 'opacity-0',
       className
     )}
-  />
+  ></span>
 {/if}

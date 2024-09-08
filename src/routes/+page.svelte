@@ -137,24 +137,26 @@
           <svelte:fragment slot="content">
             {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
             <table>
-              {#each date_list as dt, i_dt (dt)}
-                {@const date = dt.getUTCDate()}
-                <tr>
-                  <td class="px-1 py-0.5 text-start text-sm">
-                    {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
-                  </td>
-                  <td class="px-1 py-0.5 text-start text-sm">
-                    {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
-                  </td>
-                  <td class="space-x-1 px-1 py-0.5 text-start text-sm">
-                    {#each amount_dt_list[i_dt] as amount, i}
-                      <span class:underline={ref_list[i_dt][i].is_not_verified}
-                        >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
-                      >
-                    {/each}
-                  </td>
-                </tr>
-              {/each}
+              <tbody>
+                {#each date_list as dt, i_dt (dt)}
+                  {@const date = dt.getUTCDate()}
+                  <tr>
+                    <td class="px-1 py-0.5 text-start text-sm">
+                      {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
+                    </td>
+                    <td class="px-1 py-0.5 text-start text-sm">
+                      {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                    </td>
+                    <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                      {#each amount_dt_list[i_dt] as amount, i}
+                        <span class:underline={ref_list[i_dt][i].is_not_verified}
+                          >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
+                        >
+                      {/each}
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
             </table>
           </svelte:fragment>
         </AccordionItem>
