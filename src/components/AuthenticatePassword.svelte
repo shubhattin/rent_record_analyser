@@ -41,7 +41,7 @@
 
 {#if show_always || !$is_verified}
   <div class="font-bold text-orange-600 dark:text-yellow-500">Authentication</div>
-  <form on:submit|preventDefault={check_pass_func} class="mt-2 space-y-2.5">
+  <form onsubmit={check_pass_func} class="mt-2 space-y-2.5">
     <select bind:value={user_id} class="select select-none rounded-xl font-bold">
       {#each users_data as user}
         <option value={user.id} class="font-semibold">

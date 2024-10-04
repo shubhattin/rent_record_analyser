@@ -54,9 +54,9 @@
   <title>Reset Password</title>
 </svelte:head>
 <MainAppBar page_name="reset_pass">
-  <span slot="start" class="text-lg font-bold text-cyan-800 dark:text-indigo-400">
-    Reset Password
-  </span>
+  {#snippet start()}
+    <h4 class="text-xl font-bold text-indigo-800 dark:text-blue-300">Reset Password</h4>
+  {/snippet}
 </MainAppBar>
 {#if !($reset_pass.isSuccess && $reset_pass.data.status === 'success')}
   <form onsubmit={handle_sumbit_func} class="space-y-3">

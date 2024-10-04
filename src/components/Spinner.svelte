@@ -1,10 +1,11 @@
 <script lang="ts">
   import { cl_join } from '@tools/cl_join';
 
-  let className: string = '';
-  export { className as class };
-  export let show: boolean;
-  export let remove_when_hidden = false; // this is to determine that wheter the spnner will be DOM or not
+  let {
+    class: className = '',
+    show,
+    remove_when_hidden = false // this is to determine that wheter the spnner will be DOM or not
+  }: { class?: string; show: boolean; remove_when_hidden?: boolean } = $props();
 </script>
 
 {#if !remove_when_hidden || show}

@@ -10,10 +10,10 @@
   import { FiEdit3 } from 'svelte-icons-pack/fi';
   import Icon from '@tools/Icon.svelte';
 
-  export let data: PageData;
+  let { data }: { data: PageData } = $props();
 
   let editable = writable(false);
-  let pass_enterer_status = writable(false);
+  let pass_enterer_status = $state(false);
 
   onMount(() => {
     window.addEventListener('beforeunload', function (e) {
@@ -35,7 +35,7 @@
 <MainAppBar page_name="edit" />
 
 {#if !$editable}
-  <Modal modal_open={pass_enterer_status}>
+  <Modal bind:modal_open={pass_enterer_status}>
     <AuthenticatePassword
       is_verified={writable(false)}
       show_always={true}
@@ -43,18 +43,18 @@
       pass_input_element={pass_input_elmnt}
       on_verify={(verified) => {
         if (verified) {
-          $pass_enterer_status = false;
+          pass_enterer_status = false;
           $editable = true;
         }
       }}
     />
   </Modal>
-  {#if !$pass_enterer_status}
+  {#if !pass_enterer_status}
     <button
       transition:slide
       class="fixed bottom-2 right-2 cursor-default text-3xl"
-      on:click={() => {
-        $pass_enterer_status = true;
+      onclick={() => {
+        pass_enterer_status = true;
         setTimeout(() => {
           $pass_input_elmnt.focus();
         }, 500);

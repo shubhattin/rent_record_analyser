@@ -5,8 +5,17 @@
   import { BiArrowBack } from 'svelte-icons-pack/bi';
   import ThemeChanger from './ThemeChanger.svelte';
   import Icon from '@tools/Icon.svelte';
+  import type { Snippet } from 'svelte';
 
-  export let page_name: 'rent' | 'electricity' | 'add' | 'edit' | 'reset_pass';
+  let {
+    page_name,
+    start,
+    end
+  }: {
+    page_name: 'rent' | 'electricity' | 'add' | 'edit' | 'reset_pass';
+    start?: Snippet | undefined;
+    end?: Snippet | undefined;
+  } = $props();
 </script>
 
 <AppBar>
@@ -31,13 +40,17 @@
         </div>
       </a>
     {/if}
-    <slot name="start" />
+    {#if start}
+      {@render start()}
+    {/if}
   </svelte:fragment>
   <!-- <svelte:fragment slot="headline">
     <slot name="headline"><span></span></slot>
   </svelte:fragment> -->
   <svelte:fragment slot="trail">
-    <slot name="end">
+    {#if end}
+      {@render end()}
+    {:else}
       {#if page_name !== 'add'}
         <a
           class="text-xl"
@@ -75,7 +88,7 @@
           </div>
         </a>
       {/if}
-    </slot>
+    {/if}
     <ThemeChanger />
   </svelte:fragment>
 </AppBar>
