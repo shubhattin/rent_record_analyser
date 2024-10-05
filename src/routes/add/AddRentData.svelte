@@ -22,7 +22,7 @@
   let date = $state(get_todays_date());
   let month = $state(current_month.toString());
   let year = $state(current_year.toString());
-  let amount: number = $state<number>(null!);
+  let amount = $state<number>(null!);
   let rent_type: 'rent' | 'electricity' = $state('rent');
 
   const submit_data = client.data.add_data.mutation();

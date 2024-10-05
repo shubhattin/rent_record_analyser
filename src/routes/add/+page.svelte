@@ -2,14 +2,13 @@
   import AddRentData from './AddRentData.svelte';
   import type { PageData } from './$types';
   import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
-  import { writable } from 'svelte/store';
   import MainAppBar from '@components/MainAppBar.svelte';
 
-  export let data: PageData;
+  let { data }: { data: PageData } = $props();
 
-  $: users = data.users;
+  const users = $derived(data.users);
 
-  let pass_unlocked = writable(false);
+  let pass_unlocked = $state(false);
 </script>
 
 <svelte:head>
@@ -20,7 +19,7 @@
     <h4 class="text-xl font-bold text-indigo-800 dark:text-blue-300">Add New Entry</h4>
   {/snippet}
 </MainAppBar>
-<AuthenticatePassword users_data={users} is_verified={pass_unlocked} />
-{#if $pass_unlocked}
+<AuthenticatePassword users_data={users} bind:is_verified={pass_unlocked} />
+{#if pass_unlocked}
   <AddRentData />
 {/if}

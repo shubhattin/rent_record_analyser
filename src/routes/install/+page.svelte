@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let event_fired = false;
+  let event_fired = $state(false);
   let install_prompt: any = null!;
 
   onMount(() => {
@@ -26,6 +26,6 @@
   <button
     disabled={!event_fired}
     class="rounded-xl px-2 py-1 text-xl font-bold dark:bg-lime-400 dark:text-amber-900"
-    on:click={install_PWA}>Install</button
+    onclick={install_PWA}>Install</button
   >
 </div>

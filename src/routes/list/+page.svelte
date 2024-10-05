@@ -1,6 +1,5 @@
 <script lang="ts">
   import Edit from './Edit.svelte';
-  import { writable, type Writable } from 'svelte/store';
   import Modal from '@components/Modal.svelte';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
@@ -12,12 +11,12 @@
 
   let { data }: { data: PageData } = $props();
 
-  let editable = writable(false);
+  let editable = $state(false);
   let pass_enterer_status = $state(false);
 
   onMount(() => {
     window.addEventListener('beforeunload', function (e) {
-      if ((import.meta as any).env.PROD && $editable && typeof window !== 'undefined') {
+      if ((import.meta as any).env.PROD && editable && typeof window !== 'undefined') {
         e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
         e.returnValue = ''; // Chrome requires returnValue to be set
       }
@@ -25,7 +24,7 @@
     document.querySelector('html')?.setAttribute('data-theme', 'dark'); // enforcing dark theme on this page
   });
 
-  let pass_input_elmnt: Writable<HTMLInputElement> = writable(null!);
+  let pass_input_elmnt = $state<HTMLInputElement>(null!);
 </script>
 
 <svelte:head>
@@ -34,17 +33,17 @@
 
 <MainAppBar page_name="edit" />
 
-{#if !$editable}
+{#if !editable}
   <Modal bind:modal_open={pass_enterer_status}>
     <AuthenticatePassword
-      is_verified={writable(false)}
+      is_verified={false}
       show_always={true}
       users_data={data.users}
-      pass_input_element={pass_input_elmnt}
+      bind:pass_input_element={pass_input_elmnt}
       on_verify={(verified) => {
         if (verified) {
           pass_enterer_status = false;
-          $editable = true;
+          editable = true;
         }
       }}
     />
@@ -56,7 +55,7 @@
       onclick={() => {
         pass_enterer_status = true;
         setTimeout(() => {
-          $pass_input_elmnt.focus();
+          pass_input_elmnt.focus();
         }, 500);
       }}
     >

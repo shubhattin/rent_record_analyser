@@ -1,6 +1,5 @@
 <script lang="ts">
   import { z } from 'zod';
-  import { writable, type Writable } from 'svelte/store';
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
   import Spinner from '@components/Spinner.svelte';
@@ -17,16 +16,20 @@
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '@tools/cl_join';
   import Modal from '@components/Modal.svelte';
+  import { SvelteSet } from 'svelte/reactivity';
 
-  export let all_data: PageData;
-  export let editable: Writable<boolean>;
+  let { all_data, editable = $bindable() }: { all_data: PageData; editable: boolean } = $props();
 
-  let data = all_data.rent_data;
-  let verification_request_ids = all_data.verification_requests;
-  $: data = all_data.rent_data;
-  $: verification_request_ids = all_data.verification_requests;
+  let data = $state(all_data.rent_data);
+  $effect(() => {
+    data = all_data.rent_data;
+  });
+  let verification_request_ids = $state(all_data.verification_requests);
+  $effect(() => {
+    verification_request_ids = all_data.verification_requests;
+  });
 
-  let save_modal_opened = writable(false);
+  let save_modal_opened = $state(false);
 
   function deepCopy<T>(value: T, is_array: boolean): T {
     const source = value as any;
@@ -38,16 +41,16 @@
       })) as T;
     return { ...source, date: clone_date(source.date), month: clone_date(source.month) } as T;
   }
+  // svelte-ignore state_referenced_locally
+  let prev_data = $state(deepCopy(data, true));
 
-  let prev_data = deepCopy(data, true);
+  let to_change_list = $state(new SvelteSet<number>());
+  let to_delete_list = $state(new SvelteSet<number>());
+  let to_verify_list = $state(new SvelteSet<number>());
 
-  let to_change_list = new Set<number>();
-  let to_delete_list = new Set<number>();
-  let to_verify_list = new Set<number>();
-
-  $: {
+  $effect(() => {
     if (editable) {
-      let changed = new Set<number>();
+      let changed = new SvelteSet<number>();
       for (let i = 0; i < data.length; i++) {
         if (
           (get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
@@ -67,7 +70,7 @@
       }
       to_change_list = changed;
     }
-  }
+  });
 
   const set_val_from_input = (e: any, func: (val: string) => any) => {
     func(e.currentTarget.textContent);
@@ -78,7 +81,7 @@
     return -1;
   };
 
-  $: is_savable = to_delete_list.size + to_change_list.size + to_verify_list.size !== 0;
+  let is_savable = $derived(to_delete_list.size + to_change_list.size + to_verify_list.size !== 0);
 
   const edit_data = client.data.edit_data.mutation();
 
@@ -107,11 +110,11 @@
             // resetting values
             data = deepCopy(new_data, true);
             prev_data = deepCopy(data, true);
-            to_change_list = new Set<number>();
-            to_delete_list = new Set<number>();
-            to_verify_list = new Set<number>();
+            to_change_list.clear();
+            to_delete_list.clear();
+            to_verify_list.clear();
             setJwtToken('');
-            $editable = false;
+            editable = false;
           }
         }
       }
@@ -119,6 +122,7 @@
   };
 </script>
 
+<!-- svelte-ignore state_referenced_locally -->
 <Modal
   modal_open={save_modal_opened}
   cancel_btn_txt="❌ Close"
@@ -133,10 +137,10 @@
   </strong>
 </Modal>
 
-{#if $editable}
+{#if editable}
   <div transition:slide class="mb-5">
     <button
-      on:click={() => ($save_modal_opened = true)}
+      onclick={() => (save_modal_opened = true)}
       class="variant-filled-secondary btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold"
       disabled={!is_savable}
     >
@@ -169,11 +173,11 @@
             : to_verify_status
               ? 'to_verify'
               : ''}
-        {@const is_editable_row = $editable && !is_verify_request}
+        {@const is_editable_row = editable && !is_verify_request}
         <tr class={cl_join(clss)}>
           <td
             contenteditable={is_editable_row}
-            on:input={(e) =>
+            oninput={(e) =>
               set_val_from_input(e, (val) => {
                 const str_val = z
                   .string()
@@ -193,7 +197,7 @@
           >
           <td
             contenteditable={is_editable_row}
-            on:input={(e) =>
+            oninput={(e) =>
               set_val_from_input(e, (val) => {
                 const parse_val = z.coerce.number().int().safeParse(val);
                 if (parse_val.success) dt.amount = parse_val.data;
@@ -204,7 +208,7 @@
           </td>
           <td
             contenteditable={is_editable_row}
-            on:input={(e) =>
+            oninput={(e) =>
               set_val_from_input(e, (val) => {
                 const str_val = z
                   .string()
@@ -234,15 +238,14 @@
                 prev_data[i].amount !== data[i].amount ||
                 get_date_string(prev_data[i].month) !== get_date_string(data[i].month)}
               {#if !to_delete_status && values_edited}
-                <button on:click={() => (data[i] = deepCopy(prev_data[i], false))}
+                <button onclick={() => (data[i] = deepCopy(prev_data[i], false))}
                   ><Icon src={BiReset} class="-mt-2 text-xl hover:fill-amber-600" /></button
                 >
               {/if}
               {#if !to_delete_status}
                 <button
-                  on:click={() => {
+                  onclick={() => {
                     to_delete_list.add(dt.id);
-                    to_delete_list = to_delete_list;
                   }}
                   ><Icon
                     src={AiOutlineClose}
@@ -251,9 +254,8 @@
                 >
               {:else}
                 <button
-                  on:click={() => {
+                  onclick={() => {
                     to_delete_list.delete(dt.id);
-                    to_delete_list = to_delete_list;
                   }}
                   ><Icon
                     src={TiTick}
@@ -262,12 +264,11 @@
                 >
               {/if}
             {/if}
-            {#if $editable && is_verify_request}
+            {#if editable && is_verify_request}
               {#if !to_verify_status}
                 <button
-                  on:click={() => {
+                  onclick={() => {
                     to_verify_list.add(dt.id);
-                    to_verify_list = to_verify_list;
                   }}
                   ><Icon
                     src={VscAdd}
@@ -276,9 +277,8 @@
                 >
               {:else}
                 <button
-                  on:click={() => {
+                  onclick={() => {
                     to_verify_list.delete(dt.id);
-                    to_verify_list = to_verify_list;
                   }}
                   ><Icon
                     src={AiOutlineClose}

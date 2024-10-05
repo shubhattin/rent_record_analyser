@@ -1,7 +1,7 @@
 <script lang="ts">
   import { cl_join } from '@tools/cl_join';
-  import { onDestroy, onMount, unmount, untrack, type Snippet } from 'svelte';
-  import { scale, slide, fly } from 'svelte/transition';
+  import { onMount, untrack, type Snippet } from 'svelte';
+  import { scale, slide } from 'svelte/transition';
   import { AiOutlineClose } from 'svelte-icons-pack/ai';
   import Icon from '@tools/Icon.svelte';
 
@@ -42,7 +42,7 @@
 
   const animationDuration = 400;
   let is_closing = $state(false); // to fix transition not being displayed while exiting
-  let visibleModal = $state<HTMLElement | null>(null);
+  let visibleModal = $state<HTMLElement | undefined>(undefined);
 
   const openModal = () => {
     if (opened) return;
@@ -55,7 +55,7 @@
   };
   const closeModal = () => {
     if (!opened) return;
-    visibleModal = null;
+    visibleModal = undefined;
     is_closing = true;
     setTimeout(() => {
       opened = false;
