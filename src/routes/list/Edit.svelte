@@ -123,7 +123,7 @@
 </script>
 
 <Modal
-  modal_open={save_modal_opened}
+  bind:modal_open={save_modal_opened}
   cancel_btn_txt="❌ Close"
   confirm_btn_txt="✅ Confirm"
   onConfirm={save_data_func}
@@ -174,54 +174,74 @@
               : ''}
         {@const is_editable_row = editable && !is_verify_request}
         <tr class={cl_join(clss)}>
-          <td
-            contenteditable={is_editable_row}
-            oninput={(e) =>
-              set_val_from_input(e, (val) => {
-                const str_val = z
-                  .string()
-                  .regex(/^\d{1,2}\/\d{1,2}\/\d{4}$/)
-                  .safeParse(val);
-                if (!str_val.success) {
-                  // dt.date = clone_date(prev_data[i].date);
-                  return;
-                }
-                val = str_val.data;
-                // val is in dd/mm/yyyy to convert to yyyy-mm-dd
-                const vals = val.split('/');
-                val = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`);
-                const parse_val = z.coerce.date().safeParse(val);
-                if (parse_val.success) dt.date = parse_val.data;
-              })}>{get_date_string(dt.date)}</td
-          >
-          <td
-            contenteditable={is_editable_row}
-            oninput={(e) =>
-              set_val_from_input(e, (val) => {
-                const parse_val = z.coerce.number().int().safeParse(val);
-                if (parse_val.success) dt.amount = parse_val.data;
-                // else dt.amount=prev_data[i].amount
-              })}
-          >
-            <span class:underline={is_verify_request}>{dt.amount}</span>
+          <td>
+            {#if !editable}
+              {get_date_string(dt.date)}
+            {:else}
+              <input
+                type="text"
+                class="input w-24 p-1 text-sm"
+                oninput={({ currentTarget: { value } }) => {
+                  const str_val = z
+                    .string()
+                    .regex(/^\d{1,2}\/\d{1,2}\/\d{4}$/)
+                    .safeParse(value);
+                  if (!str_val.success) {
+                    // dt.date = clone_date(prev_data[i].date);
+                    return;
+                  }
+                  value = str_val.data;
+                  // val is in dd/mm/yyyy to convert to yyyy-mm-dd
+                  const vals = value.split('/');
+                  value = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`);
+                  const parse_val = z.coerce.date().safeParse(value);
+                  if (parse_val.success) dt.date = parse_val.data;
+                }}
+                value={get_date_string(dt.date)}
+              />
+            {/if}
           </td>
-          <td
-            contenteditable={is_editable_row}
-            oninput={(e) =>
-              set_val_from_input(e, (val) => {
-                const str_val = z
-                  .string()
-                  .regex(/^\d{4}-\d{1,2}$/)
-                  .safeParse(val);
-                if (!str_val.success) {
-                  // dt.month=clone_date(prev_data[i].clo)
-                  return;
-                }
-                val = str_val.data;
-                const parse_val = z.coerce.date().safeParse(get_utc_date_string(val + '-1'));
-                if (parse_val.success) dt.month = parse_val.data;
-              })}>{`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}</td
-          >
+          <td>
+            {#if !editable}
+              <span class:underline={is_verify_request}>{dt.amount}</span>
+            {:else}
+              <input
+                class:underline={is_verify_request}
+                type="number"
+                step={100}
+                class="input w-16 p-1 text-sm"
+                oninput={({ currentTarget: { value } }) => {
+                  const parse_val = z.coerce.number().int().safeParse(value);
+                  if (parse_val.success) dt.amount = parse_val.data;
+                }}
+                value={dt.amount}
+              />
+            {/if}
+          </td>
+          <td>
+            {#if !editable}
+              {`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}
+            {:else}
+              <input
+                type="text"
+                class="input w-20 p-1 text-sm"
+                oninput={({ currentTarget: { value } }) => {
+                  const str_val = z
+                    .string()
+                    .regex(/^\d{4}-\d{1,2}$/)
+                    .safeParse(value);
+                  if (!str_val.success) {
+                    // dt.month=clone_date(prev_data[i].clo)
+                    return;
+                  }
+                  value = str_val.data;
+                  const parse_val = z.coerce.date().safeParse(get_utc_date_string(value + '-1'));
+                  if (parse_val.success) dt.month = parse_val.data;
+                }}
+                value={`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}
+              />
+            {/if}
+          </td>
           <td>
             <span class="small inline-flex items-center">
               {#if dt.rent_type === 'rent'}
