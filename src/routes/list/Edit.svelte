@@ -122,7 +122,6 @@
   };
 </script>
 
-<!-- svelte-ignore state_referenced_locally -->
 <Modal
   modal_open={save_modal_opened}
   cancel_btn_txt="❌ Close"
