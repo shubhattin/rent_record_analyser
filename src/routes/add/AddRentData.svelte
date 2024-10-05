@@ -19,11 +19,11 @@
     const prefix_zeros = (n: number) => `${n < 10 ? '0' : ''}${n}`;
     return `${current_year}-${prefix_zeros(current_month)}-${prefix_zeros(todays_date.getDate())}`;
   };
-  let date = get_todays_date();
-  let month = current_month.toString();
-  let year = current_year.toString();
-  let amount: number;
-  let rent_type: 'rent' | 'electricity' = 'rent';
+  let date = $state(get_todays_date());
+  let month = $state(current_month.toString());
+  let year = $state(current_year.toString());
+  let amount = $state<number>(null!);
+  let rent_type: 'rent' | 'electricity' = $state('rent');
 
   const submit_data = client.data.add_data.mutation();
 
@@ -38,7 +38,7 @@
       }
     });
   };
-  let amount_input_elmt: HTMLInputElement;
+  let amount_input_elmt = $state<HTMLInputElement>(null!);
 
   onMount(() => {
     amount_input_elmt.focus();
@@ -46,7 +46,7 @@
 </script>
 
 {#if !$submit_data.isSuccess}
-  <form transition:slide on:submit|preventDefault={submit_data_func} class="space-y-2">
+  <form transition:slide onsubmit={submit_data_func} class="space-y-2">
     <div class="mt-2 space-x-3">
       <label class="inline-flex items-center space-x-2">
         <input class="radio rounded-xl" type="radio" bind:group={rent_type} checked value="rent" />
@@ -104,7 +104,7 @@
     </div>
     <button
       class="variant-filled-secondary btn rounded-md px-1 py-1"
-      on:click={() => {
+      onclick={() => {
         // resetting this component
         date = get_todays_date();
         month = current_month.toString();

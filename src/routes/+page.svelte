@@ -11,11 +11,10 @@
   import { browser } from '$app/environment';
   import MainAppBar from '@components/MainAppBar.svelte';
 
-  export let data: PageData;
-  export let page_name: 'rent' | 'electricity' = 'rent';
-  let rent_data = data.rent_data;
+  let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
+    $props();
 
-  $: rent_data = data.rent_data;
+  let rent_data = $derived(data.rent_data);
 
   onMount(() => {
     if (import.meta.env.PROD)
@@ -24,13 +23,13 @@
         preloadData('/list');
       }, 2000);
   });
-  $: {
+  $effect(() => {
     if (browser) {
       const new_url = { rent: '/', electricity: '/electricity' }[page_name];
       const current_url = window.location.pathname;
       if (new_url !== current_url) goto(new_url);
     }
-  }
+  });
   // all lists are already formatted in
   const get_year_list = () => {
     const years: number[] = [];
@@ -91,7 +90,7 @@
 
   const [year_list, amount_yr_list] = get_year_list();
 
-  const total = rent_data.reduce((total, item) => total + item.amount, 0);
+  let total = $derived(rent_data.reduce((total, item) => total + item.amount, 0));
 </script>
 
 <svelte:head>
@@ -100,7 +99,7 @@
 </svelte:head>
 
 <MainAppBar {page_name}>
-  <svelte:fragment slot="start">
+  {#snippet start()}
     <RadioGroup>
       <RadioItem
         bind:group={page_name}
@@ -114,7 +113,7 @@
         <Zap />
       </RadioItem>
     </RadioGroup>
-  </svelte:fragment>
+  {/snippet}
 </MainAppBar>
 
 <div>
@@ -137,24 +136,26 @@
           <svelte:fragment slot="content">
             {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
             <table>
-              {#each date_list as dt, i_dt (dt)}
-                {@const date = dt.getUTCDate()}
-                <tr>
-                  <td class="px-1 py-0.5 text-start text-sm">
-                    {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
-                  </td>
-                  <td class="px-1 py-0.5 text-start text-sm">
-                    {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
-                  </td>
-                  <td class="space-x-1 px-1 py-0.5 text-start text-sm">
-                    {#each amount_dt_list[i_dt] as amount, i}
-                      <span class:underline={ref_list[i_dt][i].is_not_verified}
-                        >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
-                      >
-                    {/each}
-                  </td>
-                </tr>
-              {/each}
+              <tbody>
+                {#each date_list as dt, i_dt (dt)}
+                  {@const date = dt.getUTCDate()}
+                  <tr>
+                    <td class="px-1 py-0.5 text-start text-sm">
+                      {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
+                    </td>
+                    <td class="px-1 py-0.5 text-start text-sm">
+                      {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                    </td>
+                    <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                      {#each amount_dt_list[i_dt] as amount, i}
+                        <span class:underline={ref_list[i_dt][i].is_not_verified}
+                          >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
+                        >
+                      {/each}
+                    </td>
+                  </tr>
+                {/each}
+              </tbody>
             </table>
           </svelte:fragment>
         </AccordionItem>

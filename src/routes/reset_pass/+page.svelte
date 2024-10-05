@@ -6,28 +6,32 @@
   import MainAppBar from '@components/MainAppBar.svelte';
   import { cl_join } from '@tools/cl_join';
 
-  export let data: PageData;
-  let users = data.users;
-  $: users = data.users;
+  let { data }: { data: PageData } = $props();
+  let users = $derived(data.users);
 
-  let user: number = 1; // 1 user(admin);
-  let old_password: string;
-  let new_password: string;
+  let user = $state(1); // 1 user(admin);
+  let old_password = $state('');
+  let new_password = $state('');
 
-  let wrong_pass_status = false;
-  $: wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 800);
+  let old_password_elmnt = $state<HTMLInputElement>(null!);
+
+  let wrong_pass_status = $state(false);
+  $effect(() => {
+    wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 800);
+  });
 
   const verify_pass = client.pass.verify_pass.mutation({
     onSuccess: (data) => {
       if (data.verified) {
         setJwtToken(data.jwt_token);
       } else {
+        old_password_elmnt.focus();
         old_password = '';
         wrong_pass_status = true;
       }
     }
   });
-  $: is_old_pass_verified = $verify_pass.isSuccess && $verify_pass.data.verified;
+  let is_old_pass_verified = $derived($verify_pass.isSuccess && $verify_pass.data.verified);
 
   const reset_pass = client.pass.reset_pass.mutation({
     onSuccess: (data) => {
@@ -50,12 +54,12 @@
   <title>Reset Password</title>
 </svelte:head>
 <MainAppBar page_name="reset_pass">
-  <span slot="start" class="text-lg font-bold text-cyan-800 dark:text-indigo-400">
-    Reset Password
-  </span>
+  {#snippet start()}
+    <h4 class="text-xl font-bold text-indigo-800 dark:text-blue-300">Reset Password</h4>
+  {/snippet}
 </MainAppBar>
 {#if !($reset_pass.isSuccess && $reset_pass.data.status === 'success')}
-  <form on:submit|preventDefault={handle_sumbit_func} class="space-y-3">
+  <form onsubmit={handle_sumbit_func} class="space-y-3">
     <select class="select" bind:value={user} disabled={is_old_pass_verified}>
       {#each users as user}
         <option value={user.id}>
@@ -73,6 +77,7 @@
       )}
       type="password"
       bind:value={old_password}
+      bind:this={old_password_elmnt}
       placeholder="पुरागूढपद"
       required
       disabled={is_old_pass_verified}
