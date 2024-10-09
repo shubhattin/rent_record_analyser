@@ -4,8 +4,11 @@
   import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
   import { storePopup } from '@skeletonlabs/skeleton';
   import '@fontsource/roboto/latin.css';
-  import '../app.pcss';
+  import type { Snippet } from 'svelte';
   import { browser } from '$app/environment';
+  import '../app.pcss';
+
+  let { children }: { children: Snippet } = $props();
 
   // set up the floating UI for popups
   storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
@@ -22,6 +25,6 @@
 <ModeWatcher />
 <div class="contaiiner mx-auto mb-1 max-w-screen-lg">
   <QueryClientProvider client={queryClient}>
-    <slot />
+    {@render children()}
   </QueryClientProvider>
 </div>
