@@ -39,6 +39,8 @@ const main = async () => {
   // insertig users
   try {
     await db.insert(users).values(data.users);
+    // reset  SERIAL
+    await db.execute(sql`SELECT setval('users_id_seq', (select MAX(id) from users))`);
     console.log('Successfully added values into table `users`');
   } catch {}
 
@@ -46,6 +48,8 @@ const main = async () => {
   try {
     await db.insert(rent_data).values(data.rent_data);
     console.log('Successfully added values into table `rent_data`');
+    // reset  SERIAL
+    await db.execute(sql`SELECT setval('rent_data_id_seq', (select MAX(id) from rent_data))`);
   } catch {}
 
   // insertig others
@@ -58,11 +62,12 @@ const main = async () => {
     // insertig verification requests
     data.verification_requests.length !== 0 &&
       (await db.insert(verification_requests).values(data.verification_requests));
+    // reset  SERIAL
+    await db.execute(
+      sql`SELECT setval('verification_requests_id_seq', (select MAX(id) from verification_requests))`
+    );
     console.log('Successfully added values into table `verification_requests`');
   } catch {}
-
-  // resetting the SERIAL
-  await db.execute(sql`SELECT setval('rent_data_id_seq', (select MAX(id) from rent_data))`);
 };
 main().then(() => {
   queryClient.end();
