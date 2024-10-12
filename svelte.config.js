@@ -9,7 +9,8 @@ const config = {
 
   kit: {
     adapter: adapter({
-      runtime: 'edge'
+      runtime: 'edge',
+      regions: 'sin1'
     }),
     alias: {
       '@tools/*': 'src/tools/*',
