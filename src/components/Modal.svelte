@@ -35,9 +35,9 @@
   };
 
   $effect(() => {
-    const $opened = untrack(() => opened);
-    if (modal_open && !$opened) openModal();
-    else if (!modal_open && $opened) closeModal();
+    const _opened = untrack(() => opened);
+    if (modal_open && !_opened) openModal();
+    else if (!modal_open && _opened) closeModal();
   });
 
   const animationDuration = 400;
