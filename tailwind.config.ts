@@ -10,11 +10,11 @@ const config = {
     extend: {}
   },
   plugins: [
+    forms,
     skeleton({
       // NOTE: each theme included will be added to your CSS bundle
       themes: [themes.cerberus, themes.rose]
-    }),
-    forms
+    })
   ]
 } satisfies Config;
 
