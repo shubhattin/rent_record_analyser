@@ -61,7 +61,7 @@
       {/each}
     </select>
     <input
-      class={cl_join('input variant-form-material', wrong_pass_status && 'input-error')}
+      class={cl_join('variant-form-material input', wrong_pass_status && 'input-error')}
       type="password"
       bind:value={password}
       placeholder="गूढपद"

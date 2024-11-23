@@ -1,20 +1,18 @@
-import { join } from 'path';
 import type { Config } from 'tailwindcss';
-import { skeleton } from '@skeletonlabs/tw-plugin';
+import { skeleton, contentPath } from '@skeletonlabs/skeleton/plugin';
+import * as themes from '@skeletonlabs/skeleton/themes';
 import forms from '@tailwindcss/forms';
 
 const config = {
   darkMode: 'selector',
-  content: [
-    './src/**/*.{html,js,svelte,ts}',
-    join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
-  ],
+  content: ['./src/**/*.{html,js,svelte,ts}', contentPath(import.meta.url, 'svelte')],
   theme: {
     extend: {}
   },
   plugins: [
     skeleton({
-      themes: { preset: ['gold-nouveau'] }
+      // NOTE: each theme included will be added to your CSS bundle
+      themes: [themes.cerberus, themes.rose]
     }),
     forms
   ]

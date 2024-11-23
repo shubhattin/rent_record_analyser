@@ -150,7 +150,7 @@
   </div>
 {/if}
 <div class="table-container">
-  <table class="table table-hover text-center outline-none">
+  <table class="table-hover table text-center outline-none">
     <thead>
       <tr>
         <th class="text-center">Date</th>

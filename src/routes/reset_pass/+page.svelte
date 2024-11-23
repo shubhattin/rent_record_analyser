@@ -71,7 +71,7 @@
     </select>
     <input
       class={cl_join(
-        'input variant-form-material',
+        'variant-form-material input',
         wrong_pass_status && 'input-error',
         is_old_pass_verified && 'input-success'
       )}

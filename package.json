@@ -17,8 +17,6 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@skeletonlabs/skeleton": "^2.10.2",
-    "@skeletonlabs/tw-plugin": "^0.4.0",
     "@sveltejs/kit": "^2.7.2",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@tailwindcss/forms": "^0.5.9",
@@ -49,6 +47,8 @@
     "@floating-ui/dom": "^1.6.11",
     "@fontsource/roboto": "^5.1.0",
     "@neondatabase/serverless": "^0.8.1",
+    "@skeletonlabs/skeleton": "3.0.0-next.9",
+    "@skeletonlabs/skeleton-svelte": "1.0.0-next.14",
     "@sveltejs/adapter-vercel": "^5.4.5",
     "@tanstack/svelte-query": "^5.59.13",
     "@trpc/client": "^10.45.2",
