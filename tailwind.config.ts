@@ -13,7 +13,7 @@ const config = {
     forms,
     skeleton({
       // NOTE: each theme included will be added to your CSS bundle
-      themes: [themes.cerberus, themes.rose]
+      themes: [themes.nouveau]
     })
   ]
 } satisfies Config;

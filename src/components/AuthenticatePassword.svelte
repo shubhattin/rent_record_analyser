@@ -2,7 +2,6 @@
   import { client, setJwtToken } from '@api/client';
   import Spinner from './Spinner.svelte';
   import { cl_join } from '@tools/cl_join';
-  import { Combobox } from '@skeletonlabs/skeleton-svelte';
 
   let {
     show_always = false,
@@ -62,7 +61,7 @@
       {/each}
     </select>
     <input
-      class={cl_join('input', wrong_pass_status && 'input-error')}
+      class={cl_join('input', wrong_pass_status && 'preset-tonal-error')}
       type="password"
       bind:value={password}
       placeholder="गूढपद"
@@ -71,14 +70,15 @@
     />
     <button
       type="submit"
-      class="btn rounded-lg py-0 pl-0 font-semibold preset-filled-primary-300-700"
+      class="btn gap-0 rounded-lg py-1 pl-0 pr-4 font-semibold preset-filled-secondary-400-600"
     >
       <Spinner show={$pass_verify.isPending} />
       Submit
     </button>
     <div>
       <a
-        class="btn rounded-lg px-1.5 py-0 text-sm preset-filled-surface-200-800"
+        type="button"
+        class="btn h-5 rounded-lg px-1.5 py-0 text-sm preset-filled-tertiary-400-600"
         href="/reset_pass"
       >
         Reset Password
