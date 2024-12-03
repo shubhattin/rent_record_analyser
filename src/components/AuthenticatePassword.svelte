@@ -70,7 +70,7 @@
     />
     <button
       type="submit"
-      class="btn gap-0 rounded-lg py-1 pl-0 pr-4 font-semibold preset-filled-secondary-400-600"
+      class="btn gap-0 rounded-lg py-1 pl-0 pr-4 font-semibold preset-filled-primary-400-600"
     >
       <Spinner show={$pass_verify.isPending} />
       Submit
@@ -78,7 +78,7 @@
     <div>
       <a
         type="button"
-        class="btn h-5 rounded-lg px-1.5 py-0 text-sm preset-filled-tertiary-400-600"
+        class="btn h-5 rounded-lg px-1.5 py-0 text-sm preset-filled-secondary-400-600"
         href="/reset_pass"
       >
         Reset Password
