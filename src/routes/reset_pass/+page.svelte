@@ -59,7 +59,7 @@
   {/snippet}
 </MainAppBar>
 {#if !($reset_pass.isSuccess && $reset_pass.data.status === 'success')}
-  <form onsubmit={handle_sumbit_func} class="space-y-3">
+  <form onsubmit={handle_sumbit_func} class="mt-4 space-y-3">
     <select class="select" bind:value={user} disabled={is_old_pass_verified}>
       {#each users as user}
         <option value={user.id}>
@@ -71,9 +71,9 @@
     </select>
     <input
       class={cl_join(
-        'input variant-form-material',
-        wrong_pass_status && 'input-error',
-        is_old_pass_verified && 'input-success'
+        'input',
+        wrong_pass_status && 'preset-tonal-error',
+        is_old_pass_verified && 'preset-tonal-success'
       )}
       type="password"
       bind:value={old_password}
@@ -83,7 +83,10 @@
       disabled={is_old_pass_verified}
     />
     {#if !is_old_pass_verified}
-      <button type="submit" class="variant-filled-tertiary btn rounded-lg py-1 pl-0 pr-1.5">
+      <button
+        type="submit"
+        class="btn gap-0 rounded-lg px-0 py-1 pr-1.5 preset-filled-secondary-400-600"
+      >
         <Spinner show={$verify_pass.isPending} />
         Verify Old Password
       </button>
@@ -95,7 +98,10 @@
         placeholder="नवगूढपद"
         required
       />
-      <button type="submit" class="variant-filled-secondary btn py-1 pl-0 pr-1.5 font-semibold">
+      <button
+        type="submit"
+        class="btn gap-0 py-1 pl-0 pr-1.5 font-semibold preset-filled-primary-400-600"
+      >
         <Spinner show={$reset_pass.isPending} />
         Set New Password
       </button>

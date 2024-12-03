@@ -42,7 +42,8 @@
     wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 1000);
   });
 
-  const check_pass_func = async () => {
+  const check_pass_func = async (e: Event) => {
+    e.preventDefault();
     if (password === '') return;
     $pass_verify.mutate({ user_id, password });
   };
@@ -61,7 +62,7 @@
       {/each}
     </select>
     <input
-      class={cl_join('input variant-form-material', wrong_pass_status && 'input-error')}
+      class={cl_join('input', wrong_pass_status && 'preset-tonal-error')}
       type="password"
       bind:value={password}
       placeholder="गूढपद"
@@ -70,13 +71,17 @@
     />
     <button
       type="submit"
-      class="variant-filled-secondary btn rounded-lg py-1 pl-0 pr-4 font-semibold"
+      class="btn gap-0 rounded-lg py-1 pl-0 pr-4 font-semibold preset-filled-primary-400-600"
     >
       <Spinner show={$pass_verify.isPending} />
       Submit
     </button>
     <div>
-      <a class="py- variant-filled-tertiary btn rounded-lg px-1.5 py-0 text-sm" href="/reset_pass">
+      <a
+        type="button"
+        class="btn h-5 rounded-lg px-1.5 py-0 text-sm preset-filled-secondary-400-600"
+        href="/reset_pass"
+      >
         Reset Password
       </a>
     </div>

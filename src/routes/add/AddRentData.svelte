@@ -87,14 +87,17 @@
       bind:value={amount}
       bind:this={amount_input_elmt}
     />
-    <button type="submit" class="variant-filled-secondary btn rounded-lg px-3 py-1.5 font-semibold">
+    <button
+      type="submit"
+      class="btn gap-0 rounded-lg px-0 py-1.5 pr-3 font-semibold preset-filled-primary-400-600"
+    >
       <Spinner show={$submit_data.isPending} />
       Submit
     </button>
   </form>
 {:else if $submit_data.isSuccess && $submit_data.data.status === 'success'}
   <div transition:scale class="space-y-1.5">
-    <a href="/" class="variant-filled-tertiary btn rounded-md px-1 py-[0.12rem]">
+    <a href="/" class="btn gap-1 rounded-md px-1 py-0 preset-filled-primary-300-700">
       <Icon class="-mt-1" src={AiOutlineHome} />
       Home Page
     </a>
@@ -103,7 +106,7 @@
       {normaliseDate(date)}.
     </div>
     <button
-      class="variant-filled-secondary btn rounded-md px-1 py-1"
+      class="btn gap-1 rounded-md px-1 py-0 preset-filled-secondary-300-700"
       onclick={() => {
         // resetting this component
         date = get_todays_date();

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { ModeWatcher } from 'mode-watcher';
-  import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+  // import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
   import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-  import { storePopup } from '@skeletonlabs/skeleton';
+  // import { storePopup } from '@skeletonlabs/skeleton';
   import '@fontsource/roboto/latin.css';
   import type { Snippet } from 'svelte';
   import { browser } from '$app/environment';
@@ -11,7 +11,7 @@
   let { children }: { children: Snippet } = $props();
 
   // set up the floating UI for popups
-  storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+  // storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
   const queryClient = new QueryClient({
     defaultOptions: {
