@@ -140,7 +140,7 @@
   <div transition:slide class="mb-5">
     <button
       onclick={() => (save_modal_opened = true)}
-      class="variant-filled-secondary btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold"
+      class="btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold preset-filled-primary-300-700"
       disabled={!is_savable}
     >
       <Icon src={FiSave} class="-mt-1 mr-1" />
@@ -149,14 +149,14 @@
     <Spinner show={$edit_data.isPending} />
   </div>
 {/if}
-<div class="table-container">
-  <table class="table-hover table text-center outline-none">
+<div class="table-wrap">
+  <table class="table outline-none">
     <thead>
       <tr>
-        <th class="text-center">Date</th>
-        <th class="text-center">Amount</th>
-        <th class="text-center">Month</th>
-        <th class="text-center text-xs">Type, User, ID</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Month</th>
+        <th class="text-xs">Type, User, ID</th>
       </tr>
     </thead>
     <tbody>

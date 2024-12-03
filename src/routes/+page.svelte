@@ -1,13 +1,10 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import { Accordion, AccordionItem, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
+  import { Accordion } from '@skeletonlabs/skeleton-svelte';
   import { goto, preloadData } from '$app/navigation';
   import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
   import { onMount } from 'svelte';
   import { cl_join } from '@tools/cl_join';
-  import { OiHome16 } from 'svelte-icons-pack/oi';
-  import Icon from '@tools/Icon.svelte';
-  import Zap from 'lucide-svelte/icons/zap';
   import { browser } from '$app/environment';
   import MainAppBar from '@components/MainAppBar.svelte';
 
@@ -100,7 +97,7 @@
 
 <MainAppBar {page_name}>
   {#snippet start()}
-    <RadioGroup>
+    <!-- <RadioGroup>
       <RadioItem
         bind:group={page_name}
         name="rent_page"
@@ -112,28 +109,29 @@
       <RadioItem bind:group={page_name} name="rent_page" value="electricity">
         <Zap />
       </RadioItem>
-    </RadioGroup>
+    </RadioGroup> -->
   {/snippet}
 </MainAppBar>
 
 <div>
   <!-- Yearly -->
   {#each year_list as yr, i_yr (yr)}
-    <h5 class="h5 mt-3 font-bold">
+    <h5 class="h5 my-3 font-bold">
       Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
     </h5>
-    <Accordion class="mt-1">
+    <Accordion collapsible multiple>
       <!-- Monthly -->
       {@const [month_list, amount_mn_list] = get_month_list(yr)}
       {#each month_list as mn, i_mn (mn)}
-        <AccordionItem open={i_mn === 0 && i_yr === 0}>
-          <svelte:fragment slot="summary">
+        <Accordion.Item value="{i_yr}-{i_mn}">
+          <!-- <Accordion.Item open={i_mn === 0 && i_yr === 0}> -->
+          {#snippet control()}
             <span class={cl_join({ 'font-bold': i_mn === 0 && i_yr === 0 })}>
               {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}
             </span>
-          </svelte:fragment>
+          {/snippet}
           <!-- DateWise -->
-          <svelte:fragment slot="content">
+          {#snippet panel()}
             {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
             <table>
               <tbody>
@@ -157,8 +155,8 @@
                 {/each}
               </tbody>
             </table>
-          </svelte:fragment>
-        </AccordionItem>
+          {/snippet}
+        </Accordion.Item>
       {/each}
     </Accordion>
   {/each}

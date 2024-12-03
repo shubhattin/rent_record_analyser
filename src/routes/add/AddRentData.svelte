@@ -97,7 +97,7 @@
   </form>
 {:else if $submit_data.isSuccess && $submit_data.data.status === 'success'}
   <div transition:scale class="space-y-1.5">
-    <a href="/" class="btn gap-0 rounded-md px-1 py-0 preset-filled-primary-300-700">
+    <a href="/" class="btn gap-1 rounded-md px-1 py-0 preset-filled-primary-300-700">
       <Icon class="-mt-1" src={AiOutlineHome} />
       Home Page
     </a>
@@ -106,7 +106,7 @@
       {normaliseDate(date)}.
     </div>
     <button
-      class="btn gap-0 rounded-md px-1 py-0 preset-filled-secondary-300-700"
+      class="btn gap-1 rounded-md px-1 py-0 preset-filled-secondary-300-700"
       onclick={() => {
         // resetting this component
         date = get_todays_date();
