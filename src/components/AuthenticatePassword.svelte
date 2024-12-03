@@ -42,7 +42,8 @@
     wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 1000);
   });
 
-  const check_pass_func = async () => {
+  const check_pass_func = async (e: Event) => {
+    e.preventDefault();
     if (password === '') return;
     $pass_verify.mutate({ user_id, password });
   };

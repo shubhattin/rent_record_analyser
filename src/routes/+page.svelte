@@ -88,6 +88,8 @@
   const [year_list, amount_yr_list] = get_year_list();
 
   let total = $derived(rent_data.reduce((total, item) => total + item.amount, 0));
+
+  let selected_accordian = $state(['0-0']);
 </script>
 
 <svelte:head>
@@ -119,12 +121,11 @@
     <h5 class="h5 my-3 font-bold">
       Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
     </h5>
-    <Accordion collapsible multiple>
+    <Accordion collapsible multiple value={selected_accordian}>
       <!-- Monthly -->
       {@const [month_list, amount_mn_list] = get_month_list(yr)}
       {#each month_list as mn, i_mn (mn)}
         <Accordion.Item value="{i_yr}-{i_mn}">
-          <!-- <Accordion.Item open={i_mn === 0 && i_yr === 0}> -->
           {#snippet control()}
             <span class={cl_join({ 'font-bold': i_mn === 0 && i_yr === 0 })}>
               {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{amount_mn_list[i_mn]}

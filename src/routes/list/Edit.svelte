@@ -15,7 +15,7 @@
   import { TiTick } from 'svelte-icons-pack/ti';
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '@tools/cl_join';
-  import Modal from '@components/Modal.svelte';
+  import ModalInt from '@components/ModalInt.svelte';
   import { SvelteSet } from 'svelte/reactivity';
 
   let { all_data, editable = $bindable() }: { all_data: PageData; editable: boolean } = $props();
@@ -122,7 +122,7 @@
   };
 </script>
 
-<Modal
+<ModalInt
   bind:modal_open={save_modal_opened}
   cancel_btn_txt="❌ Close"
   confirm_btn_txt="✅ Confirm"
@@ -134,7 +134,7 @@
       Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
     </div>
   </strong>
-</Modal>
+</ModalInt>
 
 {#if editable}
   <div transition:slide class="mb-5">

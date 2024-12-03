@@ -1,6 +1,6 @@
 <script lang="ts">
   import Edit from './Edit.svelte';
-  import Modal from '@components/Modal.svelte';
+  import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
@@ -34,19 +34,25 @@
 <MainAppBar page_name="edit" />
 
 {#if !editable}
-  <Modal bind:modal_open={pass_enterer_status}>
-    <AuthenticatePassword
-      is_verified={false}
-      show_always={true}
-      users_data={data.users}
-      bind:pass_input_element={pass_input_elmnt}
-      on_verify={(verified) => {
-        if (verified) {
-          pass_enterer_status = false;
-          editable = true;
-        }
-      }}
-    />
+  <Modal
+    bind:open={pass_enterer_status}
+    contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+    backdropClasses="backdrop-blur-sm"
+  >
+    {#snippet content()}
+      <AuthenticatePassword
+        is_verified={false}
+        show_always={true}
+        users_data={data.users}
+        bind:pass_input_element={pass_input_elmnt}
+        on_verify={(verified) => {
+          if (verified) {
+            pass_enterer_status = false;
+            editable = true;
+          }
+        }}
+      />
+    {/snippet}
   </Modal>
   {#if !pass_enterer_status}
     <button
