@@ -8,8 +8,6 @@
   import Icon from '@tools/Icon.svelte';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
-  import { OiHome16 } from 'svelte-icons-pack/oi';
-  import { TiFlashOutline } from 'svelte-icons-pack/ti';
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -47,7 +45,7 @@
 
 {#if !$submit_data.isSuccess}
   <form transition:slide onsubmit={submit_data_func} class="space-y-2">
-    <div class="mt-2 space-x-3">
+    <!-- <div class="mt-2 space-x-3">
       <label class="inline-flex items-center space-x-2">
         <input class="radio rounded-xl" type="radio" bind:group={rent_type} checked value="rent" />
         <Icon src={OiHome16} class="text-xl" />
@@ -58,7 +56,7 @@
         <Icon src={TiFlashOutline} class="text-xl" />
         <span class="mt-1">Electricity</span>
       </label>
-    </div>
+    </div> -->
     <label class="label">
       <span>Date</span>
       <input class="input" type="date" required bind:value={date} />
