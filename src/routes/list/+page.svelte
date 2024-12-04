@@ -36,9 +36,17 @@
 {#if !editable}
   <Modal
     bind:open={pass_enterer_status}
-    contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+    contentBase="card p-4 space-y-4 shadow-xl max-w-screen-sm"
     backdropClasses="backdrop-blur-sm"
+    initialFocusEl={() => pass_input_elmnt!}
   >
+    {#snippet trigger()}
+      {#if !pass_enterer_status}
+        <button transition:slide class="fixed bottom-2 right-2 cursor-default text-3xl">
+          <Icon src={FiEdit3} class="hover:text-blue-500 active:text-red-500" />
+        </button>
+      {/if}
+    {/snippet}
     {#snippet content()}
       <AuthenticatePassword
         is_verified={false}
@@ -54,20 +62,6 @@
       />
     {/snippet}
   </Modal>
-  {#if !pass_enterer_status}
-    <button
-      transition:slide
-      class="fixed bottom-2 right-2 cursor-default text-3xl"
-      onclick={() => {
-        pass_enterer_status = true;
-        setTimeout(() => {
-          pass_input_elmnt.focus();
-        }, 500);
-      }}
-    >
-      <Icon src={FiEdit3} class="hover:text-blue-500 active:text-red-500" />
-    </button>
-  {/if}
 {/if}
 <div class="my-8">
   <Edit all_data={data} {editable} />

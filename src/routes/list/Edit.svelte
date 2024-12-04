@@ -15,8 +15,8 @@
   import { TiTick } from 'svelte-icons-pack/ti';
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '@tools/cl_join';
-  import ModalInt from '@components/ModalInt.svelte';
   import { SvelteSet } from 'svelte/reactivity';
+  import { Modal } from '@skeletonlabs/skeleton-svelte';
 
   let { all_data, editable = $bindable() }: { all_data: PageData; editable: boolean } = $props();
 
@@ -119,35 +119,50 @@
         }
       }
     );
+    save_modal_opened = false;
   };
 </script>
 
-<ModalInt
-  bind:modal_open={save_modal_opened}
-  cancel_btn_txt="❌ Close"
-  confirm_btn_txt="✅ Confirm"
-  onConfirm={save_data_func}
->
-  <h6>Are you sure to Save Changes ?</h6>
-  <strong>
-    <div>
-      Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
-    </div>
-  </strong>
-</ModalInt>
-
 {#if editable}
-  <div transition:slide class="mb-5">
-    <button
-      onclick={() => (save_modal_opened = true)}
-      class="btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold preset-filled-primary-300-700"
-      disabled={!is_savable}
-    >
-      <Icon src={FiSave} class="-mt-1 mr-1" />
-      Save
-    </button>
-    <Spinner show={$edit_data.isPending} />
-  </div>
+  <Modal
+    bind:open={save_modal_opened}
+    contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+    backdropClasses="backdrop-blur-sm"
+  >
+    {#snippet trigger()}
+      <div transition:slide class="mb-5">
+        <button
+          onclick={() => (save_modal_opened = true)}
+          class="btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold preset-filled-primary-300-700"
+          disabled={!is_savable}
+        >
+          <Icon src={FiSave} class="-mt-1 mr-1" />
+          Save
+        </button>
+        <Spinner show={$edit_data.isPending} />
+      </div>
+    {/snippet}
+    {#snippet content()}
+      <h6>Are you sure to Save Changes ?</h6>
+      <strong>
+        <div>
+          Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
+        </div>
+      </strong>
+      <div class="mt-4 flex justify-end space-x-2">
+        <button
+          onclick={() => (save_modal_opened = false)}
+          class="variant-outline-error btn rounded-lg px-2.5 py-2">❌ Close</button
+        >
+        <button
+          class="variant-filled-secondary btn rounded-lg px-2.5 py-2"
+          onclick={save_data_func}
+        >
+          ✅ Confirm
+        </button>
+      </div>
+    {/snippet}
+  </Modal>
 {/if}
 <div class="table-wrap">
   <table class="table outline-none">
