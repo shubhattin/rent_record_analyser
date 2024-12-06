@@ -25,7 +25,8 @@
 
   const submit_data = client.data.add_data.mutation();
 
-  const submit_data_func = async () => {
+  const submit_data_func = async (e: Event) => {
+    e.preventDefault();
     if (!date || date === '' || !amount || amount === 0) return;
     $submit_data.mutate({
       data: {

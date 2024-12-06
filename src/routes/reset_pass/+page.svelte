@@ -39,7 +39,8 @@
     }
   });
 
-  const handle_sumbit_func = async () => {
+  const handle_sumbit_func = async (e: Event) => {
+    e.preventDefault();
     if (!is_old_pass_verified) {
       if (old_password === '') return;
       $verify_pass.mutate({ password: old_password, user_id: user });
