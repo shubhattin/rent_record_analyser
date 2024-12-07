@@ -60,7 +60,11 @@
   <Edit all_data={data} {editable} />
 </div>
 {#if !pass_enterer_status}
-  <button transition:slide class="fixed bottom-2 right-2 cursor-default text-3xl">
+  <button
+    transition:slide
+    class="fixed bottom-2 right-2 cursor-default text-3xl"
+    onclick={() => (pass_enterer_status = true)}
+  >
     <Icon src={FiEdit3} class="hover:text-blue-500 active:text-red-500" />
   </button>
 {/if}
