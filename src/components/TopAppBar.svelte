@@ -10,7 +10,8 @@
   import { BiArrowBack } from 'svelte-icons-pack/bi';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { FiEdit } from 'svelte-icons-pack/fi';
-  import PWAInstallButton from '~/components/PWAInstallButton.svelte';
+  import { pwa_event_triggerer, pwa_install_event_fired } from '~/state/main';
+  import { OiDownload24 } from 'svelte-icons-pack/oi';
 
   let { start, headline, end }: { start?: Snippet; headline?: Snippet; end?: Snippet } = $props();
 
@@ -113,9 +114,18 @@
           />
           <span>Github</span>
         </a>
-        <div class="rounded-md py-0">
-          <PWAInstallButton button_onclick={() => (app_bar_popover_status = false)} />
-        </div>
+        {#if !$pwa_install_event_fired}
+          <button
+            class="select-none gap-1 px-2 py-1 text-sm outline-none"
+            onclick={async () => {
+              app_bar_popover_status = false;
+              if ($pwa_install_event_fired) await $pwa_event_triggerer.prompt();
+            }}
+          >
+            <Icon src={OiDownload24} class="-mt-1 text-base" />
+            Install
+          </button>
+        {/if}
         <div class="flex space-x-3 rounded-md px-2 py-1">
           <span class="mt-1">Set Theme</span>
           <ThemeChanger />
