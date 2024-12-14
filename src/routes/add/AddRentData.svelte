@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { get_utc_date, normaliseDate } from '@tools/date';
-  import { MONTH_NAMES } from '@tools/date';
+  import { get_utc_date, normaliseDate } from '~/tools/date';
+  import { MONTH_NAMES } from '~/tools/date';
   import { onMount } from 'svelte';
-  import Spinner from '@components/Spinner.svelte';
+  import Spinner from '~/components/Spinner.svelte';
   import { slide, scale } from 'svelte/transition';
-  import { client } from '@api/client';
-  import Icon from '@tools/Icon.svelte';
+  import { client } from '~/api/client';
+  import Icon from '~/tools/Icon.svelte';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
 

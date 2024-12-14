@@ -1,13 +1,13 @@
 import { dbClient_ext as db, queryClient } from './client';
 import { readFile } from 'fs/promises';
-import { dbMode, take_input } from '@tools/kry_server';
-import { rent_data, others, users, verification_requests } from '@db/schema';
+import { dbMode, take_input } from '~/tools/kry_server';
+import { rent_data, others, users, verification_requests } from '~/db/schema';
 import {
   RentDataSchemaZod,
   OthersSchemaZod,
   UsersSchemaZod,
   VerficationRequestsSchemaZod
-} from '@db/schema_zod';
+} from '~/db/schema_zod';
 import { z } from 'zod';
 import { sql } from 'drizzle-orm';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { cl_join } from '@tools/cl_join';
+  import { cl_join } from '~/tools/cl_join';
   let { class: className, src }: { class: string; src: string } = $props();
 </script>
 

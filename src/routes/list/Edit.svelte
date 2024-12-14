@@ -1,20 +1,20 @@
 <script lang="ts">
   import { z } from 'zod';
   import { slide } from 'svelte/transition';
-  import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '@tools/date';
-  import Spinner from '@components/Spinner.svelte';
-  import { client, setJwtToken } from '@api/client';
+  import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
+  import Spinner from '~/components/Spinner.svelte';
+  import { client, setJwtToken } from '~/api/client';
   import type { PageData } from './$types';
-  import ImageSpan from '@components/ImageSpan.svelte';
-  import HomeIcon from '@components/icons/home.svg';
-  import FlashIcon from '@components/icons/flash.svg';
+  import ImageSpan from '~/components/ImageSpan.svelte';
+  import HomeIcon from '~/components/icons/home.svg';
+  import FlashIcon from '~/components/icons/flash.svg';
   import { FiSave } from 'svelte-icons-pack/fi';
-  import Icon from '@tools/Icon.svelte';
+  import Icon from '~/tools/Icon.svelte';
   import { AiOutlineClose } from 'svelte-icons-pack/ai';
   import { BiReset } from 'svelte-icons-pack/bi';
   import { TiTick } from 'svelte-icons-pack/ti';
   import { VscAdd } from 'svelte-icons-pack/vsc';
-  import { cl_join } from '@tools/cl_join';
+  import { cl_join } from '~/tools/cl_join';
   import { SvelteSet } from 'svelte/reactivity';
   import { Modal } from '@skeletonlabs/skeleton-svelte';
 

@@ -1,5 +1,5 @@
-import { createContext } from '@api/context';
-import { router } from '@api/trpc_router';
+import { createContext } from '~/api/context';
+import { router } from '~/api/trpc_router';
 import { createTRPCHandle } from 'trpc-sveltekit';
 import type { Handle } from '@sveltejs/kit';
 
@@ -15,8 +15,8 @@ const set_handle_trpc = async () => {
   // using it in this way to also allow static pregenerated pages
   if (!handle_trpc.func) {
     const { createTRPCHandle } = await import('trpc-sveltekit');
-    const { router } = await import('@api/trpc_router');
-    const { createContext } = await import('@api/context');
+    const { router } = await import('~/api/trpc_router');
+    const { createContext } = await import('~/api/context');
     handle_trpc.func = createTRPCHandle({ router, createContext });
   }
 };

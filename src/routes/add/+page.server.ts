@@ -1,4 +1,4 @@
-import { db } from '@db/db';
+import { db } from '~/db/db';
 
 export const load = async () => {
   const users_query = db.query.users.findMany({

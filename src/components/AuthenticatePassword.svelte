@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { client, setJwtToken } from '@api/client';
+  import { client, setJwtToken } from '~/api/client';
   import Spinner from './Spinner.svelte';
-  import { cl_join } from '@tools/cl_join';
+  import { cl_join } from '~/tools/cl_join';
 
   let {
     show_always = false,

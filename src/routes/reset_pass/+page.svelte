@@ -1,10 +1,9 @@
 <script lang="ts">
-  import Spinner from '@components/Spinner.svelte';
+  import Spinner from '~/components/Spinner.svelte';
   import type { PageData } from './$types';
-  import { client, setJwtToken } from '@api/client';
-  import { get_val_with_key } from '@tools/kry';
-  import MainAppBar from '@components/MainAppBar.svelte';
-  import { cl_join } from '@tools/cl_join';
+  import { client, setJwtToken } from '~/api/client';
+  import { get_val_with_key } from '~/tools/kry';
+  import { cl_join } from '~/tools/cl_join';
 
   let { data }: { data: PageData } = $props();
   let users = $derived(data.users);
@@ -54,11 +53,6 @@
 <svelte:head>
   <title>Reset Password</title>
 </svelte:head>
-<MainAppBar page_name="reset_pass">
-  {#snippet start()}
-    <h4 class="text-xl font-bold text-indigo-800 dark:text-blue-300">Reset Password</h4>
-  {/snippet}
-</MainAppBar>
 {#if !($reset_pass.isSuccess && $reset_pass.data.status === 'success')}
   <form onsubmit={handle_sumbit_func} class="mt-4 space-y-3">
     <select class="select" bind:value={user} disabled={is_old_pass_verified}>

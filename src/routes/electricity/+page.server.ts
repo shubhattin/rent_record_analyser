@@ -1,5 +1,5 @@
-import { db } from '@db/db';
-import { rent_data, verification_requests } from '@db/schema';
+import { db } from '~/db/db';
+import { rent_data, verification_requests } from '~/db/schema';
 import { desc, eq } from 'drizzle-orm';
 
 export const load = async () => {

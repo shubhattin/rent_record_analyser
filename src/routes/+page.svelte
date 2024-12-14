@@ -2,11 +2,10 @@
   import type { PageData } from './$types';
   import { Accordion } from '@skeletonlabs/skeleton-svelte';
   import { goto, preloadData } from '$app/navigation';
-  import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
+  import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '~/tools/date';
   import { onMount } from 'svelte';
-  import { cl_join } from '@tools/cl_join';
+  import { cl_join } from '~/tools/cl_join';
   import { browser } from '$app/environment';
-  import MainAppBar from '@components/MainAppBar.svelte';
 
   let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
     $props();
@@ -96,24 +95,6 @@
   <title>Rent Record Analyser</title>
   <meta name="description" content="A Simple House Rent Record Analyser" />
 </svelte:head>
-
-<MainAppBar {page_name}>
-  {#snippet start()}
-    <!-- <RadioGroup>
-      <RadioItem
-        bind:group={page_name}
-        name="rent_page"
-        value="rent"
-        class="fill-white active:fill-black"
-      >
-        <Icon src={OiHome16} class="text-2xl" />
-      </RadioItem>
-      <RadioItem bind:group={page_name} name="rent_page" value="electricity">
-        <Zap />
-      </RadioItem>
-    </RadioGroup> -->
-  {/snippet}
-</MainAppBar>
 
 <div>
   <!-- Yearly -->

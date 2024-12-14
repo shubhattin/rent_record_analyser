@@ -1,17 +1,31 @@
 <script lang="ts">
-  import { toggleMode } from 'mode-watcher';
-  import Sun from 'lucide-svelte/icons/sun';
-  import Moon from 'lucide-svelte/icons/moon';
+  import { setMode } from 'mode-watcher';
+  import { LuSun, LuMoon } from 'svelte-icons-pack/lu';
+  import Icon from '~/tools/Icon.svelte';
+  import { SlScreenDesktop } from 'svelte-icons-pack/sl';
 </script>
 
-<button class="btn-xl -mb-1 ml-0 mr-1 inline-flex items-center p-0" on:click={toggleMode}>
-  <Sun
-    size={322}
-    class="h-5 w-5 rotate-0 scale-100 transition-all hover:text-amber-700 dark:-rotate-90 dark:scale-0"
+<button
+  class="btn-xl group -mb-1 ml-0 mr-0 inline-flex select-none items-center p-0 outline-none"
+  on:click={() => setMode('system')}
+>
+  <Icon
+    src={SlScreenDesktop}
+    class="h-5 w-5 rotate-0 scale-100 group-hover:text-blue-500 dark:group-hover:text-sky-500"
   />
-  <Moon
-    size={322}
-    class="absolute h-5 w-5 rotate-90 scale-0 transition-all hover:text-slate-400 dark:rotate-0 dark:scale-100"
+</button>
+<button
+  class="btn-xl group -mb-1 ml-0 mr-0 inline-flex select-none items-center p-0 outline-none"
+  on:click={() => setMode('light')}
+>
+  <Icon src={LuSun} class="h-5 w-5 rotate-0 scale-100 dark:group-hover:text-yellow-300" />
+</button>
+<button
+  class="btn-xl group -mb-1 ml-0 mr-0 inline-flex select-none items-center p-0 outline-none"
+  on:click={() => setMode('dark')}
+>
+  <Icon
+    src={LuMoon}
+    class="h-5 w-5 rotate-0 scale-100 group-hover:text-purple-600 dark:group-hover:text-white"
   />
-  <span class="sr-only">Toggle theme</span>
 </button>

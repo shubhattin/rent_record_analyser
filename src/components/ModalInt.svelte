@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { cl_join } from '@tools/cl_join';
+  import { cl_join } from '~/tools/cl_join';
   import { onMount, untrack, type Snippet } from 'svelte';
   import { scale, slide } from 'svelte/transition';
   import { AiOutlineClose } from 'svelte-icons-pack/ai';
-  import Icon from '@tools/Icon.svelte';
+  import Icon from '~/tools/Icon.svelte';
 
   let {
     modal_open = $bindable(),

@@ -13,10 +13,7 @@ const config = {
       regions: 'sin1'
     }),
     alias: {
-      '@tools/*': 'src/tools/*',
-      '@components/*': 'src/components/*',
-      '@db/*': 'src/db/*',
-      '@api/*': 'src/api/*'
+      '~/*': './src/*'
     }
   }
 };
