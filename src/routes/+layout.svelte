@@ -2,7 +2,7 @@
   import { ModeWatcher } from 'mode-watcher';
   import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
   import { browser } from '$app/environment';
-  import type { Snippet } from 'svelte';
+  import { onMount, type Snippet } from 'svelte';
   import TopAppBar from '~/components/TopAppBar.svelte';
   import '@fontsource/roboto/latin.css';
   import '../app.pcss';
@@ -15,6 +15,15 @@
         enabled: browser
       }
     }
+  });
+  onMount(() => {
+    console.log('omn');
+    window.addEventListener('beforeinstallprompt', (event) => {
+      // event_fired = true;
+      event.preventDefault();
+      // install_prompt = event;
+      console.log('PWA Install Prompt event fired', [event]);
+    });
   });
 </script>
 

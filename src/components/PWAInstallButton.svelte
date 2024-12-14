@@ -9,12 +9,12 @@
   let install_prompt: any | null = null;
 
   onMount(() => {
-    window.addEventListener('beforeinstallprompt', (event) => {
-      console.log('guyhuiji');
-      event_fired = true;
-      event.preventDefault();
-      install_prompt = event;
-    });
+    // window.addEventListener('beforeinstallprompt', (event) => {
+    //   event_fired = true;
+    //   event.preventDefault();
+    //   install_prompt = event;
+    //   console.log("PWA Install Prompt event fired", [event]);
+    // });
   });
 
   const install_PWA = async () => {
