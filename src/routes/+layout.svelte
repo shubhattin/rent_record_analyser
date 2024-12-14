@@ -4,6 +4,7 @@
   import { browser } from '$app/environment';
   import { onMount, type Snippet } from 'svelte';
   import TopAppBar from '~/components/TopAppBar.svelte';
+  import { pwa_event_triggerer, pwa_install_event_fired } from '~/state/main';
   import '@fontsource/roboto/latin.css';
   import '../app.pcss';
 
@@ -17,11 +18,10 @@
     }
   });
   onMount(() => {
-    console.log('omn');
     window.addEventListener('beforeinstallprompt', (event) => {
-      // event_fired = true;
+      $pwa_install_event_fired = true;
       event.preventDefault();
-      // install_prompt = event;
+      $pwa_event_triggerer = event;
       console.log('PWA Install Prompt event fired', [event]);
     });
   });
