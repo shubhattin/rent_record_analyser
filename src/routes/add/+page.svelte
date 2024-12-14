@@ -1,8 +1,8 @@
 <script lang="ts">
   import AddRentData from './AddRentData.svelte';
   import type { PageData } from './$types';
-  import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
-  import MainAppBar from '@components/TopAppBar.svelte';
+  import AuthenticatePassword from '~/components/AuthenticatePassword.svelte';
+  import MainAppBar from '~/components/TopAppBar.svelte';
 
   let { data }: { data: PageData } = $props();
 

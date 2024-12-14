@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Spinner from '@components/Spinner.svelte';
+  import Spinner from '~/components/Spinner.svelte';
   import type { PageData } from './$types';
-  import { client, setJwtToken } from '@api/client';
-  import { get_val_with_key } from '@tools/kry';
-  import MainAppBar from '@components/TopAppBar.svelte';
-  import { cl_join } from '@tools/cl_join';
+  import { client, setJwtToken } from '~/api/client';
+  import { get_val_with_key } from '~/tools/kry';
+  import MainAppBar from '~/components/TopAppBar.svelte';
+  import { cl_join } from '~/tools/cl_join';
 
   let { data }: { data: PageData } = $props();
   let users = $derived(data.users);

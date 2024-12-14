@@ -4,7 +4,7 @@
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { BiArrowBack } from 'svelte-icons-pack/bi';
   import ThemeChanger from './ThemeChanger.svelte';
-  import Icon from '@tools/Icon.svelte';
+  import Icon from '~/tools/Icon.svelte';
   import type { Snippet } from 'svelte';
   import { AiOutlineMenu } from 'svelte-icons-pack/ai';
   import { SiGithub } from 'svelte-icons-pack/si';

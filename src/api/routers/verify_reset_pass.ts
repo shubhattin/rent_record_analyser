@@ -1,12 +1,12 @@
 import { protectedProcedure, publicProcedure, t } from '../trpc_init';
-import { users } from '@db/schema';
-import { gen_salt, hash_256, puShTi } from '@tools/hash';
+import { users } from '~/db/schema';
+import { gen_salt, hash_256, puShTi } from '~/tools/hash';
 import { eq } from 'drizzle-orm';
-import { db } from '@db/db';
+import { db } from '~/db/db';
 import { z } from 'zod';
-import { JWT_SECRET } from '@tools/jwt';
+import { JWT_SECRET } from '~/tools/jwt';
 import { SignJWT } from 'jose';
-import { delay } from '@tools/delay';
+import { delay } from '~/tools/delay';
 
 const JWT_EXPIRATION_TIME = '10min';
 

@@ -2,11 +2,11 @@
   import type { PageData } from './$types';
   import { Accordion } from '@skeletonlabs/skeleton-svelte';
   import { goto, preloadData } from '$app/navigation';
-  import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '@tools/date';
+  import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '~/tools/date';
   import { onMount } from 'svelte';
-  import { cl_join } from '@tools/cl_join';
+  import { cl_join } from '~/tools/cl_join';
   import { browser } from '$app/environment';
-  import MainAppBar from '@components/TopAppBar.svelte';
+  import MainAppBar from '~/components/TopAppBar.svelte';
 
   let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
     $props();
