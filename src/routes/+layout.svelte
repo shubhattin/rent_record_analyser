@@ -19,10 +19,9 @@
   });
   onMount(() => {
     window.addEventListener('beforeinstallprompt', (event) => {
-      $pwa_install_event_fired = true;
       event.preventDefault();
       $pwa_event_triggerer = event;
-      console.log('PWA Install Prompt event fired', [event]);
+      $pwa_install_event_fired = true;
     });
   });
 </script>
