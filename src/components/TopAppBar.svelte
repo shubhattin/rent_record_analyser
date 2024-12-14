@@ -114,7 +114,7 @@
           />
           <span>Github</span>
         </a>
-        {#if !$pwa_install_event_fired}
+        {#if $pwa_install_event_fired}
           <button
             class="select-none gap-1 px-2 py-1 text-sm outline-none"
             onclick={async () => {
