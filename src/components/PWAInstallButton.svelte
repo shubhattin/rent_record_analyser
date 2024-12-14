@@ -6,7 +6,7 @@
   let { button_onclick }: { button_onclick?: () => void } = $props();
 </script>
 
-{#if !$pwa_install_event_fired}
+{#if $pwa_install_event_fired}
   <button
     class="select-none gap-1 rounded-xl px-2 py-1 text-sm outline-none"
     onclick={async () => {
