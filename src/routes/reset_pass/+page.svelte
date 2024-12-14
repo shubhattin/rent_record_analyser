@@ -3,7 +3,7 @@
   import type { PageData } from './$types';
   import { client, setJwtToken } from '@api/client';
   import { get_val_with_key } from '@tools/kry';
-  import MainAppBar from '@components/MainAppBar.svelte';
+  import MainAppBar from '@components/TopAppBar.svelte';
   import { cl_join } from '@tools/cl_join';
 
   let { data }: { data: PageData } = $props();

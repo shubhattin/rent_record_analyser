@@ -5,7 +5,7 @@
   import type { PageData } from './$types';
   import AuthenticatePassword from '@components/AuthenticatePassword.svelte';
   import { slide } from 'svelte/transition';
-  import MainAppBar from '@components/MainAppBar.svelte';
+  import MainAppBar from '@components/TopAppBar.svelte';
   import { FiEdit3 } from 'svelte-icons-pack/fi';
   import Icon from '@tools/Icon.svelte';
 
