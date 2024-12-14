@@ -6,7 +6,6 @@
   import { onMount } from 'svelte';
   import { cl_join } from '~/tools/cl_join';
   import { browser } from '$app/environment';
-  import MainAppBar from '~/components/TopAppBar.svelte';
 
   let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
     $props();
@@ -96,8 +95,6 @@
   <title>Rent Record Analyser</title>
   <meta name="description" content="A Simple House Rent Record Analyser" />
 </svelte:head>
-
-<MainAppBar {page_name}></MainAppBar>
 
 <div>
   <!-- Yearly -->

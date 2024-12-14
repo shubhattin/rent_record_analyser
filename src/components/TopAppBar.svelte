@@ -1,30 +1,27 @@
 <script lang="ts">
-  import { AppBar, Tooltip, Popover } from '@skeletonlabs/skeleton-svelte';
-  import { FiEdit } from 'svelte-icons-pack/fi';
-  import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
-  import { BiArrowBack } from 'svelte-icons-pack/bi';
+  import { AppBar, Popover, Tooltip } from '@skeletonlabs/skeleton-svelte';
   import ThemeChanger from './ThemeChanger.svelte';
   import Icon from '~/tools/Icon.svelte';
-  import type { Snippet } from 'svelte';
-  import { AiOutlineMenu } from 'svelte-icons-pack/ai';
   import { SiGithub } from 'svelte-icons-pack/si';
+  import { AiOutlineMenu } from 'svelte-icons-pack/ai';
+  import { page } from '$app/stores';
+  import { PAGE_TITLES } from '~/state/page_titles';
+  import type { Snippet } from 'svelte';
+  import { BiArrowBack } from 'svelte-icons-pack/bi';
+  import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
+  import { FiEdit } from 'svelte-icons-pack/fi';
+  import PWAInstallButton from '~/components/PWAInstallButton.svelte';
 
-  let {
-    page_name,
-    start,
-    end
-  }: {
-    page_name: 'rent' | 'electricity' | 'add' | 'edit' | 'reset_pass';
-    start?: Snippet | undefined;
-    end?: Snippet | undefined;
-  } = $props();
+  let { start, headline, end }: { start?: Snippet; headline?: Snippet; end?: Snippet } = $props();
+
+  let route_id = $derived($page.route.id as keyof typeof PAGE_TITLES);
 
   let app_bar_popover_status = $state(false);
 </script>
 
 <AppBar>
   {#snippet lead()}
-    {#if page_name !== 'rent' && page_name !== 'electricity'}
+    {#if route_id !== '/'}
       <Tooltip
         contentBase="preset-outlined-tertiary-100-900 px-1 rounded-md text-base"
         positioning={{ placement: 'bottom' }}
@@ -41,16 +38,23 @@
         {#snippet content()}Home Page{/snippet}
       </Tooltip>
     {/if}
+    {#if start}
+      {@render start()}
+    {/if}
+    {#if headline}
+      {@render headline()}
+    {:else if route_id in PAGE_TITLES}
+      <span class={PAGE_TITLES[route_id as keyof typeof PAGE_TITLES][1]}>
+        {PAGE_TITLES[route_id as keyof typeof PAGE_TITLES][0]}
+      </span>
+    {/if}
     {@render start?.()}
   {/snippet}
-  <!-- <svelte:fragment slot="headline">
-    <slot name="headline"><span></span></slot>
-  </svelte:fragment> -->
   {#snippet trail()}
     {#if end}
       {@render end()}
     {:else}
-      {#if page_name !== 'add'}
+      {#if route_id !== '/add'}
         <Tooltip
           contentBase="preset-outlined-tertiary-100-900 px-1 rounded-md text-base"
           positioning={{ placement: 'bottom' }}
@@ -67,7 +71,7 @@
           {#snippet content()}Add Record{/snippet}
         </Tooltip>
       {/if}
-      {#if page_name !== 'edit'}
+      {#if route_id !== '/list'}
         <Tooltip
           contentBase="preset-outlined-tertiary-100-900 px-1 rounded-md text-base"
           positioning={{ placement: 'bottom' }}
@@ -86,7 +90,7 @@
       bind:open={app_bar_popover_status}
       positioning={{ placement: 'left-start' }}
       arrow={false}
-      contentBase="card z-50 space-y-2 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
+      contentBase="card z-50 space-y-1 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
       triggerBase="btn m-0 p-0 gap-0 -mt-1 outline-none select-none"
     >
       {#snippet trigger()}
@@ -100,7 +104,7 @@
           href="https://github.com/shubhattin/rent_record_analyser"
           target="_blank"
           rel="noopener noreferrer"
-          class="will-close group flex space-x-1 rounded-md px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700"
+          class="group flex space-x-1 rounded-md px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-700"
           onclick={() => (app_bar_popover_status = false)}
         >
           <Icon
@@ -109,7 +113,10 @@
           />
           <span>Github</span>
         </a>
-        <div class="wont-close flex space-x-3 rounded-md px-2 py-1">
+        <div class="rounded-md py-0">
+          <PWAInstallButton button_onclick={() => (app_bar_popover_status = false)} />
+        </div>
+        <div class="flex space-x-3 rounded-md px-2 py-1">
           <span class="mt-1">Set Theme</span>
           <ThemeChanger />
         </div>

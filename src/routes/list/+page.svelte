@@ -5,7 +5,6 @@
   import type { PageData } from './$types';
   import AuthenticatePassword from '~/components/AuthenticatePassword.svelte';
   import { slide } from 'svelte/transition';
-  import MainAppBar from '~/components/TopAppBar.svelte';
   import { FiEdit3 } from 'svelte-icons-pack/fi';
   import Icon from '~/tools/Icon.svelte';
 
@@ -30,8 +29,6 @@
 <svelte:head>
   <title>Rent Record Editor</title>
 </svelte:head>
-
-<MainAppBar page_name="edit" />
 
 {#if !editable}
   <Modal
