@@ -5,8 +5,10 @@
   import { onMount, type Snippet } from 'svelte';
   import TopAppBar from '~/components/TopAppBar.svelte';
   import { pwa_event_triggerer, pwa_install_event_fired } from '~/state/main';
+  import GA from '~/components/tags/GA.svelte';
+  import PartyTown from '~/components/tags/PartyTown.svelte';
   import '@fontsource/roboto/latin.css';
-  import '../app.pcss';
+  import '../app.postcss';
 
   let { children }: { children: Snippet } = $props();
 
@@ -33,3 +35,5 @@
     {@render children()}
   </QueryClientProvider>
 </div>
+<GA />
+<PartyTown />
