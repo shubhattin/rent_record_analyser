@@ -1,0 +1,193 @@
+{
+  "id": "41c6cb6f-90d8-4f1f-b716-33c7b0b2179c",
+  "prevId": "0ae65549-bfc0-43d8-a62a-69515578b88e",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "others": {
+      "name": "others",
+      "schema": "",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "varchar(20)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "rent_data": {
+      "name": "rent_data",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "month": {
+          "name": "month",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rent_type": {
+          "name": "rent_type",
+          "type": "rent_type",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'rent'"
+        }
+      },
+      "indexes": {
+        "rent_data_date_index": {
+          "name": "rent_data_date_index",
+          "columns": [
+            "date"
+          ],
+          "isUnique": false
+        },
+        "rent_data_month_index": {
+          "name": "rent_data_month_index",
+          "columns": [
+            "month"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "rent_data_user_id_users_id_fk": {
+          "name": "rent_data_user_id_users_id_fk",
+          "tableFrom": "rent_data",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password": {
+          "name": "password",
+          "type": "char(96)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_type": {
+          "name": "user_type",
+          "type": "user_type",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'non-admin'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "verification_requests": {
+      "name": "verification_requests",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "verification_requests_id_rent_data_id_fk": {
+          "name": "verification_requests_id_rent_data_id_fk",
+          "tableFrom": "verification_requests",
+          "tableTo": "rent_data",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "rent_type": {
+      "name": "rent_type",
+      "values": {
+        "rent": "rent",
+        "electricity": "electricity"
+      }
+    },
+    "user_type": {
+      "name": "user_type",
+      "values": {
+        "admin": "admin",
+        "non-admin": "non-admin"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

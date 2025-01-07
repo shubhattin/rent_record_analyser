@@ -1,16 +1,33 @@
-import { pgTable, serial, date, varchar, integer, text, char, pgEnum } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  date,
+  varchar,
+  integer,
+  text,
+  char,
+  pgEnum,
+  index
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const rentTypeEnum = pgEnum('rent_type', ['rent', 'electricity']);
 
-export const rent_data = pgTable('rent_data', {
-  id: serial('id').primaryKey(),
-  amount: integer('amount').notNull(),
-  date: date('date', { mode: 'date' }).notNull(),
-  month: date('month', { mode: 'date' }).notNull(),
-  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
-  rent_type: rentTypeEnum('rent_type').default('rent').notNull()
-});
+export const rent_data = pgTable(
+  'rent_data',
+  {
+    id: serial('id').primaryKey(),
+    amount: integer('amount').notNull(),
+    date: date('date', { mode: 'date' }).notNull(),
+    month: date('month', { mode: 'date' }).notNull(),
+    user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
+    rent_type: rentTypeEnum('rent_type').default('rent').notNull()
+  },
+  (table) => ({
+    dateIdx: index().on(table.date),
+    monthIdx: index().on(table.month)
+  })
+);
 
 export const others = pgTable('others', {
   key: varchar('key', { length: 20 }).primaryKey(),
