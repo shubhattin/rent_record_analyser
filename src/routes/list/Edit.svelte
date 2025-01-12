@@ -191,7 +191,7 @@
         <tr class={cl_join(clss)}>
           <td>
             {#if !editable}
-              {get_date_string(dt.date)}
+              {get_date_string(dt.date, 'dd/mm/yyyy', true)}
             {:else}
               <input
                 type="text"
@@ -235,7 +235,7 @@
           </td>
           <td>
             {#if !editable}
-              {`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}
+              {`${dt.month.getUTCFullYear()}-${(dt.month.getUTCMonth() + 1).toString().padStart(2, '0')}`}
             {:else}
               <input
                 type="text"
