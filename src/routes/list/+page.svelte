@@ -54,9 +54,9 @@
   </Modal>
 {/if}
 <div class="my-8">
-  <Edit all_data={data} {editable} />
+  <Edit all_data={data} bind:editable />
 </div>
-{#if !pass_enterer_status}
+{#if !pass_enterer_status && !editable}
   <button
     transition:slide
     class="fixed bottom-2 right-2 cursor-default text-3xl"
