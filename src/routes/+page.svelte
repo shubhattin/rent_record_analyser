@@ -102,7 +102,12 @@
     <h5 class="h5 my-3 font-bold">
       Year {yr}, Total <sup>₹</sup>{amount_yr_list[i_yr]}
     </h5>
-    <Accordion collapsible multiple value={selected_accordian}>
+    <Accordion
+      collapsible
+      multiple
+      value={selected_accordian}
+      onValueChange={(e) => (selected_accordian = e.value)}
+    >
       <!-- Monthly -->
       {@const [month_list, amount_mn_list] = get_month_list(yr)}
       {#each month_list as mn, i_mn (mn)}
