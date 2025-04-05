@@ -125,7 +125,8 @@
 
 {#if editable}
   <Modal
-    bind:open={save_modal_opened}
+    open={save_modal_opened}
+    onOpenChange={(e) => (save_modal_opened = e.open)}
     contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
     backdropClasses="backdrop-blur-sm"
   >
@@ -133,7 +134,7 @@
       <div transition:slide class="mb-5">
         <button
           onclick={() => (save_modal_opened = true)}
-          class="btn inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold preset-filled-primary-300-700"
+          class="btn preset-filled-primary-300-700 inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold"
           disabled={!is_savable}
         >
           <Icon src={FiSave} class="-mt-1 mr-1" />

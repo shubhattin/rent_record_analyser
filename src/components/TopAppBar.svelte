@@ -88,7 +88,8 @@
       {/if}
     {/if}
     <Popover
-      bind:open={app_bar_popover_status}
+      open={app_bar_popover_status}
+      onOpenChange={(e) => (app_bar_popover_status = e.open)}
       positioning={{ placement: 'left-start' }}
       arrow={false}
       contentBase="card z-50 space-y-1 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"

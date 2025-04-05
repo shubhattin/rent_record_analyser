@@ -8,7 +8,8 @@
   import GA from '~/components/tags/GA.svelte';
   import PartyTown from '~/components/tags/PartyTown.svelte';
   import '@fontsource/roboto/latin.css';
-  import '../app.postcss';
+  import '../app.css';
+  import '../app.scss';
 
   let { children }: { children: Snippet } = $props();
 

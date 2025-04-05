@@ -32,7 +32,8 @@
 
 {#if !editable}
   <Modal
-    bind:open={pass_enterer_status}
+    open={pass_enterer_status}
+    onOpenChange={(e) => (pass_enterer_status = e.open)}
     contentBase="card p-4 space-y-4 shadow-xl max-w-screen-sm"
     backdropClasses="backdrop-blur-sm"
     initialFocusEl={() => pass_input_elmnt!}
