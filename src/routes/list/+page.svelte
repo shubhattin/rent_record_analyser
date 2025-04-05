@@ -20,7 +20,6 @@
         e.returnValue = ''; // Chrome requires returnValue to be set
       }
     });
-    document.querySelector('html')?.setAttribute('data-theme', 'dark'); // enforcing dark theme on this page
   });
 
   let pass_input_elmnt = $state<HTMLInputElement>(null!);
@@ -60,7 +59,7 @@
 {#if !pass_enterer_status && !editable}
   <button
     transition:slide
-    class="fixed bottom-2 right-2 cursor-default text-3xl"
+    class="fixed right-2 bottom-2 cursor-default text-3xl"
     onclick={() => (pass_enterer_status = true)}
   >
     <Icon src={FiEdit3} class="hover:text-blue-500 active:text-red-500" />

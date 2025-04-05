@@ -56,35 +56,17 @@
       {@render end()}
     {:else}
       {#if route_id !== '/add'}
-        <Tooltip
-          contentBase="preset-outlined-tertiary-100-900 px-1 rounded-md text-base"
-          positioning={{ placement: 'bottom' }}
-          openDelay={100}
-        >
-          {#snippet trigger()}
-            <a class="text-xl" href="/add">
-              <Icon
-                src={RiSystemAddLargeLine}
-                class="text-2xl hover:fill-zinc-400 active:fill-green-700"
-              />
-            </a>
-          {/snippet}
-          {#snippet content()}Add Record{/snippet}
-        </Tooltip>
+        <a class="text-xl" href="/add">
+          <Icon
+            src={RiSystemAddLargeLine}
+            class="text-2xl hover:fill-zinc-400 active:fill-green-700"
+          />
+        </a>
       {/if}
       {#if route_id !== '/list'}
-        <Tooltip
-          contentBase="preset-outlined-tertiary-100-900 px-1 rounded-md text-base"
-          positioning={{ placement: 'bottom' }}
-          openDelay={200}
-        >
-          {#snippet trigger()}
-            <a class="text-xl" href="/list">
-              <Icon src={FiEdit} class="text-2xl hover:text-zinc-400 active:text-blue-600" />
-            </a>
-          {/snippet}
-          {#snippet content()}Edit Records{/snippet}
-        </Tooltip>
+        <a class="text-xl" href="/list">
+          <Icon src={FiEdit} class="text-2xl hover:text-zinc-400 active:text-blue-600" />
+        </a>
       {/if}
     {/if}
     <Popover
@@ -93,7 +75,7 @@
       positioning={{ placement: 'left-start' }}
       arrow={false}
       contentBase="card z-50 space-y-1 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
-      triggerBase="btn m-0 p-0 gap-0 -mt-1 outline-none select-none"
+      triggerBase="btn p-0 gap-0 mt-1 outline-none select-none"
     >
       {#snippet trigger()}
         <Icon
@@ -117,7 +99,7 @@
         </a>
         {#if pwa_state.install_event_fired}
           <button
-            class="select-none gap-1 px-2 py-1 text-sm outline-none"
+            class="gap-1 px-2 py-1 text-sm outline-none select-none"
             onclick={async () => {
               app_bar_popover_status = false;
               if (pwa_state.install_event_fired && pwa_state.event_triggerer)
