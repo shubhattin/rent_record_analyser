@@ -5,8 +5,6 @@
   import { onMount, type Snippet } from 'svelte';
   import TopAppBar from '~/components/TopAppBar.svelte';
   import { pwa_state } from '~/state/main.svelte';
-  import GA from '~/components/tags/GA.svelte';
-  import PartyTown from '~/components/tags/PartyTown.svelte';
   import '@fontsource/roboto/latin.css';
   import '../app.css';
   import '../app.scss';
@@ -36,5 +34,3 @@
     {@render children()}
   </QueryClientProvider>
 </div>
-<GA />
-<PartyTown />
