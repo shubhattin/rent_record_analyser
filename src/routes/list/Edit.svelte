@@ -3,7 +3,7 @@
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
-  import { client, setAccessToken } from '~/api/client';
+  import { client_q, setAccessToken } from '~/api/client';
   import type { PageData } from './$types';
   import ImageSpan from '~/components/ImageSpan.svelte';
   import HomeIcon from '~/components/icons/home.svg';
@@ -83,7 +83,7 @@
 
   let is_savable = $derived(to_delete_list.size + to_change_list.size + to_verify_list.size !== 0);
 
-  const edit_data = client.data.edit_data.mutation();
+  const edit_data = client_q.data.edit_data.mutation();
 
   const save_data_func = async () => {
     if (!is_savable) return;

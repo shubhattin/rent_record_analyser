@@ -4,7 +4,7 @@
   import { onMount } from 'svelte';
   import Spinner from '~/components/Spinner.svelte';
   import { slide, scale } from 'svelte/transition';
-  import { client } from '~/api/client';
+  import { client_q } from '~/api/client';
   import Icon from '~/tools/Icon.svelte';
   import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
@@ -23,7 +23,7 @@
   let amount = $state<number>(null!);
   let rent_type: 'rent' | 'electricity' = $state('rent');
 
-  const submit_data = client.data.add_data.mutation();
+  const submit_data = client_q.data.add_data.mutation();
 
   const submit_data_func = async (e: Event) => {
     e.preventDefault();
@@ -88,7 +88,7 @@
     />
     <button
       type="submit"
-      class="btn gap-0 rounded-lg px-0 py-1.5 pr-3 font-semibold preset-filled-primary-400-600"
+      class="btn preset-filled-primary-400-600 gap-0 rounded-lg px-0 py-1.5 pr-3 font-semibold"
     >
       <Spinner show={$submit_data.isPending} />
       Submit
@@ -96,7 +96,7 @@
   </form>
 {:else if $submit_data.isSuccess && $submit_data.data.status === 'success'}
   <div transition:scale class="space-y-1.5">
-    <a href="/" class="btn gap-1 rounded-md px-1 py-0 preset-filled-primary-300-700">
+    <a href="/" class="btn preset-filled-primary-300-700 gap-1 rounded-md px-1 py-0">
       <Icon class="-mt-1" src={AiOutlineHome} />
       Home Page
     </a>
@@ -105,7 +105,7 @@
       {normaliseDate(date)}.
     </div>
     <button
-      class="btn gap-1 rounded-md px-1 py-0 preset-filled-secondary-300-700"
+      class="btn preset-filled-secondary-300-700 gap-1 rounded-md px-1 py-0"
       onclick={() => {
         // resetting this component
         date = get_todays_date();

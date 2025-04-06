@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from '~/components/Spinner.svelte';
   import type { PageData } from './$types';
-  import { client, setAccessToken } from '~/api/client';
+  import { client_q, setAccessToken } from '~/api/client';
   import { get_val_with_key } from '~/tools/kry';
   import { cl_join } from '~/tools/cl_join';
 
@@ -19,7 +19,7 @@
     wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 800);
   });
 
-  const verify_pass = client.auth.verify_pass.mutation({
+  const verify_pass = client_q.auth.verify_pass.mutation({
     onSuccess: (data) => {
       if (data.verified) {
         setAccessToken(data.access_token);
@@ -32,7 +32,7 @@
   });
   let is_old_pass_verified = $derived($verify_pass.isSuccess && $verify_pass.data.verified);
 
-  const reset_pass = client.auth.update_password.mutation({
+  const reset_pass = client_q.auth.update_password.mutation({
     onSuccess: (data) => {
       if (data.success) new_password = '';
     }
