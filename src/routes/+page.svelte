@@ -6,6 +6,8 @@
   import { onMount } from 'svelte';
   import { cl_join } from '~/tools/cl_join';
   import { browser } from '$app/environment';
+  import { TiFlashOutline } from 'svelte-icons-pack/ti';
+  import Icon from '~/tools/Icon.svelte';
 
   let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
     $props();
@@ -95,6 +97,13 @@
   <title>Rent Record Analyser</title>
   <meta name="description" content="A Simple House Rent Record Analyser" />
 </svelte:head>
+{#if page_name === 'rent'}
+  <div class="pt-4">
+    <a href="/electricity" class="font-semibold"
+      ><Icon src={TiFlashOutline} class="text-xl" /> Electricity</a
+    >
+  </div>
+{/if}
 
 <div>
   <!-- Yearly -->

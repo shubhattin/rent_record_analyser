@@ -3,7 +3,7 @@
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
-  import { client, setJwtToken } from '~/api/client';
+  import { client_q, setAccessToken } from '~/api/client';
   import type { PageData } from './$types';
   import ImageSpan from '~/components/ImageSpan.svelte';
   import HomeIcon from '~/components/icons/home.svg';
@@ -83,7 +83,7 @@
 
   let is_savable = $derived(to_delete_list.size + to_change_list.size + to_verify_list.size !== 0);
 
-  const edit_data = client.data.edit_data.mutation();
+  const edit_data = client_q.data.edit_data.mutation();
 
   const save_data_func = async () => {
     if (!is_savable) return;
@@ -113,7 +113,7 @@
             to_change_list.clear();
             to_delete_list.clear();
             to_verify_list.clear();
-            setJwtToken('');
+            setAccessToken('');
             editable = false;
           }
         }
@@ -182,11 +182,11 @@
         {@const to_delete_status = to_delete_list.has(dt.id)}
         {@const to_verify_status = to_verify_list.has(dt.id)}
         {@const clss = to_delete_status
-          ? 'to_delete'
+          ? 'ring ring-red-500 ring-inset'
           : to_change_status
-            ? 'changed'
+            ? 'ring ring-yellow-500 ring-inset'
             : to_verify_status
-              ? 'to_verify'
+              ? 'ring ring-green-500 ring-inset'
               : ''}
         {@const is_editable_row = editable && !is_verify_request}
         <tr class={cl_join(clss)}>
@@ -328,15 +328,3 @@
     </tbody>
   </table>
 </div>
-
-<style lang="postcss">
-  .changed {
-    /* @apply ring ring-inset ring-yellow-500; */
-  }
-  .to_delete {
-    /* @apply ring ring-inset ring-red-500; */
-  }
-  .to_verify {
-    /* @apply ring ring-inset ring-green-500; */
-  }
-</style>

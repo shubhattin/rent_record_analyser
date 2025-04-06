@@ -1,17 +1,20 @@
 <script lang="ts">
+  import '../app.css';
+  import '../app.scss';
   import { ModeWatcher } from 'mode-watcher';
   import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
   import { browser } from '$app/environment';
   import { onMount, type Snippet } from 'svelte';
   import TopAppBar from '~/components/TopAppBar.svelte';
   import { pwa_state } from '~/state/main.svelte';
-  import GA from '~/components/tags/GA.svelte';
-  import PartyTown from '~/components/tags/PartyTown.svelte';
   import '@fontsource/roboto/latin.css';
-  import '../app.css';
-  import '../app.scss';
+  import type { LayoutData } from './$types';
+  import { user_info } from '~/state/user.svelte';
 
-  let { children }: { children: Snippet } = $props();
+  let { data, children }: { data: LayoutData; children: Snippet } = $props();
+
+  $user_info = null;
+  if (data.user) $user_info = data.user;
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -36,5 +39,3 @@
     {@render children()}
   </QueryClientProvider>
 </div>
-<GA />
-<PartyTown />

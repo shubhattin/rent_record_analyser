@@ -37,7 +37,7 @@ export const gen_salt = () => {
 };
 
 /** Hash verifier for `sha-256` */
-export const puShTi = async (pass: string, hash: string) => {
+export const puShTi_256 = async (pass: string, hash: string) => {
   const salt = hash.substring(64);
   const hsh = hash.substring(0, 64);
   return hsh === (await hash_256(pass + salt));

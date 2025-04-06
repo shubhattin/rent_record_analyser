@@ -17,6 +17,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@floating-ui/dom": "^1.6.13",
     "@sveltejs/kit": "^2.20.4",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/forms": "^0.5.10",
@@ -42,7 +43,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@builder.io/partytown": "^0.10.3",
     "@fontsource/roboto": "^5.2.5",
     "@neondatabase/serverless": "^1.0.0",
     "@skeletonlabs/skeleton": "^3.1.2",
@@ -52,6 +52,7 @@
     "@tanstack/svelte-query": "^5.71.10",
     "@trpc/client": "^10.45.2",
     "@trpc/server": "^10.45.2",
+    "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "devalue": "^5.1.1",
     "drizzle-orm": "^0.29.5",
