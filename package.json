@@ -56,6 +56,7 @@
     "devalue": "^5.1.1",
     "drizzle-orm": "^0.29.5",
     "drizzle-zod": "^0.5.1",
+    "hash-wasm": "^4.12.0",
     "lucide-svelte": "^0.395.0",
     "superjson": "^2.2.2",
     "svelte-icons-pack": "^3.1.3",
