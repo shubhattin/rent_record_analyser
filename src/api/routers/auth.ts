@@ -9,8 +9,6 @@ import { eq } from 'drizzle-orm';
 import { delay } from '~/tools/delay';
 import { puShTi_256, hash_256, gen_salt } from '~/tools/hash_tools';
 
-const BCRYPT_WORK_FACTOR = 12;
-
 export const user_info_schema = UsersSchemaZod.pick({
   id: true,
   name: true
