@@ -6,6 +6,8 @@
   import { onMount } from 'svelte';
   import { cl_join } from '~/tools/cl_join';
   import { browser } from '$app/environment';
+  import { TiFlashOutline } from 'svelte-icons-pack/ti';
+  import Icon from '~/tools/Icon.svelte';
 
   let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
     $props();
@@ -97,7 +99,9 @@
 </svelte:head>
 {#if page_name === 'rent'}
   <div class="pt-4">
-    <a href="/electricity" class="font-semibold">⚡ Electricity</a>
+    <a href="/electricity" class="font-semibold"
+      ><Icon src={TiFlashOutline} class="text-xl" /> Electricity</a
+    >
   </div>
 {/if}
 

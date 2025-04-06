@@ -2,12 +2,16 @@
   import { get_utc_date, normaliseDate } from '~/tools/date';
   import { MONTH_NAMES } from '~/tools/date';
   import { onMount } from 'svelte';
-  import Spinner from '~/components/Spinner.svelte';
   import { slide, scale } from 'svelte/transition';
   import { client_q } from '~/api/client';
   import Icon from '~/tools/Icon.svelte';
-  import { RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
+  import { RiSystemAddLargeFill, RiSystemAddLargeLine } from 'svelte-icons-pack/ri';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
+  import ConfirmModal from '~/components/PopoverModals/ConfirmModal.svelte';
+  import { TrOutlineArrowBigRight } from 'svelte-icons-pack/tr';
+  import { OiHome16 } from 'svelte-icons-pack/oi';
+  import { TiFlashOutline } from 'svelte-icons-pack/ti';
+  import { user_info } from '~/state/user.svelte';
 
   const todays_date = new Date();
   const current_month = todays_date.getMonth() + 1;
@@ -25,8 +29,7 @@
 
   const submit_data = client_q.data.add_data.mutation();
 
-  const submit_data_func = async (e: Event) => {
-    e.preventDefault();
+  const submit_data_func = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
     $submit_data.mutate({
       data: {
@@ -42,22 +45,39 @@
   onMount(() => {
     amount_input_elmt.focus();
   });
+
+  let add_data_modal_state = $state(false);
 </script>
 
 {#if !$submit_data.isSuccess}
-  <form transition:slide onsubmit={submit_data_func} class="space-y-2">
-    <!-- <div class="mt-2 space-x-3">
-      <label class="inline-flex items-center space-x-2">
-        <input class="radio rounded-xl" type="radio" bind:group={rent_type} checked value="rent" />
-        <Icon src={OiHome16} class="text-xl" />
-        <span class="mt-1">Rent</span>
-      </label>
-      <label class="inline-flex items-center space-x-2">
-        <input class="radio rounded-xl" type="radio" bind:group={rent_type} value="electricity" />
-        <Icon src={TiFlashOutline} class="text-xl" />
-        <span class="mt-1">Electricity</span>
-      </label>
-    </div> -->
+  <form
+    transition:slide
+    class="space-y-2"
+    onsubmit={(e) => {
+      e.preventDefault();
+      add_data_modal_state = true;
+    }}
+  >
+    {#if $user_info && $user_info.user_type === 'admin'}
+      <div class="mt-2 space-x-3">
+        <label class="inline-flex items-center space-x-2">
+          <input
+            class="radio rounded-xl"
+            type="radio"
+            bind:group={rent_type}
+            checked
+            value="rent"
+          />
+          <Icon src={OiHome16} class="text-xl" />
+          <span class="mt-1">Rent</span>
+        </label>
+        <label class="inline-flex items-center space-x-2">
+          <input class="radio rounded-xl" type="radio" bind:group={rent_type} value="electricity" />
+          <Icon src={TiFlashOutline} class="text-xl" />
+          <span class="mt-1">Electricity</span>
+        </label>
+      </div>
+    {/if}
     <label class="label">
       <span>Date</span>
       <input class="input" type="date" required bind:value={date} />
@@ -83,15 +103,17 @@
       type="number"
       placeholder="Amount"
       required
+      min={100}
       bind:value={amount}
       bind:this={amount_input_elmt}
     />
     <button
+      class="btn preset-filled-primary-400-600 mt-3 gap-1 rounded-lg px-2 py-1 font-bold text-white"
+      disabled={$submit_data.isPending}
       type="submit"
-      class="btn preset-filled-primary-400-600 gap-0 rounded-lg px-0 py-1.5 pr-3 font-semibold"
     >
-      <Spinner show={$submit_data.isPending} />
-      Submit
+      <Icon src={RiSystemAddLargeFill} class="text-xl" />
+      Add Record
     </button>
   </form>
 {:else if $submit_data.isSuccess && $submit_data.data.status === 'success'}
@@ -124,3 +146,20 @@
     </button>
   </div>
 {/if}
+
+<ConfirmModal
+  bind:popup_state={add_data_modal_state}
+  close_on_confirm={true}
+  confirm_func={() => {
+    submit_data_func();
+  }}
+  title="Are you sure to Add ?"
+>
+  {#snippet body()}
+    <span class="space-x-1">
+      <span>₹ {amount}</span>
+      <Icon src={TrOutlineArrowBigRight} class="text-lg" />
+      <span class="font-bold">{MONTH_NAMES[parseInt(month) - 1]} {year}</span>
+    </span>
+  {/snippet}
+</ConfirmModal>
