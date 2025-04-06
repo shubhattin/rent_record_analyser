@@ -182,11 +182,11 @@
         {@const to_delete_status = to_delete_list.has(dt.id)}
         {@const to_verify_status = to_verify_list.has(dt.id)}
         {@const clss = to_delete_status
-          ? 'to_delete'
+          ? 'ring ring-red-500 ring-inset'
           : to_change_status
-            ? 'changed'
+            ? 'ring ring-yellow-500 ring-inset'
             : to_verify_status
-              ? 'to_verify'
+              ? 'ring ring-green-500 ring-inset'
               : ''}
         {@const is_editable_row = editable && !is_verify_request}
         <tr class={cl_join(clss)}>
@@ -328,15 +328,3 @@
     </tbody>
   </table>
 </div>
-
-<style lang="postcss">
-  .changed {
-    /* @apply ring ring-inset ring-yellow-500; */
-  }
-  .to_delete {
-    /* @apply ring ring-inset ring-red-500; */
-  }
-  .to_verify {
-    /* @apply ring ring-inset ring-green-500; */
-  }
-</style>
