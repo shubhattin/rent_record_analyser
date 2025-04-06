@@ -51,6 +51,7 @@
     "@tanstack/svelte-query": "^5.71.10",
     "@trpc/client": "^10.45.2",
     "@trpc/server": "^10.45.2",
+    "buffer": "^6.0.3",
     "clsx": "^2.1.1",
     "devalue": "^5.1.1",
     "drizzle-orm": "^0.29.5",

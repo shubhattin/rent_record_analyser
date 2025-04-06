@@ -2,7 +2,8 @@
   import { client_q } from '~/api/client';
   import Spinner from './Spinner.svelte';
   import { cl_join } from '~/tools/cl_join';
-  import { storeAuthInfo } from '~/tools/auth_tools';
+  import { get_id_token_info, storeAuthInfo } from '~/tools/auth_tools';
+  import { user_info } from '~/state/user.svelte';
 
   let {
     pass_input_element = $bindable(),
@@ -27,6 +28,7 @@
         wrong_pass_status = true;
       } else {
         storeAuthInfo(data);
+        $user_info = get_id_token_info().user;
       }
     }
   });

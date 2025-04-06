@@ -11,7 +11,8 @@ import { puShTi_256, hash_256, gen_salt } from '~/tools/hash_tools';
 
 export const user_info_schema = UsersSchemaZod.pick({
   id: true,
-  name: true
+  name: true,
+  user_type: true
 });
 type user_info_type = z.infer<typeof user_info_schema>;
 
@@ -30,7 +31,8 @@ const get_id_and_aceess_token = async (user_info: user_info_type) => {
   // Access Token will be used for authorization, i.e. to access the user's resources.
   const access_token = await new SignJWT({
     user: {
-      id: user_info.id
+      id: user_info.id,
+      user_type: user_info.user_type
     },
     type: 'api'
   })
@@ -78,7 +80,8 @@ const verify_pass_router = publicProcedure
     if (!verified) return { verified, err_code: 'wrong_password' };
     const { id_token, access_token } = await get_id_and_aceess_token({
       name: user_info.name,
-      id: user_info.id
+      id: user_info.id,
+      user_type: user_info.user_type
     });
     return {
       verified,
