@@ -6,25 +6,11 @@ export const load = async () => {
     orderBy: ({ date }, { desc }) => [desc(date)]
   });
   const pending_requests_query = db.query.verification_requests.findMany();
-  const users_query = db.query.users.findMany({
-    columns: {
-      id: true,
-      name: true
-    },
-    where: ({ user_type }, { eq }) => eq(user_type, 'admin'),
-    orderBy: ({ id }, { asc }) => asc(id)
-    // only fetching admin details as they are only authorized to make changes
-  });
 
-  const [data, pending_requests, users] = await Promise.all([
-    data_query,
-    pending_requests_query,
-    users_query
-  ]);
+  const [data, pending_requests] = await Promise.all([data_query, pending_requests_query]);
 
   return {
     rent_data: data,
-    verification_requests: pending_requests.map((v) => v.id),
-    users
+    verification_requests: pending_requests.map((v) => v.id)
   };
 };

@@ -71,13 +71,4 @@
     <Spinner show={$pass_verify.isPending} />
     Submit
   </button>
-  <div>
-    <a
-      type="button"
-      class="btn preset-filled-secondary-400-600 h-5 rounded-lg px-1.5 py-0 text-sm"
-      href="/reset_pass"
-    >
-      Reset Password
-    </a>
-  </div>
 </form>
