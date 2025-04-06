@@ -7,7 +7,7 @@ import { db } from '~/db/db';
 import { users } from '~/db/schema';
 import { eq } from 'drizzle-orm';
 import { delay } from '~/tools/delay';
-import { bcryptVerify, bcrypt } from 'hash-wasm';
+import { puShTi_256, hash_256, gen_salt } from '~/tools/hash_tools';
 
 const BCRYPT_WORK_FACTOR = 12;
 
@@ -76,10 +76,7 @@ const verify_pass_router = publicProcedure
     });
     if (!user_info) return { verified, err_code: 'user_not_found' };
 
-    verified = await bcryptVerify({
-      password: password,
-      hash: user_info.password
-    });
+    verified = await puShTi_256(password, user_info.password);
     if (!verified) return { verified, err_code: 'wrong_password' };
     const { id_token, access_token } = await get_id_and_aceess_token({
       name: user_info.name,
@@ -147,18 +144,10 @@ const update_password_router = protectedProcedure
       where: ({ id }, { eq }) => eq(id, user.id)
     }))!;
     await delay(500);
-    const verified = await bcryptVerify({
-      password: current_password,
-      hash: user_info.password
-    });
+    const verified = await puShTi_256(current_password, user_info.password);
     if (!verified) return { success: false };
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const hashed_password = await bcrypt({
-      password: new_password,
-      costFactor: BCRYPT_WORK_FACTOR,
-      outputType: 'encoded',
-      salt: salt
-    });
+    const salt = gen_salt();
+    const hashed_password = (await hash_256(new_password + salt)) + salt;
     await db.update(users).set({ password: hashed_password }).where(eq(users.id, user.id));
     return { success: true };
   });
