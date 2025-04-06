@@ -95,6 +95,11 @@
   <title>Rent Record Analyser</title>
   <meta name="description" content="A Simple House Rent Record Analyser" />
 </svelte:head>
+{#if page_name === 'rent'}
+  <div class="pt-4">
+    <a href="/electricity" class="font-semibold">⚡ Electricity</a>
+  </div>
+{/if}
 
 <div>
   <!-- Yearly -->
