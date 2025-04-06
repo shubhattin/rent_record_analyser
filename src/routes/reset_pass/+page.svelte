@@ -1,7 +1,7 @@
 <script lang="ts">
   import Spinner from '~/components/Spinner.svelte';
   import type { PageData } from './$types';
-  import { client, setJwtToken } from '~/api/client';
+  import { client, setAccessToken } from '~/api/client';
   import { get_val_with_key } from '~/tools/kry';
   import { cl_join } from '~/tools/cl_join';
 
@@ -19,10 +19,10 @@
     wrong_pass_status && setTimeout(() => (wrong_pass_status = false), 800);
   });
 
-  const verify_pass = client.pass.verify_pass.mutation({
+  const verify_pass = client.auth.verify_pass.mutation({
     onSuccess: (data) => {
       if (data.verified) {
-        setJwtToken(data.jwt_token);
+        setAccessToken(data.access_token);
       } else {
         old_password_elmnt.focus();
         old_password = '';
@@ -32,9 +32,9 @@
   });
   let is_old_pass_verified = $derived($verify_pass.isSuccess && $verify_pass.data.verified);
 
-  const reset_pass = client.pass.reset_pass.mutation({
+  const reset_pass = client.auth.update_password.mutation({
     onSuccess: (data) => {
-      if (data.status !== 'success') new_password = '';
+      if (data.success) new_password = '';
     }
   });
 
@@ -42,10 +42,10 @@
     e.preventDefault();
     if (!is_old_pass_verified) {
       if (old_password === '') return;
-      $verify_pass.mutate({ password: old_password, user_id: user });
+      $verify_pass.mutate({ password: old_password, id: user });
     } else {
       if (new_password === '') return;
-      $reset_pass.mutate({ new_password });
+      $reset_pass.mutate({ current_password: old_password, new_password: new_password });
     }
   };
 </script>
@@ -53,7 +53,7 @@
 <svelte:head>
   <title>Reset Password</title>
 </svelte:head>
-{#if !($reset_pass.isSuccess && $reset_pass.data.status === 'success')}
+{#if !($reset_pass.isSuccess && $reset_pass.data.success)}
   <form onsubmit={handle_sumbit_func} class="mt-4 space-y-3">
     <select class="select" bind:value={user} disabled={is_old_pass_verified}>
       {#each users as user}
@@ -80,7 +80,7 @@
     {#if !is_old_pass_verified}
       <button
         type="submit"
-        class="btn gap-0 rounded-lg px-0 py-1 pr-1.5 preset-filled-secondary-400-600"
+        class="btn preset-filled-secondary-400-600 gap-0 rounded-lg px-0 py-1 pr-1.5"
       >
         <Spinner show={$verify_pass.isPending} />
         Verify Old Password
@@ -95,7 +95,7 @@
       />
       <button
         type="submit"
-        class="btn gap-0 py-1 pl-0 pr-1.5 font-semibold preset-filled-primary-400-600"
+        class="btn preset-filled-primary-400-600 gap-0 py-1 pr-1.5 pl-0 font-semibold"
       >
         <Spinner show={$reset_pass.isPending} />
         Set New Password

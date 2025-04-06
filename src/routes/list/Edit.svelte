@@ -3,7 +3,7 @@
   import { slide } from 'svelte/transition';
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
-  import { client, setJwtToken } from '~/api/client';
+  import { client, setAccessToken } from '~/api/client';
   import type { PageData } from './$types';
   import ImageSpan from '~/components/ImageSpan.svelte';
   import HomeIcon from '~/components/icons/home.svg';
@@ -113,7 +113,7 @@
             to_change_list.clear();
             to_delete_list.clear();
             to_verify_list.clear();
-            setJwtToken('');
+            setAccessToken('');
             editable = false;
           }
         }
