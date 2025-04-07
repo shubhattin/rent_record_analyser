@@ -22,8 +22,18 @@
     return `${current_year}-${prefix_zeros(current_month)}-${prefix_zeros(todays_date.getDate())}`;
   };
   let date = $state(get_todays_date());
-  let month = $state(current_month.toString());
-  let year = $state(current_year.toString());
+  let month = $state(
+    (() => {
+      if (current_month === 1) return 12;
+      return current_month - 1;
+    })().toString()
+  );
+  let year = $state(
+    (() => {
+      if (current_month === 1) return current_year - 1;
+      return current_year;
+    })().toString()
+  );
   let amount = $state<number>(null!);
   let rent_type: 'rent' | 'electricity' = $state('rent');
 
