@@ -100,7 +100,7 @@
 {#if page_name === 'rent'}
   <div class="pt-4">
     <a href="/electricity" class="font-semibold"
-      ><Icon src={TiFlashOutline} class="text-xl" /> Electricity</a
+      ><Icon src={TiFlashOutline} class="text-xl text-amber-600 dark:text-yellow-400" /> Electricity</a
     >
   </div>
 {/if}
