@@ -1,10 +1,8 @@
 {
-  "id": "41c6cb6f-90d8-4f1f-b716-33c7b0b2179c",
-  "prevId": "0ae65549-bfc0-43d8-a62a-69515578b88e",
-  "version": "5",
-  "dialect": "pg",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "others": {
+    "public.others": {
       "name": "others",
       "schema": "",
       "columns": {
@@ -24,9 +22,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "rent_data": {
+    "public.rent_data": {
       "name": "rent_data",
       "schema": "",
       "columns": {
@@ -70,39 +71,58 @@
       },
       "indexes": {
         "rent_data_date_index": {
-          "name": "rent_data_date_index",
           "columns": [
-            "date"
+            {
+              "expression": "date",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "rent_data_date_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "rent_data_month_index": {
-          "name": "rent_data_month_index",
           "columns": [
-            "month"
+            {
+              "expression": "month",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "rent_data_month_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
         "rent_data_user_id_users_id_fk": {
           "name": "rent_data_user_id_users_id_fk",
           "tableFrom": "rent_data",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "users": {
+    "public.users": {
       "name": "users",
       "schema": "",
       "columns": {
@@ -135,9 +155,12 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     },
-    "verification_requests": {
+    "public.verification_requests": {
       "name": "verification_requests",
       "schema": "",
       "columns": {
@@ -153,41 +176,52 @@
         "verification_requests_id_rent_data_id_fk": {
           "name": "verification_requests_id_rent_data_id_fk",
           "tableFrom": "verification_requests",
-          "tableTo": "rent_data",
           "columnsFrom": [
             "id"
           ],
+          "tableTo": "rent_data",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false,
+      "checkConstraints": {}
     }
   },
   "enums": {
-    "rent_type": {
+    "public.rent_type": {
       "name": "rent_type",
-      "values": {
-        "rent": "rent",
-        "electricity": "electricity"
-      }
+      "schema": "public",
+      "values": [
+        "rent",
+        "electricity"
+      ]
     },
-    "user_type": {
+    "public.user_type": {
       "name": "user_type",
-      "values": {
-        "admin": "admin",
-        "non-admin": "non-admin"
-      }
+      "schema": "public",
+      "values": [
+        "admin",
+        "non-admin"
+      ]
     }
   },
   "schemas": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
-  }
+    "tables": {},
+    "columns": {}
+  },
+  "id": "41c6cb6f-90d8-4f1f-b716-33c7b0b2179c",
+  "prevId": "0ae65549-bfc0-43d8-a62a-69515578b88e",
+  "sequences": {},
+  "policies": {},
+  "views": {},
+  "roles": {}
 }
