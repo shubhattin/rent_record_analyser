@@ -17,6 +17,7 @@
   import { cl_join } from '~/tools/cl_join';
   import { SvelteSet } from 'svelte/reactivity';
   import { Modal } from '@skeletonlabs/skeleton-svelte';
+  import { CgClose } from 'svelte-icons-pack/cg';
 
   let { all_data, editable = $bindable() }: { all_data: PageData; editable: boolean } = $props();
 
@@ -124,25 +125,28 @@
 </script>
 
 {#if editable}
+  <div transition:slide class="mb-5">
+    <button
+      ondblclick={() => (save_modal_opened = true)}
+      class="btn preset-filled-primary-300-700 inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-xl font-bold"
+      disabled={!is_savable || $edit_data.isPending}
+    >
+      <Icon src={FiSave} class="-mt-1 mr-1 text-2xl" />
+      Save
+    </button>
+    <Spinner show={$edit_data.isPending} />
+    {#if !$edit_data.isPending}
+      <button class="btn p-0" ondblclick={() => window.location.reload()}>
+        <Icon src={CgClose} class="text-lg" />
+      </button>
+    {/if}
+  </div>
   <Modal
     open={save_modal_opened}
     onOpenChange={(e) => (save_modal_opened = e.open)}
     contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
     backdropClasses="backdrop-blur-sm"
   >
-    {#snippet trigger()}
-      <div transition:slide class="mb-5">
-        <button
-          onclick={() => (save_modal_opened = true)}
-          class="btn preset-filled-primary-300-700 inline-flex items-center rounded-lg px-3 py-1.5 text-xl font-bold"
-          disabled={!is_savable}
-        >
-          <Icon src={FiSave} class="-mt-1 mr-1" />
-          Save
-        </button>
-        <Spinner show={$edit_data.isPending} />
-      </div>
-    {/snippet}
     {#snippet content()}
       <h6>Are you sure to Save Changes ?</h6>
       <strong>
@@ -153,10 +157,10 @@
       <div class="mt-4 flex justify-end space-x-2">
         <button
           onclick={() => (save_modal_opened = false)}
-          class="variant-outline-error btn rounded-lg px-2.5 py-2">❌ Close</button
+          class="preset-outlined-error-300-700 btn rounded-lg px-2.5 py-1.5">❌ Close</button
         >
         <button
-          class="variant-filled-secondary btn rounded-lg px-2.5 py-2"
+          class="preset-outlined-secondary-300-700 btn rounded-lg px-2.5 py-1.5"
           onclick={save_data_func}
         >
           ✅ Confirm
