@@ -139,6 +139,35 @@
               </span>
               <!-- ^ Total Electricity -->
             </div>
+            {#if $user_info}
+              <table>
+                <tbody>
+                  {#each date_list as dt, i_dt (dt)}
+                    {#if !ref_list[i_dt].every((dt) => dt.rent_type === 'rent')}
+                      {@const date = dt.getUTCDate()}
+                      {@const rent_records_filtered = ref_list[i_dt].filter(
+                        (d) => d.rent_type === 'electricity'
+                      )}
+                      <tr>
+                        <td class="px-1 py-0.5 text-start text-sm">
+                          {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
+                        </td>
+                        <td class="px-1 py-0.5 text-start text-sm">
+                          {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                        </td>
+                        <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                          {#each rent_records_filtered as record, i}
+                            <span class:underline={record.is_not_verified}
+                              >₹ {record.amount}{#if i !== rent_records_filtered.length - 1},{/if}</span
+                            >
+                          {/each}
+                        </td>
+                      </tr>
+                    {/if}
+                  {/each}
+                </tbody>
+              </table>
+            {/if}
             <div class="my-0.5 flex items-center gap-1">
               <Icon src={AiOutlineHome} class="-mt-1 size-5 text-blue-600 dark:text-sky-300" />
               <span class="text-sm">
