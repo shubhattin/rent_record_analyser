@@ -12,6 +12,7 @@
   import { FiEdit } from 'svelte-icons-pack/fi';
   import { pwa_state } from '~/state/main.svelte';
   import { OiDownload24 } from 'svelte-icons-pack/oi';
+  import { user_info } from '~/state/user.svelte';
 
   let { start, headline, end }: { start?: Snippet; headline?: Snippet; end?: Snippet } = $props();
 
@@ -63,7 +64,7 @@
           />
         </a>
       {/if}
-      {#if route_id !== '/list'}
+      {#if $user_info && route_id !== '/list'}
         <a class="text-xl" href="/list">
           <Icon src={FiEdit} class="text-2xl hover:text-zinc-400 active:text-blue-600" />
         </a>

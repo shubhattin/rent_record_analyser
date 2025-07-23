@@ -1,6 +1,10 @@
+import { redirect } from '@sveltejs/kit';
 import { db } from '~/db/db';
 
-export const load = async () => {
+export const load = async ({ parent }) => {
+  const { user } = await parent();
+  if (!user) throw redirect(302, '/');
+
   // const data = await db.select().from(rent_data).orderBy(desc(rent_data.date));
   const data_query = db.query.rent_data.findMany({
     orderBy: ({ date }, { desc }) => [desc(date)]
