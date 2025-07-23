@@ -8,6 +8,8 @@
   import { browser } from '$app/environment';
   import { TiFlashOutline } from 'svelte-icons-pack/ti';
   import Icon from '~/tools/Icon.svelte';
+  import { AiOutlineHome } from 'svelte-icons-pack/ai';
+  import { user_info } from '~/state/user.svelte';
 
   let { data, page_name = 'rent' }: { data: PageData; page_name: 'rent' | 'electricity' } =
     $props();
@@ -35,10 +37,11 @@
     for (let dt of rent_data) {
       const yr = dt.month.getUTCFullYear();
       const index = years.indexOf(yr);
+      const factor = dt.rent_type === 'rent' ? 1 : -1;
       if (index === -1) {
         years.push(yr);
-        amounts.push(dt.amount);
-      } else amounts[index] += dt.amount;
+        amounts.push(dt.amount * factor);
+      } else amounts[index] += dt.amount * factor;
     }
     return [years, amounts];
   };
@@ -50,10 +53,11 @@
       if (year !== dt.month.getUTCFullYear()) continue;
       const month = dt.month.getUTCMonth() + 1;
       const index = months.indexOf(month);
+      const factor = dt.rent_type === 'rent' ? 1 : -1;
       if (index === -1) {
         months.push(month);
-        amounts.push(dt.amount);
-      } else amounts[index] += dt.amount;
+        amounts.push(dt.amount * factor);
+      } else amounts[index] += dt.amount * factor;
     }
     return [months, amounts];
   };
@@ -97,13 +101,6 @@
   <title>Rent Record Analyser</title>
   <meta name="description" content="A Simple House Rent Record Analyser" />
 </svelte:head>
-{#if page_name === 'rent'}
-  <div class="pt-4">
-    <a href="/electricity" class="font-semibold"
-      ><Icon src={TiFlashOutline} class="text-xl text-amber-600 dark:text-yellow-400" /> Electricity</a
-    >
-  </div>
-{/if}
 
 <div>
   <!-- Yearly -->
@@ -129,28 +126,61 @@
           <!-- DateWise -->
           {#snippet panel()}
             {@const [date_list, amount_dt_list, ref_list] = get_date_list(yr, mn)}
-            <table>
-              <tbody>
-                {#each date_list as dt, i_dt (dt)}
-                  {@const date = dt.getUTCDate()}
-                  <tr>
-                    <td class="px-1 py-0.5 text-start text-sm">
-                      {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
-                    </td>
-                    <td class="px-1 py-0.5 text-start text-sm">
-                      {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
-                    </td>
-                    <td class="space-x-1 px-1 py-0.5 text-start text-sm">
-                      {#each amount_dt_list[i_dt] as amount, i}
-                        <span class:underline={ref_list[i_dt][i].is_not_verified}
-                          >₹ {amount}{#if i !== amount_dt_list[i_dt].length - 1},{/if}</span
-                        >
-                      {/each}
-                    </td>
-                  </tr>
-                {/each}
-              </tbody>
-            </table>
+            <div class="flex items-center gap-1">
+              <Icon src={TiFlashOutline} class="-mt-1 size-5 text-amber-600 dark:text-yellow-300" />
+              <span class="text-sm">
+                ₹ {ref_list
+                  .map((dts) =>
+                    dts
+                      .filter((dt) => dt.rent_type === 'electricity')
+                      .reduce((total, amnt) => total + amnt.amount, 0)
+                  )
+                  .reduce((total, amount) => total + amount, 0)}
+              </span>
+              <!-- ^ Total Electricity -->
+            </div>
+            <div class="my-0.5 flex items-center gap-1">
+              <Icon src={AiOutlineHome} class="-mt-1 size-5 text-blue-600 dark:text-sky-300" />
+              <span class="text-sm">
+                ₹ {ref_list
+                  .map((dts) =>
+                    dts
+                      .filter((dt) => dt.rent_type === 'rent')
+                      .reduce((total, amnt) => total + amnt.amount, 0)
+                  )
+                  .reduce((total, amount) => total + amount, 0)}
+              </span>
+              <!-- ^ Total Rent -->
+            </div>
+            {#if $user_info}
+              <table>
+                <tbody>
+                  {#each date_list as dt, i_dt (dt)}
+                    {#if !ref_list[i_dt].every((dt) => dt.rent_type === 'electricity')}
+                      {@const date = dt.getUTCDate()}
+                      {@const rent_records_filtered = ref_list[i_dt].filter(
+                        (d) => d.rent_type === 'rent'
+                      )}
+                      <tr>
+                        <td class="px-1 py-0.5 text-start text-sm">
+                          {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
+                        </td>
+                        <td class="px-1 py-0.5 text-start text-sm">
+                          {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                        </td>
+                        <td class="space-x-1 px-1 py-0.5 text-start text-sm">
+                          {#each rent_records_filtered as record, i}
+                            <span class:underline={record.is_not_verified}
+                              >₹ {record.amount}{#if i !== rent_records_filtered.length - 1},{/if}</span
+                            >
+                          {/each}
+                        </td>
+                      </tr>
+                    {/if}
+                  {/each}
+                </tbody>
+              </table>
+            {/if}
           {/snippet}
         </Accordion.Item>
       {/each}
