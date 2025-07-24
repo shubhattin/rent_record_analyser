@@ -7,7 +7,8 @@ export const load = async ({ parent }) => {
 
   // const data = await db.select().from(rent_data).orderBy(desc(rent_data.date));
   const data_query = db.query.rent_data.findMany({
-    orderBy: ({ date }, { desc }) => [desc(date)]
+    orderBy: ({ date }, { desc }) => [desc(date)],
+    where: ({ rent_type }, { eq }) => eq(rent_type, 'electricity')
   });
   const pending_requests_query = db.query.verification_requests.findMany();
 
