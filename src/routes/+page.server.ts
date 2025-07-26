@@ -64,7 +64,10 @@ export const load = async ({ parent }) => {
 
   return {
     info_analysis: result,
-    total: data.reduce((total, item) => total + item.amount, 0),
+    total: data.reduce(
+      (total, item) => total + item.amount * (item.rent_type === 'rent' ? 1 : -1),
+      0
+    ),
     rent_data: !!user ? data : []
   };
 };
