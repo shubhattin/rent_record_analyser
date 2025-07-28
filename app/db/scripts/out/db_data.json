@@ -1,0 +1,585 @@
+{
+  "users": [
+    {
+      "id": 2,
+      "name": "Raushan",
+      "password": "f9128736b9bf442377af80abc11f1775c94914b3dfef977d19a72f14ea1ca10faef63b52e3543312f8e2cf880312db0b",
+      "user_type": "non-admin"
+    },
+    {
+      "id": 1,
+      "name": "admin",
+      "password": "f88ee5815eb58937670e19c8dd9efece81ae731153811db7ee5afe95d9471f63bc2f9bf07df7fe88adcf028c7fcc1c3a",
+      "user_type": "admin"
+    }
+  ],
+  "others": [
+    {
+      "key": "db_page",
+      "value": "https://console.neon.tech/app/projects/winter-hill-64415388/tables"
+    }
+  ],
+  "rent_data": [
+    {
+      "id": 1,
+      "amount": 2000,
+      "date": "2023-07-10T00:00:00.000Z",
+      "month": "2023-07-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 2,
+      "amount": 1800,
+      "date": "2023-07-13T00:00:00.000Z",
+      "month": "2023-07-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 3,
+      "amount": 2000,
+      "date": "2023-08-01T00:00:00.000Z",
+      "month": "2023-08-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 4,
+      "amount": 2000,
+      "date": "2023-08-04T00:00:00.000Z",
+      "month": "2023-08-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 5,
+      "amount": 2300,
+      "date": "2023-08-04T00:00:00.000Z",
+      "month": "2023-08-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 6,
+      "amount": 1800,
+      "date": "2023-08-05T00:00:00.000Z",
+      "month": "2023-08-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 7,
+      "amount": 4000,
+      "date": "2023-08-09T00:00:00.000Z",
+      "month": "2023-08-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 8,
+      "amount": 2000,
+      "date": "2023-10-01T00:00:00.000Z",
+      "month": "2023-10-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 9,
+      "amount": 2000,
+      "date": "2023-10-11T00:00:00.000Z",
+      "month": "2023-10-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 10,
+      "amount": 1200,
+      "date": "2023-10-17T00:00:00.000Z",
+      "month": "2023-10-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 11,
+      "amount": 2000,
+      "date": "2023-10-21T00:00:00.000Z",
+      "month": "2023-10-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 12,
+      "amount": 3800,
+      "date": "2023-11-20T00:00:00.000Z",
+      "month": "2023-11-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 13,
+      "amount": 2000,
+      "date": "2023-11-23T00:00:00.000Z",
+      "month": "2023-11-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 14,
+      "amount": 1200,
+      "date": "2023-11-29T00:00:00.000Z",
+      "month": "2023-11-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 15,
+      "amount": 2000,
+      "date": "2023-12-04T00:00:00.000Z",
+      "month": "2023-12-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 16,
+      "amount": 1500,
+      "date": "2023-12-15T00:00:00.000Z",
+      "month": "2023-12-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 17,
+      "amount": 2000,
+      "date": "2023-12-21T00:00:00.000Z",
+      "month": "2023-12-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 18,
+      "amount": 1400,
+      "date": "2023-12-31T00:00:00.000Z",
+      "month": "2023-12-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 19,
+      "amount": 1800,
+      "date": "2024-01-05T00:00:00.000Z",
+      "month": "2023-12-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 20,
+      "amount": 2000,
+      "date": "2024-01-12T00:00:00.000Z",
+      "month": "2023-12-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 21,
+      "amount": 3000,
+      "date": "2024-01-18T00:00:00.000Z",
+      "month": "2024-01-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 22,
+      "amount": 2000,
+      "date": "2024-01-25T00:00:00.000Z",
+      "month": "2024-01-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 23,
+      "amount": 2000,
+      "date": "2024-01-30T00:00:00.000Z",
+      "month": "2024-01-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 24,
+      "amount": 1000,
+      "date": "2024-02-03T00:00:00.000Z",
+      "month": "2024-01-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 25,
+      "amount": 2000,
+      "date": "2024-02-09T00:00:00.000Z",
+      "month": "2024-01-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 27,
+      "amount": 2000,
+      "date": "2024-03-02T00:00:00.000Z",
+      "month": "2024-01-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 28,
+      "amount": 1800,
+      "date": "2024-03-03T00:00:00.000Z",
+      "month": "2024-02-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 29,
+      "amount": 2000,
+      "date": "2024-03-04T00:00:00.000Z",
+      "month": "2024-02-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 30,
+      "amount": 1200,
+      "date": "2024-03-06T00:00:00.000Z",
+      "month": "2024-02-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 31,
+      "amount": 1200,
+      "date": "2024-03-08T00:00:00.000Z",
+      "month": "2024-02-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "rent"
+    },
+    {
+      "id": 32,
+      "amount": 1500,
+      "date": "2024-03-10T00:00:00.000Z",
+      "month": "2024-02-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 34,
+      "amount": 1600,
+      "date": "2024-03-18T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 35,
+      "amount": 1500,
+      "date": "2024-03-24T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 36,
+      "amount": 1800,
+      "date": "2024-03-27T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 37,
+      "amount": 2000,
+      "date": "2024-03-29T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 38,
+      "amount": 2000,
+      "date": "2024-03-29T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 39,
+      "amount": 2000,
+      "date": "2024-04-05T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 40,
+      "amount": 2000,
+      "date": "2024-04-08T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 41,
+      "amount": 2000,
+      "date": "2024-04-18T00:00:00.000Z",
+      "month": "2024-03-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 44,
+      "amount": 2000,
+      "date": "2024-04-24T00:00:00.000Z",
+      "month": "2024-04-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 46,
+      "amount": 2000,
+      "date": "2024-05-02T00:00:00.000Z",
+      "month": "2024-04-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 47,
+      "amount": 4000,
+      "date": "2024-05-04T00:00:00.000Z",
+      "month": "2024-04-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 48,
+      "amount": 2000,
+      "date": "2024-05-13T00:00:00.000Z",
+      "month": "2024-04-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 49,
+      "amount": 1500,
+      "date": "2024-05-02T00:00:00.000Z",
+      "month": "2024-05-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "electricity"
+    },
+    {
+      "id": 50,
+      "amount": 1500,
+      "date": "2024-05-24T00:00:00.000Z",
+      "month": "2024-05-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "electricity"
+    },
+    {
+      "id": 51,
+      "amount": 2000,
+      "date": "2024-06-09T00:00:00.000Z",
+      "month": "2024-05-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 52,
+      "amount": 2000,
+      "date": "2024-06-13T00:00:00.000Z",
+      "month": "2024-05-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 53,
+      "amount": 1500,
+      "date": "2024-06-17T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 1,
+      "rent_type": "electricity"
+    },
+    {
+      "id": 54,
+      "amount": 2000,
+      "date": "2024-06-26T00:00:00.000Z",
+      "month": "2024-05-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 55,
+      "amount": 2000,
+      "date": "2024-06-29T00:00:00.000Z",
+      "month": "2024-05-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 56,
+      "amount": 2000,
+      "date": "2024-07-03T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 57,
+      "amount": 1200,
+      "date": "2024-07-06T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 58,
+      "amount": 1000,
+      "date": "2024-07-06T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 59,
+      "amount": 2000,
+      "date": "2024-07-08T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 60,
+      "amount": 1200,
+      "date": "2024-07-08T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 61,
+      "amount": 1000,
+      "date": "2024-07-11T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 62,
+      "amount": 2000,
+      "date": "2024-07-24T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 63,
+      "amount": 3900,
+      "date": "2024-07-27T00:00:00.000Z",
+      "month": "2024-07-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 64,
+      "amount": 1000,
+      "date": "2024-08-01T00:00:00.000Z",
+      "month": "2024-06-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 65,
+      "amount": 2000,
+      "date": "2024-08-02T00:00:00.000Z",
+      "month": "2024-07-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 67,
+      "amount": 2000,
+      "date": "2024-08-04T00:00:00.000Z",
+      "month": "2024-07-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 68,
+      "amount": 1400,
+      "date": "2024-08-07T00:00:00.000Z",
+      "month": "2024-07-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 69,
+      "amount": 2000,
+      "date": "2024-08-18T00:00:00.000Z",
+      "month": "2024-07-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 70,
+      "amount": 2000,
+      "date": "2024-08-31T00:00:00.000Z",
+      "month": "2024-08-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 71,
+      "amount": 3000,
+      "date": "2024-09-04T00:00:00.000Z",
+      "month": "2024-08-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 72,
+      "amount": 2200,
+      "date": "2024-09-08T00:00:00.000Z",
+      "month": "2024-08-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 73,
+      "amount": 2000,
+      "date": "2024-09-08T00:00:00.000Z",
+      "month": "2024-08-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 74,
+      "amount": 1500,
+      "date": "2024-09-16T00:00:00.000Z",
+      "month": "2024-08-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 75,
+      "amount": 1700,
+      "date": "2022-09-23T00:00:00.000Z",
+      "month": "2024-07-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    },
+    {
+      "id": 76,
+      "amount": 1001,
+      "date": "2024-09-23T00:00:00.000Z",
+      "month": "2024-08-01T00:00:00.000Z",
+      "user_id": 2,
+      "rent_type": "rent"
+    }
+  ],
+  "verification_requests": []
+}
