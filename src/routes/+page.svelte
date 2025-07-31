@@ -16,12 +16,12 @@
   let { data: ssr_data }: { data: PageData } = $props();
 
   let data = $state(ssr_data.data);
-  let last_date = $state(ssr_data.lastDate);
-  let last_id = $state(ssr_data.lastId);
+  let month_limit = $state(ssr_data.month_limit);
+  let all_months_fetched = $state(ssr_data.all_months_fetched);
   $effect(() => {
     data = ssr_data.data;
-    last_date = ssr_data.lastDate;
-    last_id = ssr_data.lastId;
+    month_limit = ssr_data.month_limit;
+    all_months_fetched = ssr_data.all_months_fetched;
   });
 
   let rent_data = $derived(data.rent_data);
@@ -37,18 +37,18 @@
 
   let selected_accordian = $state(['0-0']);
 
+  const NEXT_MONTH_LIMIT = 3;
   const load_more_data_mut = createMutation({
     mutationFn: async () => {
       const next_data = await client.rent_data.get_paginated_rent_data_anlysis.query({
-        lastDate: last_date,
-        lastID: last_id
+        month_limit: month_limit + NEXT_MONTH_LIMIT
       });
       return next_data;
     },
     onSuccess(next_data) {
       data = next_data.data;
-      last_date = next_data.lastDate;
-      last_id = next_data.lastId;
+      month_limit = next_data.month_limit;
+      all_months_fetched = next_data.all_months_fetched;
     }
   });
 </script>
@@ -142,10 +142,10 @@
     Total = ₹ {total}
   </small>
 </div>
-{#if last_date !== null && last_id !== null}
-  <div class="mt-4 flex items-center justify-center">
+{#if !all_months_fetched}
+  <div class="mt-4 flex items-center justify-center text-white dark:text-zinc-300">
     <button
-      class="btn px-1.5 py-0.5 text-sm font-semibold"
+      class="btn dark:bg-surface-800 bg-surface-400 px-1.5 py-0.5 text-sm font-semibold"
       disabled={$load_more_data_mut.isPending}
       onclick={async () => {
         await $load_more_data_mut.mutateAsync();
