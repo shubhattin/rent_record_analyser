@@ -4,7 +4,7 @@
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
   import { client_q, setAccessToken } from '~/api/client';
-  import type { PageData } from './$types';
+  import type { RentDataPageType } from '~/api/routers/rent_data';
   import ImageSpan from '~/components/ImageSpan.svelte';
   import HomeIcon from '~/components/icons/home.svg';
   import FlashIcon from '~/components/icons/flash.svg';
@@ -19,11 +19,14 @@
   import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { CgClose } from 'svelte-icons-pack/cg';
 
-  let { all_data, editable = $bindable() }: { all_data: PageData; editable: boolean } = $props();
+  let {
+    all_data,
+    editable = $bindable()
+  }: { all_data: RentDataPageType['data']; editable: boolean } = $props();
 
-  let data = $state(all_data.rent_data);
+  let data = $state(all_data);
   $effect(() => {
-    data = all_data.rent_data;
+    data = all_data;
   });
 
   let save_modal_opened = $state(false);

@@ -6,8 +6,14 @@
   import { FiEdit3 } from 'svelte-icons-pack/fi';
   import Icon from '~/tools/Icon.svelte';
   import { user_info } from '~/state/user.svelte';
+  import { createMutation } from '@tanstack/svelte-query';
+  import { client } from '~/api/client';
 
-  let { data }: { data: PageData } = $props();
+  let { data: ssr_data }: { data: PageData } = $props();
+
+  let data = $state(ssr_data.rent_data);
+  let last_id = $state(ssr_data.lastId);
+  let last_date = $state(ssr_data.lastDate);
 
   let editable = $state(false);
 
@@ -19,6 +25,21 @@
       }
     });
   });
+
+  const load_more_data_mut = createMutation({
+    mutationFn: async () => {
+      const next_data = await client.rent_data.get_paginated_rent_data.query({
+        lastDate: last_date,
+        lastID: last_id
+      });
+      return next_data;
+    },
+    onSuccess(next_data) {
+      data = data.concat(next_data.data);
+      last_date = next_data.lastDate;
+      last_id = next_data.lastID;
+    }
+  });
 </script>
 
 <svelte:head>
@@ -27,6 +48,17 @@
 
 <div class="my-8">
   <Edit all_data={data} bind:editable />
+  {#if last_date !== null && last_id !== null}
+    <div class="mt-4 flex items-center justify-center">
+      <button
+        class="btn preset-filled-primary-500 px-1.5 py-0.5 text-sm font-semibold"
+        disabled={$load_more_data_mut.isPending}
+        onclick={async () => {
+          await $load_more_data_mut.mutateAsync();
+        }}>Load More</button
+      >
+    </div>
+  {/if}
 </div>
 {#if !editable && $user_info && $user_info.user_type === 'admin'}
   <button

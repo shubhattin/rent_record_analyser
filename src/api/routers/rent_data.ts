@@ -10,7 +10,7 @@ type GetDataOptions = {
   limit?: number | null;
 };
 
-const DEFAULT_LIMIT = 25;
+const DEFAULT_LIMIT = 20;
 export const get_rent_data_page = async ({
   lastDate = null,
   listID = null,
@@ -49,6 +49,8 @@ export const get_rent_data_page = async ({
   };
 };
 
+export type RentDataPageType = Awaited<ReturnType<typeof get_rent_data_page>>;
+
 const get_paginated_rent_data_route = protectedProcedure
   .input(
     z.object({
@@ -62,4 +64,6 @@ const get_paginated_rent_data_route = protectedProcedure
     return out;
   });
 
-export const rent_data_router = t.router({});
+export const rent_data_router = t.router({
+  get_paginated_rent_data: get_paginated_rent_data_route
+});
