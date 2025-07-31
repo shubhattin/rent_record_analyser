@@ -9,9 +9,20 @@
   import Icon from '~/tools/Icon.svelte';
   import { AiOutlineHome } from 'svelte-icons-pack/ai';
   import { user_info } from '~/state/user.svelte';
-  import { get_date_list } from '~/routes/rent_filters';
+  import { get_date_list } from '~/api/routers/rent_filters';
+  import { createMutation } from '@tanstack/svelte-query';
+  import { client } from '~/api/client';
 
-  let { data }: { data: PageData } = $props();
+  let { data: ssr_data }: { data: PageData } = $props();
+
+  let data = $state(ssr_data.data);
+  let last_date = $state(ssr_data.lastDate);
+  let last_id = $state(ssr_data.lastId);
+  $effect(() => {
+    data = ssr_data.data;
+    last_date = ssr_data.lastDate;
+    last_id = ssr_data.lastId;
+  });
 
   let rent_data = $derived(data.rent_data);
   let info_analysis = $derived(data.info_analysis);
@@ -25,6 +36,21 @@
   });
 
   let selected_accordian = $state(['0-0']);
+
+  const load_more_data_mut = createMutation({
+    mutationFn: async () => {
+      const next_data = await client.rent_data.get_paginated_rent_data_anlysis.query({
+        lastDate: last_date,
+        lastID: last_id
+      });
+      return next_data;
+    },
+    onSuccess(next_data) {
+      data = next_data.data;
+      last_date = next_data.lastDate;
+      last_id = next_data.lastId;
+    }
+  });
 </script>
 
 <svelte:head>
@@ -116,3 +142,14 @@
     Total = ₹ {total}
   </small>
 </div>
+{#if last_date !== null && last_id !== null}
+  <div class="mt-4 flex items-center justify-center">
+    <button
+      class="btn px-1.5 py-0.5 text-sm font-semibold"
+      disabled={$load_more_data_mut.isPending}
+      onclick={async () => {
+        await $load_more_data_mut.mutateAsync();
+      }}>Load More</button
+    >
+  </div>
+{/if}

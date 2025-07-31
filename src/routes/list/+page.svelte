@@ -14,6 +14,11 @@
   let data = $state(ssr_data.rent_data);
   let last_id = $state(ssr_data.lastId);
   let last_date = $state(ssr_data.lastDate);
+  $effect(() => {
+    data = ssr_data.rent_data;
+    last_id = ssr_data.lastId;
+    last_date = ssr_data.lastDate;
+  });
 
   let editable = $state(false);
 
@@ -48,7 +53,7 @@
 
 <div class="my-8">
   <Edit all_data={data} bind:editable />
-  {#if last_date !== null && last_id !== null}
+  {#if !editable && last_date !== null && last_id !== null}
     <div class="mt-4 flex items-center justify-center">
       <button
         class="btn preset-filled-primary-500 px-1.5 py-0.5 text-sm font-semibold"
