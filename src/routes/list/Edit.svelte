@@ -4,7 +4,7 @@
   import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
   import { client_q, setAccessToken } from '~/api/client';
-  import type { PageData } from './$types';
+  import type { RentDataPageType } from '~/api/routers/rent_data';
   import ImageSpan from '~/components/ImageSpan.svelte';
   import HomeIcon from '~/components/icons/home.svg';
   import FlashIcon from '~/components/icons/flash.svg';
@@ -19,15 +19,14 @@
   import { Modal } from '@skeletonlabs/skeleton-svelte';
   import { CgClose } from 'svelte-icons-pack/cg';
 
-  let { all_data, editable = $bindable() }: { all_data: PageData; editable: boolean } = $props();
+  let {
+    all_data,
+    editable = $bindable()
+  }: { all_data: RentDataPageType['data']; editable: boolean } = $props();
 
-  let data = $state(all_data.rent_data);
+  let data = $state(all_data);
   $effect(() => {
-    data = all_data.rent_data;
-  });
-  let verification_request_ids = $state(all_data.verification_requests);
-  $effect(() => {
-    verification_request_ids = all_data.verification_requests;
+    data = all_data;
   });
 
   let save_modal_opened = $state(false);
@@ -104,9 +103,6 @@
             }
             new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
             new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
-            verification_request_ids = verification_request_ids.filter(
-              (v) => !to_verify_list.has(v)
-            );
 
             // resetting values
             data = deepCopy(new_data, true);
@@ -181,7 +177,7 @@
     </thead>
     <tbody>
       {#each data as dt, i (dt.id)}
-        {@const is_verify_request = verification_request_ids.includes(dt.id)}
+        {@const is_verify_request = dt.is_not_verified}
         {@const to_change_status = to_change_list.has(dt.id)}
         {@const to_delete_status = to_delete_list.has(dt.id)}
         {@const to_verify_status = to_verify_list.has(dt.id)}
