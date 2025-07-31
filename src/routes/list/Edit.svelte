@@ -25,10 +25,6 @@
   $effect(() => {
     data = all_data.rent_data;
   });
-  let verification_request_ids = $state(all_data.verification_requests);
-  $effect(() => {
-    verification_request_ids = all_data.verification_requests;
-  });
 
   let save_modal_opened = $state(false);
 
@@ -104,9 +100,6 @@
             }
             new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
             new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
-            verification_request_ids = verification_request_ids.filter(
-              (v) => !to_verify_list.has(v)
-            );
 
             // resetting values
             data = deepCopy(new_data, true);
@@ -181,7 +174,7 @@
     </thead>
     <tbody>
       {#each data as dt, i (dt.id)}
-        {@const is_verify_request = verification_request_ids.includes(dt.id)}
+        {@const is_verify_request = dt.is_not_verified}
         {@const to_change_status = to_change_list.has(dt.id)}
         {@const to_delete_status = to_delete_list.has(dt.id)}
         {@const to_verify_status = to_verify_list.has(dt.id)}
