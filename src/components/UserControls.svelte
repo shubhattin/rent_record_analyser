@@ -2,17 +2,22 @@
   import { Popover, Modal } from '@skeletonlabs/skeleton-svelte';
   import Icon from '~/tools/Icon.svelte';
   import { BiLogOut } from 'svelte-icons-pack/bi';
-  import { deleteAuthCookies } from '~/tools/auth_tools';
   import { user_info } from '~/state/user.svelte';
   import { VscAccount } from 'svelte-icons-pack/vsc';
   import { AiOutlineUser } from 'svelte-icons-pack/ai';
+  import { client_q } from '~/api/client';
 
   let user_info_popover_status = $state(false);
   let logout_modal_status = $state(false);
-  const log_out = () => {
-    deleteAuthCookies();
+
+  const logout_mut = client_q.auth.logout.mutation({
+    async onSuccess() {
+      $user_info = null;
+    }
+  });
+  const log_out_func = async () => {
     logout_modal_status = false;
-    $user_info = null;
+    $logout_mut.mutate();
   };
 </script>
 
@@ -53,7 +58,7 @@
             <div class="space-x-2">
               <button
                 class="btn preset-filled-surface-300-700 rounded-lg font-semibold"
-                onclick={log_out}
+                onclick={log_out_func}
               >
                 Confirm
               </button>
