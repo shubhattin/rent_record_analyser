@@ -8,6 +8,7 @@ import { users } from '~/db/schema';
 import { eq } from 'drizzle-orm';
 import { delay } from '~/tools/delay';
 import { puShTi_256, hash_256, gen_salt } from '~/tools/hash_tools';
+import ms from 'ms';
 
 export const user_info_schema = UsersSchemaZod.pick({
   id: true,
@@ -17,7 +18,11 @@ export const user_info_schema = UsersSchemaZod.pick({
 type user_info_type = z.infer<typeof user_info_schema>;
 
 const ID_TOKREN_EXPIRE = '10d';
-const ACCESS_TOKEN_EXPIRE = '15mins';
+const ACCESS_TOKEN_EXPIRE = '1hr';
+
+export const AUTH_ID_LOC = 'server_auth_id'; // id token
+export const ACCESS_ID_LOC = 'server_access_id';
+export const COOKIE_LOC = '/';
 
 const get_id_and_aceess_token = async (user_info: user_info_type) => {
   // ID Token will be used for authentication, i.e. to verify the user's identity.
@@ -62,12 +67,11 @@ const verify_pass_router = publicProcedure
       }),
       z.object({
         verified: z.literal(true),
-        id_token: z.string(),
-        access_token: z.string()
+        user: user_info_schema
       })
     ])
   )
-  .mutation(async ({ input: { password, id } }) => {
+  .mutation(async ({ input: { password, id }, ctx: { cookies } }) => {
     let verified = false;
     await delay(600);
 
@@ -83,10 +87,28 @@ const verify_pass_router = publicProcedure
       id: user_info.id,
       user_type: user_info.user_type
     });
+
+    cookies.set(AUTH_ID_LOC, id_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + ms(ID_TOKREN_EXPIRE)),
+      path: COOKIE_LOC
+    });
+    cookies.set(ACCESS_ID_LOC, access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + ms(ACCESS_TOKEN_EXPIRE)),
+      path: COOKIE_LOC
+    });
     return {
       verified,
-      id_token,
-      access_token
+      user: {
+        id: user_info.id,
+        name: user_info.name,
+        user_type: user_info.user_type
+      }
     };
   });
 
@@ -108,12 +130,11 @@ const renew_access_token = publicProcedure
       }),
       z.object({
         verified: z.literal(true),
-        access_token: z.string(),
-        id_token: z.string()
+        user: user_info_schema
       })
     ])
   )
-  .query(async ({ input: { id_token } }) => {
+  .query(async ({ input: { id_token }, ctx: { cookies } }) => {
     async function get_user_from_id_token() {
       let payload: z.infer<typeof id_token_payload_schema>;
       try {
@@ -127,7 +148,29 @@ const renew_access_token = publicProcedure
       return {
         verified: false
       };
-    return { verified: true, ...(await get_id_and_aceess_token(user.user)) };
+
+    const updated_tokens = await get_id_and_aceess_token(user.user);
+
+    // setting cookies
+    cookies.set(AUTH_ID_LOC, updated_tokens.id_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + ms(ID_TOKREN_EXPIRE)),
+      path: COOKIE_LOC
+    });
+    cookies.set(ACCESS_ID_LOC, updated_tokens.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      expires: new Date(Date.now() + ms(ACCESS_TOKEN_EXPIRE)),
+      path: COOKIE_LOC
+    });
+
+    return {
+      verified: true,
+      user: user.user
+    };
   });
 
 const update_password_router = protectedProcedure
@@ -153,8 +196,19 @@ const update_password_router = protectedProcedure
     return { success: true };
   });
 
+const logout_router = protectedProcedure.mutation(async ({ ctx: { cookies } }) => {
+  cookies.delete(AUTH_ID_LOC, { path: COOKIE_LOC });
+  cookies.delete(ACCESS_ID_LOC, { path: COOKIE_LOC });
+});
+
+const get_user_info_router = protectedProcedure.query(async ({ ctx: { user } }) => {
+  return user;
+});
+
 export const auth_router = t.router({
   verify_pass: verify_pass_router,
   renew_access_token: renew_access_token,
-  update_password: update_password_router
+  update_password: update_password_router,
+  logout: logout_router,
+  get_user_info: get_user_info_router
 });

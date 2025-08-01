@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types'; // Adjust the path based on yo
 import { JWT_SECRET } from '~/tools/jwt.server';
 import { jwtVerify } from 'jose';
 import { user_info_schema } from '~/api/routers/auth';
-import { AUTH_ID_LOC } from '~/tools/auth_tools';
+import { AUTH_ID_LOC } from '~/api/routers/auth';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
   let user: z.infer<typeof user_info_schema> | null = null!;

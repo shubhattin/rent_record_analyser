@@ -4,6 +4,7 @@ import { JWT_SECRET } from '~/tools/jwt.server';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { inferAsyncReturnType } from '@trpc/server';
 import { z } from 'zod';
+import { ACCESS_ID_LOC } from './routers/auth';
 
 const access_token_payload_schema = z.object({
   user: UsersSchemaZod.pick({
@@ -14,23 +15,27 @@ const access_token_payload_schema = z.object({
 });
 
 export async function createContext(event: RequestEvent) {
-  const { request } = event;
+  const { cookies } = event;
 
   async function getUserFromHeader() {
     try {
-      const jwt_token = request.headers.get('Authorization')?.split(' ')[1]!;
-      const jwt_data = await jwtVerify(jwt_token, JWT_SECRET, {
-        algorithms: ['HS256']
-      });
-      const payload = access_token_payload_schema.parse(jwt_data.payload);
-      return payload.user;
+      const access_token = cookies.get(ACCESS_ID_LOC);
+      if (access_token) {
+        const jwt_data = await jwtVerify(access_token, JWT_SECRET, {
+          algorithms: ['HS256']
+        });
+        const payload = access_token_payload_schema.parse(jwt_data.payload);
+        const user = payload.user;
+        return user;
+      }
     } catch {}
     return null;
   }
 
   const user = await getUserFromHeader();
   return {
-    user
+    user,
+    cookies
   };
 }
 
