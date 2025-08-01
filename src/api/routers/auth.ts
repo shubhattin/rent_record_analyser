@@ -19,7 +19,7 @@ export const user_info_schema = UsersSchemaZod.pick({
 type user_info_type = z.infer<typeof user_info_schema>;
 
 const ID_TOKREN_EXPIRE = '10d' as const;
-const ACCESS_TOKEN_EXPIRE = '10secs' as const;
+const ACCESS_TOKEN_EXPIRE = '15mins' as const;
 
 export const AUTH_ID_LOC = 'server_auth_id' as const; // id token
 export const ACCESS_ID_LOC = 'server_access_id' as const;
@@ -119,6 +119,10 @@ export async function getUserFromCookieAccessToken(cookies: Cookies) {
           user_type: user_info.user_type
         });
         setCookiesFromTokens(cookies, id_token, access_token);
+        return {
+          id: user_info.id,
+          user_type: user_info.user_type
+        };
       }
     }
   } catch (e) {}
