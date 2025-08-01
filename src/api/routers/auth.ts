@@ -1,7 +1,7 @@
 import { protectedProcedure, publicProcedure, t } from '~/api/trpc_init';
 import { z } from 'zod';
 import { JWT_SECRET } from '~/tools/jwt.server';
-import { jwtVerify, SignJWT } from 'jose';
+import { jwtVerify, SignJWT, errors, jwtDecrypt } from 'jose';
 import { UsersSchemaZod } from '~/db/schema_zod';
 import { db } from '~/db/db';
 import { users } from '~/db/schema';
@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm';
 import { delay } from '~/tools/delay';
 import { puShTi_256, hash_256, gen_salt } from '~/tools/hash_tools';
 import ms from 'ms';
+import type { Cookies } from '@sveltejs/kit';
 
 export const user_info_schema = UsersSchemaZod.pick({
   id: true,
@@ -17,12 +18,12 @@ export const user_info_schema = UsersSchemaZod.pick({
 });
 type user_info_type = z.infer<typeof user_info_schema>;
 
-const ID_TOKREN_EXPIRE = '10d';
-const ACCESS_TOKEN_EXPIRE = '1hr';
+const ID_TOKREN_EXPIRE = '10d' as const;
+const ACCESS_TOKEN_EXPIRE = '10secs' as const;
 
-export const AUTH_ID_LOC = 'server_auth_id'; // id token
-export const ACCESS_ID_LOC = 'server_access_id';
-export const COOKIE_LOC = '/';
+export const AUTH_ID_LOC = 'server_auth_id' as const; // id token
+export const ACCESS_ID_LOC = 'server_access_id' as const;
+export const COOKIE_LOC = '/' as const;
 
 const get_id_and_aceess_token = async (user_info: user_info_type) => {
   // ID Token will be used for authentication, i.e. to verify the user's identity.
@@ -51,6 +52,78 @@ const get_id_and_aceess_token = async (user_info: user_info_type) => {
     access_token
   };
 };
+
+const setCookiesFromTokens = (cookies: Cookies, id_token: string, access_token: string) => {
+  // setting cookies
+  cookies.set(AUTH_ID_LOC, id_token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    expires: new Date(Date.now() + ms(ID_TOKREN_EXPIRE)),
+    path: COOKIE_LOC
+  });
+  cookies.set(ACCESS_ID_LOC, access_token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    expires: new Date(Date.now() + ms(ACCESS_TOKEN_EXPIRE)),
+    path: COOKIE_LOC
+  });
+};
+
+export const access_token_payload_schema = z.object({
+  user: UsersSchemaZod.pick({
+    id: true,
+    user_type: true
+  }),
+  type: z.literal('api')
+});
+
+export const getUserInfoFromCookieIdToken = async (cookies: Cookies) => {
+  let user: z.infer<typeof user_info_schema> | null = null!;
+  try {
+    // this is for verifying the user's identity and not the authorization
+    const id_token = cookies.get(AUTH_ID_LOC);
+    const id_token_payload_schema = z.object({
+      user: user_info_schema,
+      type: z.literal('login')
+    });
+    if (id_token) {
+      const jwt_data = await jwtVerify(id_token, JWT_SECRET, {
+        algorithms: ['HS256']
+      });
+      const payload = id_token_payload_schema.parse(jwt_data.payload);
+      user = payload.user;
+    }
+  } catch {}
+
+  return user;
+};
+
+export async function getUserFromCookieAccessToken(cookies: Cookies) {
+  try {
+    const access_token = cookies.get(ACCESS_ID_LOC);
+    if (access_token) {
+      const jwt_data = await jwtVerify(access_token, JWT_SECRET, {
+        algorithms: ['HS256']
+      });
+      const payload = access_token_payload_schema.parse(jwt_data.payload);
+      const user = payload.user;
+      return user;
+    } else {
+      const user_info = await getUserInfoFromCookieIdToken(cookies);
+      if (user_info) {
+        const { id_token, access_token } = await get_id_and_aceess_token({
+          name: user_info.name,
+          id: user_info.id,
+          user_type: user_info.user_type
+        });
+        setCookiesFromTokens(cookies, id_token, access_token);
+      }
+    }
+  } catch (e) {}
+  return null;
+}
 
 const verify_pass_router = publicProcedure
   .input(
@@ -88,20 +161,8 @@ const verify_pass_router = publicProcedure
       user_type: user_info.user_type
     });
 
-    cookies.set(AUTH_ID_LOC, id_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + ms(ID_TOKREN_EXPIRE)),
-      path: COOKIE_LOC
-    });
-    cookies.set(ACCESS_ID_LOC, access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + ms(ACCESS_TOKEN_EXPIRE)),
-      path: COOKIE_LOC
-    });
+    setCookiesFromTokens(cookies, id_token, access_token);
+
     return {
       verified,
       user: {
@@ -151,21 +212,7 @@ const renew_access_token = publicProcedure
 
     const updated_tokens = await get_id_and_aceess_token(user.user);
 
-    // setting cookies
-    cookies.set(AUTH_ID_LOC, updated_tokens.id_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + ms(ID_TOKREN_EXPIRE)),
-      path: COOKIE_LOC
-    });
-    cookies.set(ACCESS_ID_LOC, updated_tokens.access_token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + ms(ACCESS_TOKEN_EXPIRE)),
-      path: COOKIE_LOC
-    });
+    setCookiesFromTokens(cookies, updated_tokens.id_token, updated_tokens.access_token);
 
     return {
       verified: true,
