@@ -1,5 +1,5 @@
 {
-  "id": "aacfea1b-07d1-4818-926d-4560ba6c0513",
+  "id": "1cc96f5a-0b1f-4d9d-83c1-cb0de944589b",
   "prevId": "41c6cb6f-90d8-4f1f-b716-33c7b0b2179c",
   "version": "7",
   "dialect": "postgresql",
@@ -53,10 +53,16 @@
         },
         "timestamp": {
           "name": "timestamp",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
         },
         "user_id": {
           "name": "user_id",
@@ -74,11 +80,11 @@
         }
       },
       "indexes": {
-        "rent_data_timestamp_index": {
-          "name": "rent_data_timestamp_index",
+        "rent_data_date_index": {
+          "name": "rent_data_date_index",
           "columns": [
             {
-              "expression": "timestamp",
+              "expression": "date",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -123,7 +129,12 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {},
+      "checkConstraints": {
+        "rent_data_month_format_check": {
+          "name": "rent_data_month_format_check",
+          "value": "\"rent_data\".\"month\" ~ '^[0-9]{4}-[0-9]{2}$'"
+        }
+      },
       "isRLSEnabled": false
     },
     "public.users": {

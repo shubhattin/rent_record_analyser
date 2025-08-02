@@ -8,9 +8,10 @@ import {
   char,
   pgEnum,
   index,
-  timestamp
+  timestamp,
+  check
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
 export const rentTypeEnum = pgEnum('rent_type', ['rent', 'electricity']);
 
@@ -20,11 +21,16 @@ export const rent_data = pgTable(
     id: serial().primaryKey(),
     amount: integer().notNull(),
     month: char({ length: 7 }).notNull(), // YYYY-MM
-    timestamp: timestamp().notNull().defaultNow(),
+    timestamp: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    date: date({ mode: 'date' }).notNull(),
     user_id: integer().references(() => users.id, { onDelete: 'set null' }),
     rent_type: rentTypeEnum().default('rent').notNull()
   },
-  ({ timestamp, month }) => [index().on(timestamp), index().on(month)]
+  ({ date, month }) => [
+    index().on(date),
+    index().on(month),
+    check('rent_data_month_format_check', sql`${month} ~ '^[0-9]{4}-[0-9]{2}$'`)
+  ]
 );
 
 export const others = pgTable('others', {
