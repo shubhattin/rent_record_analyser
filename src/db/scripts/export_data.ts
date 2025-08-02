@@ -48,6 +48,14 @@ const main = async () => {
     console.log(chalk.red('✗ Error while deleting tables:'), chalk.yellow(e));
   }
 
+  // inserting users
+  try {
+    await db.insert(users).values(data.users);
+    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`users`'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting users:'), chalk.yellow(e));
+  }
+
   // inserting rent_data
   try {
     await db.insert(rent_data).values(data.rent_data);
@@ -56,20 +64,23 @@ const main = async () => {
     console.log(chalk.red('✗ Error while inserting rent_data:'), chalk.yellow(e));
   }
 
+  // inserting verification_requests
+  try {
+    await db.insert(verification_requests).values(data.verification_requests);
+    console.log(
+      chalk.green('✓ Successfully added values into table'),
+      chalk.blue('`verification_requests`')
+    );
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting verification_requests:'), chalk.yellow(e));
+  }
+
   // inserting others
   try {
     await db.insert(others).values(data.others);
     console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`others`'));
   } catch (e) {
     console.log(chalk.red('✗ Error while inserting others:'), chalk.yellow(e));
-  }
-
-  // inserting users
-  try {
-    await db.insert(users).values(data.users);
-    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`users`'));
-  } catch (e) {
-    console.log(chalk.red('✗ Error while inserting users:'), chalk.yellow(e));
   }
 
   // resetting SERIAL
