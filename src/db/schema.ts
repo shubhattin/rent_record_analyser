@@ -25,7 +25,7 @@ export const rent_data = pgTable(
     updated_at: timestamp({ withTimezone: true })
       .notNull()
       .$onUpdate(() => new Date()),
-    date: date({ mode: 'date' }).notNull(),
+    date: date({ mode: 'string' }).notNull(),
     user_id: integer().references(() => users.id, { onDelete: 'set null' }),
     rent_type: rentTypeEnum().default('rent').notNull()
   },

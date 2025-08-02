@@ -25,6 +25,7 @@ export const add_data_router = protectedProcedure
       ctx: { user }
     }) => {
       await delay(500);
+
       const returned_data = await db
         .insert(rent_data)
         .values({

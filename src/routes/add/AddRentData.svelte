@@ -43,7 +43,7 @@
     if (!date || date === '' || !amount || amount === 0) return;
     const data = {
       rent_type: rent_type,
-      date: new Date(date + 'T00:00:00+05:30'),
+      date: date,
       amount: amount,
       month: `${year}-${month.padStart(2, '0')}`
     };
