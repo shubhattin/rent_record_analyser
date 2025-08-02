@@ -111,7 +111,7 @@ export const sort_date_helper = (dt1: any, dt2: any, sort_key: string | null, or
 };
 
 export const convert_to_dd_mm_yyyy = (val: string, pad = false) => {
-  const [dt, mn, yr] = val.split('-').map((v) => parseInt(v));
+  const [yr, mn, dt] = val.split('-').map((v) => parseInt(v));
   const month = pad ? mn.toString().padStart(2, '0') : mn;
   const dt1 = pad ? dt.toString().padStart(2, '0') : dt;
   return `${dt1}/${month}/${yr}`;
