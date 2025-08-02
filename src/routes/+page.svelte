@@ -66,14 +66,14 @@
         {#each date_records as dte, i_dt (i_dt)}
           {@const dt = dte[0].date}
           {#if !date_records[i_dt].every((dt) => dt.rent_type !== type)}
-            {@const date = dt.getUTCDate()}
+            {@const date = parseInt(dt.split('-')[2])}
             {@const rent_records_filtered = date_records[i_dt].filter((d) => d.rent_type === type)}
             <tr>
               <td class="px-1 py-0.5 text-start text-sm">
                 {date}<sup>{date % 10 === 0 ? 'th' : NUMBER_SUFFIX[(date % 10) - 1]}</sup>
               </td>
               <td class="px-1 py-0.5 text-start text-sm">
-                {MONTH_NAMES_SHORT[dt.getUTCMonth() + 1 - 1]}
+                {MONTH_NAMES_SHORT[parseInt(dt.split('-')[1]) - 1]}
               </td>
               <td class="space-x-1 px-1 py-0.5 text-start text-sm">
                 {#each rent_records_filtered as record, i}

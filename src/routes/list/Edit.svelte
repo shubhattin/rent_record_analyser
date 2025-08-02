@@ -1,7 +1,12 @@
 <script lang="ts">
   import { z } from 'zod';
   import { slide } from 'svelte/transition';
-  import { clone_date, get_date_string, get_utc_date_string, sort_date_helper } from '~/tools/date';
+  import {
+    convert_to_dd_mm_yyyy,
+    convert_to_yyyy_mm_dd,
+    pad_month_string,
+    sort_date_helper
+  } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
   import { client_q } from '~/api/client';
   import type { RentDataPageType } from '~/api/routers/rent_data';
@@ -35,11 +40,9 @@
     const source = value as any;
     if (is_array)
       return source.map((obj: any) => ({
-        ...obj,
-        date: clone_date(obj.date),
-        month: clone_date(obj.month)
+        ...obj
       })) as T;
-    return { ...source, date: clone_date(source.date), month: clone_date(source.month) } as T;
+    return { ...source } as T;
   }
   // svelte-ignore state_referenced_locally
   let prev_data = $state(deepCopy(data, true));
@@ -49,20 +52,21 @@
   let to_verify_list = $state(new SvelteSet<number>());
 
   $effect(() => {
+    // diff for change in data
     if (editable) {
       let changed = new SvelteSet<number>();
       for (let i = 0; i < data.length; i++) {
         if (
-          (get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
+          (prev_data[i].date !== data[i].date ||
             prev_data[i].amount !== data[i].amount ||
-            get_date_string(prev_data[i].month) !== get_date_string(data[i].month)) &&
+            prev_data[i].month !== data[i].month) &&
           !to_delete_list.has(data[i].id) &&
           z
             .object({
               id: z.number().int(),
               amount: z.number().int(),
-              date: z.date(),
-              month: z.date()
+              date: z.string().date(),
+              month: z.string()
             })
             .safeParse(data[i]).success
         )
@@ -71,10 +75,6 @@
       to_change_list = changed;
     }
   });
-
-  const set_val_from_input = (e: any, func: (val: string) => any) => {
-    func(e.currentTarget.textContent);
-  };
 
   const get_key_index_in_data = (id: number, dt: any[] = data) => {
     for (let i = 0; i < data.length; i++) if (data[i].id === id) return i;
@@ -102,7 +102,7 @@
               new_data[index] = deepCopy(dt, false);
             }
             new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
-            new_data = new_data.sort((dt1, dt2) => sort_date_helper(dt1, dt2, 'date', -1));
+            new_data = new_data.sort((dt1, dt2) => dt1.date.localeCompare(dt2.date));
 
             // resetting values
             data = deepCopy(new_data, true);
@@ -191,7 +191,7 @@
         <tr class={cl_join(clss)}>
           <td>
             {#if !editable}
-              {get_date_string(dt.date, 'dd/mm/yyyy', true)}
+              {convert_to_dd_mm_yyyy(dt.date, true)}
             {:else}
               <input
                 type="text"
@@ -207,12 +207,10 @@
                   }
                   value = str_val.data;
                   // val is in dd/mm/yyyy to convert to yyyy-mm-dd
-                  const vals = value.split('/');
-                  value = get_utc_date_string(`${vals[2]}-${vals[1]}-${vals[0]}`);
-                  const parse_val = z.coerce.date().safeParse(value);
+                  const parse_val = z.string().date().safeParse(convert_to_yyyy_mm_dd(value));
                   if (parse_val.success) dt.date = parse_val.data;
                 }}
-                value={get_date_string(dt.date)}
+                value={convert_to_dd_mm_yyyy(dt.date)}
               />
             {/if}
           </td>
@@ -235,7 +233,7 @@
           </td>
           <td>
             {#if !editable}
-              {`${dt.month.getUTCFullYear()}-${(dt.month.getUTCMonth() + 1).toString().padStart(2, '0')}`}
+              {dt.month}
             {:else}
               <input
                 type="text"
@@ -250,10 +248,13 @@
                     return;
                   }
                   value = str_val.data;
-                  const parse_val = z.coerce.date().safeParse(get_utc_date_string(value + '-1'));
+                  const parse_val = z
+                    .string()
+                    .regex(/^\d{4}-\d{2}$/)
+                    .safeParse(pad_month_string(value));
                   if (parse_val.success) dt.month = parse_val.data;
                 }}
-                value={`${dt.month.getUTCFullYear()}-${dt.month.getUTCMonth() + 1}`}
+                value={dt.month}
               />
             {/if}
           </td>
@@ -268,9 +269,9 @@
             </span>
             {#if is_editable_row}
               {@const values_edited =
-                get_date_string(prev_data[i].date) !== get_date_string(data[i].date) ||
+                prev_data[i].date !== data[i].date ||
                 prev_data[i].amount !== data[i].amount ||
-                get_date_string(prev_data[i].month) !== get_date_string(data[i].month)}
+                prev_data[i].month !== data[i].month}
               {#if !to_delete_status && values_edited}
                 <button onclick={() => (data[i] = deepCopy(prev_data[i], false))}
                   ><Icon src={BiReset} class="-mt-2 text-xl hover:fill-amber-600" /></button

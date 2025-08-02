@@ -109,3 +109,23 @@ export const sort_date_helper = (dt1: any, dt2: any, sort_key: string | null, or
   if (month1 !== month2) return (month1 - month2) * order;
   return (day1 - day2) * order;
 };
+
+export const convert_to_dd_mm_yyyy = (val: string, pad = false) => {
+  const [yr, mn, dt] = val.split('-').map((v) => parseInt(v));
+  const month = pad ? mn.toString().padStart(2, '0') : mn;
+  const dt1 = pad ? dt.toString().padStart(2, '0') : dt;
+  return `${dt1}/${month}/${yr}`;
+};
+
+export const convert_to_yyyy_mm_dd = (val: string, pad = true) => {
+  const [dt, mn, yr] = val.split('/').map((v) => parseInt(v));
+  const month = pad ? mn.toString().padStart(2, '0') : mn;
+  const dt1 = pad ? dt.toString().padStart(2, '0') : dt;
+  return `${yr}-${month}-${dt1}`;
+};
+
+export const pad_month_string = (val: string) => {
+  const [yr, mn] = val.split('-');
+  const month = mn.toString().padStart(2, '0');
+  return `${yr}-${month}`;
+};

@@ -9,7 +9,7 @@ import { delay } from '~/tools/delay';
 export const add_data_router = protectedProcedure
   .input(
     z.object({
-      data: RentDataSchemaZod.omit({ id: true, user_id: true })
+      data: RentDataSchemaZod.omit({ id: true, user_id: true, created_at: true, updated_at: true })
     })
   )
   .output(
@@ -25,6 +25,7 @@ export const add_data_router = protectedProcedure
       ctx: { user }
     }) => {
       await delay(500);
+
       const returned_data = await db
         .insert(rent_data)
         .values({
@@ -53,7 +54,12 @@ export const edit_data_router = protectedAdminProcedure
     z.object({
       to_verify: z.array(z.number().int()),
       to_delete: z.number().int().array(),
-      to_change: RentDataSchemaZod.omit({ rent_type: true, user_id: true }).array()
+      to_change: RentDataSchemaZod.omit({
+        rent_type: true,
+        user_id: true,
+        created_at: true,
+        updated_at: true
+      }).array()
     })
   )
   .output(

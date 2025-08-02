@@ -41,14 +41,13 @@
 
   const submit_data_func = async () => {
     if (!date || date === '' || !amount || amount === 0) return;
-    $submit_data.mutate({
-      data: {
-        rent_type: rent_type,
-        date: get_utc_date(date),
-        amount: amount,
-        month: get_utc_date(`${year}-${month}-1`) // 1st day of the month
-      }
-    });
+    const data = {
+      rent_type: rent_type,
+      date: date,
+      amount: amount,
+      month: `${year}-${month.padStart(2, '0')}`
+    };
+    $submit_data.mutate({ data });
   };
   let amount_input_elmt = $state<HTMLInputElement>(null!);
 
