@@ -21,7 +21,10 @@ export const rent_data = pgTable(
     id: serial().primaryKey(),
     amount: integer().notNull(),
     month: char({ length: 7 }).notNull(), // YYYY-MM
-    timestamp: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp({ withTimezone: true })
+      .notNull()
+      .$onUpdate(() => new Date()),
     date: date({ mode: 'date' }).notNull(),
     user_id: integer().references(() => users.id, { onDelete: 'set null' }),
     rent_type: rentTypeEnum().default('rent').notNull()
