@@ -10,6 +10,7 @@ import {
 } from '~/db/schema_zod';
 import { z } from 'zod';
 import { sql } from 'drizzle-orm';
+import chalk from 'chalk';
 
 const main = async () => {
   /*
@@ -29,45 +30,56 @@ const main = async () => {
 
   const data = z
     .object({
-      others: OthersSchemaZod.array(),
       rent_data: RentDataSchemaZod.array(),
+      others: OthersSchemaZod.array(),
       users: UsersSchemaZod.array(),
       verification_requests: VerficationRequestsSchemaZod.array()
     })
     .parse(JSON.parse((await readFile(`./out/${in_file_name}`)).toString()));
 
-  // insertig users
+  // deleting all the tables initially
   try {
-    await db.insert(users).values(data.users);
-    // reset  SERIAL
-    await db.execute(sql`SELECT setval('users_id_seq', (select MAX(id) from users))`);
-    console.log('Successfully added values into table `users`');
-  } catch {}
+    await db.delete(rent_data);
+    await db.delete(others);
+    await db.delete(users);
+    await db.delete(verification_requests);
+    console.log(chalk.green('✓ Deleted All Tables Successfully'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while deleting tables:'), chalk.yellow(e));
+  }
 
-  // insertig rent_data
+  // inserting rent_data
   try {
     await db.insert(rent_data).values(data.rent_data);
-    console.log('Successfully added values into table `rent_data`');
-    // reset  SERIAL
-    await db.execute(sql`SELECT setval('rent_data_id_seq', (select MAX(id) from rent_data))`);
-  } catch {}
+    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`rent_data`'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting rent_data:'), chalk.yellow(e));
+  }
 
-  // insertig others
+  // inserting others
   try {
-    data.others.length !== 0 && (await db.insert(others).values(data.others));
-    console.log('Successfully added values into table `others`');
-  } catch {}
+    await db.insert(others).values(data.others);
+    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`others`'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting others:'), chalk.yellow(e));
+  }
 
+  // inserting users
   try {
-    // insertig verification requests
-    data.verification_requests.length !== 0 &&
-      (await db.insert(verification_requests).values(data.verification_requests));
-    // reset  SERIAL
-    await db.execute(
-      sql`SELECT setval('verification_requests_id_seq', (select MAX(id) from verification_requests))`
-    );
-    console.log('Successfully added values into table `verification_requests`');
-  } catch {}
+    await db.insert(users).values(data.users);
+    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`users`'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting users:'), chalk.yellow(e));
+  }
+
+  // resetting SERIAL
+  try {
+    await db.execute(sql`SELECT setval('"rent_data_id_seq"', (select MAX(id) from "rent_data"))`);
+    await db.execute(sql`SELECT setval('"users_id_seq"', (select MAX(id) from "users"))`);
+    console.log(chalk.green('✓ Successfully resetted ALL SERIAL'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while resetting SERIAL:'), chalk.yellow(e));
+  }
 };
 main().then(() => {
   queryClient.end();

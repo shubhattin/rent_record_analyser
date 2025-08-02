@@ -11,7 +11,7 @@ import {
 } from './rent_filters';
 
 type GetDataOptions = {
-  lastDate?: Date | null;
+  lastDate?: string | null;
   listID?: number | null;
   limit?: number | null;
 };
@@ -143,7 +143,7 @@ export type RentDataAnalysisPageType = Awaited<ReturnType<typeof get_rent_data_a
 const get_paginated_rent_data_route = protectedProcedure
   .input(
     z.object({
-      lastDate: z.coerce.date().nullable().optional().default(null),
+      lastDate: z.string().date().nullable().optional().default(null),
       lastID: z.coerce.number().int().nullable().optional().default(null),
       limit: z.coerce.number().int().nullable().optional().default(null)
     })
