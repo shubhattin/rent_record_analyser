@@ -1,12 +1,4 @@
-import {
-  others,
-  rent_data,
-  verification_requests,
-  users,
-  user,
-  account,
-  verification
-} from './schema';
+import { others, rent_data, verification_requests, user, account, verification } from './schema';
 import { createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 

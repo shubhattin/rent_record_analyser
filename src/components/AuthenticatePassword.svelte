@@ -1,32 +1,36 @@
 <script lang="ts">
-  import { client_q } from '~/api/client';
   import Spinner from './Spinner.svelte';
   import { cl_join } from '~/tools/cl_join';
-  import { user_info } from '~/state/user.svelte';
+  import { authClient } from '$lib/auth-client';
+  import { createMutation } from '@tanstack/svelte-query';
 
   let {
-    pass_input_element = $bindable(),
-    users_data
+    pass_input_element = $bindable()
   }: {
     on_verify?: (verified: boolean, jwt_token: string) => void;
     pass_input_element?: HTMLInputElement;
-    users_data: {
-      id: number;
-      name: string;
-    }[];
   } = $props();
 
-  let user_id = $state(1); // 1st user(admin)
+  let user_id = $state(''); // 1st user(admin)
   let password = $state('');
 
-  const pass_verify = client_q.auth.verify_pass.mutation({
+  const pass_verify = createMutation({
+    mutationFn: async () => {
+      return await authClient.signIn.username({
+        username: user_id,
+        password,
+        fetchOptions: {
+          method: 'POST'
+        }
+      });
+    },
     onSuccess(data) {
-      if (!data.verified) {
-        password = '';
-        pass_input_element && pass_input_element.focus();
-        wrong_pass_status = true;
-      } else {
-        $user_info = data.user;
+      if (data.error) {
+        if (data.error.code === 'INVALID_USERNAME_OR_PASSWORD') {
+          wrong_pass_status = true;
+          password = '';
+          pass_input_element && pass_input_element.focus();
+        } else throw data.error;
       }
     }
   });
@@ -39,26 +43,18 @@
   const check_pass_func = async (e: Event) => {
     e.preventDefault();
     if (password === '') return;
-    $pass_verify.mutate({ id: user_id, password });
+    $pass_verify.mutate();
   };
 </script>
 
 <div class="font-bold text-orange-600 dark:text-yellow-500">Authentication</div>
 <form onsubmit={check_pass_func} class="mt-2 space-y-2.5">
-  <select bind:value={user_id} class="select rounded-xl font-bold select-none">
-    {#each users_data as user}
-      <option value={user.id} class="font-semibold">
-        {user.id}
-        →
-        {user.name}
-      </option>
-    {/each}
-  </select>
+  <input type="text" name="userid" class="input" placeholder="User ID" bind:value={user_id} />
   <input
     class={cl_join('input', wrong_pass_status && 'preset-tonal-error')}
     type="password"
     bind:value={password}
-    placeholder="गूढपद"
+    placeholder="Password"
     required
     bind:this={pass_input_element}
   />

@@ -1,11 +1,13 @@
 import { dbClient_ext as db, queryClient } from './client';
 import { readFile } from 'fs/promises';
 import { dbMode, take_input } from '~/tools/kry_server';
-import { rent_data, others, users, verification_requests } from '~/db/schema';
+import { rent_data, others, verification_requests, user, account, verification } from '~/db/schema';
 import {
   RentDataSchemaZod,
   OthersSchemaZod,
-  UsersSchemaZod,
+  UserSchemaZod,
+  AccountSchemaZod,
+  VerificationSchemaZod,
   VerficationRequestsSchemaZod
 } from '~/db/schema_zod';
 import { z } from 'zod';
@@ -30,30 +32,53 @@ const main = async () => {
 
   const data = z
     .object({
+      user: UserSchemaZod.array(),
+      account: AccountSchemaZod.array(),
+      verification: VerificationSchemaZod.array(),
       rent_data: RentDataSchemaZod.array(),
       others: OthersSchemaZod.array(),
-      users: UsersSchemaZod.array(),
       verification_requests: VerficationRequestsSchemaZod.array()
     })
     .parse(JSON.parse((await readFile(`./out/${in_file_name}`)).toString()));
 
   // deleting all the tables initially
   try {
+    await db.delete(user);
+    await db.delete(account);
+    await db.delete(verification);
     await db.delete(rent_data);
     await db.delete(others);
-    await db.delete(users);
     await db.delete(verification_requests);
     console.log(chalk.green('✓ Deleted All Tables Successfully'));
   } catch (e) {
     console.log(chalk.red('✗ Error while deleting tables:'), chalk.yellow(e));
   }
 
-  // inserting users
+  // inserting user
   try {
-    await db.insert(users).values(data.users);
-    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`users`'));
+    await db.insert(user).values(data.user);
+    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`user`'));
   } catch (e) {
-    console.log(chalk.red('✗ Error while inserting users:'), chalk.yellow(e));
+    console.log(chalk.red('✗ Error while inserting user:'), chalk.yellow(e));
+  }
+
+  // inserting account
+  try {
+    await db.insert(account).values(data.account);
+    console.log(chalk.green('✓ Successfully added values into table'), chalk.blue('`account`'));
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting account:'), chalk.yellow(e));
+  }
+
+  // inserting verification
+  try {
+    await db.insert(verification).values(data.verification);
+    console.log(
+      chalk.green('✓ Successfully added values into table'),
+      chalk.blue('`verification`')
+    );
+  } catch (e) {
+    console.log(chalk.red('✗ Error while inserting verification:'), chalk.yellow(e));
   }
 
   // inserting rent_data
@@ -86,7 +111,6 @@ const main = async () => {
   // resetting SERIAL
   try {
     await db.execute(sql`SELECT setval('"rent_data_id_seq"', (select MAX(id) from "rent_data"))`);
-    await db.execute(sql`SELECT setval('"users_id_seq"', (select MAX(id) from "users"))`);
     console.log(chalk.green('✓ Successfully resetted ALL SERIAL'));
   } catch (e) {
     console.log(chalk.red('✗ Error while resetting SERIAL:'), chalk.yellow(e));
