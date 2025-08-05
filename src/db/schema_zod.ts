@@ -37,5 +37,4 @@ export const RentDataSchemaZod = createSelectSchema(rent_data, {
   month: z.string().regex(/^\d{4}-\d{2}$/)
 });
 export const OthersSchemaZod = createSelectSchema(others);
-export const UsersSchemaZod = createSelectSchema(users);
 export const VerficationRequestsSchemaZod = createSelectSchema(verification_requests);

@@ -1,14 +1,20 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { inferAsyncReturnType } from '@trpc/server';
-import { getUserFromCookieAccessToken } from './routers/auth';
+import { auth } from '$lib/auth';
 
 export async function createContext(event: RequestEvent) {
-  const { cookies } = event;
+  const {
+    request: { headers }
+  } = event;
 
-  const user = await getUserFromCookieAccessToken(cookies);
+  const session = await auth.api.getSession({
+    headers: headers
+  });
+  const cookie = headers.get('Cookie');
+
   return {
-    user,
-    cookies
+    user: session?.user,
+    cookie
   };
 }
 

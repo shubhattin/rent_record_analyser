@@ -12,6 +12,7 @@ import {
   check
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
+import { user } from './auth-schema';
 
 export * from './auth-schema';
 
@@ -28,7 +29,7 @@ export const rent_data = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
     date: date({ mode: 'string' }).notNull(),
-    user_id: integer().references(() => users.id, { onDelete: 'set null' }),
+    user_id: text().references(() => user.id, { onDelete: 'set null' }),
     rent_type: rentTypeEnum().default('rent').notNull()
   },
   ({ date, month }) => [
@@ -43,15 +44,6 @@ export const others = pgTable('others', {
   value: text().notNull()
 });
 
-export const userTypeEnum = pgEnum('user_type', ['admin', 'non-admin']);
-
-export const users = pgTable('users', {
-  id: serial().primaryKey(),
-  name: varchar({ length: 15 }).notNull(),
-  password: char({ length: 96 }).notNull(), // SHA-256 hash + salt of length 32
-  user_type: userTypeEnum().default('non-admin').notNull()
-});
-
 export const verification_requests = pgTable('verification_requests', {
   id: integer()
     .primaryKey()
@@ -61,11 +53,11 @@ export const verification_requests = pgTable('verification_requests', {
 /* The relations defined below are only for the `query` API of drizzle */
 
 export const dataRelation = relations(rent_data, ({ one }) => ({
-  user_info: one(users, { fields: [rent_data.user_id], references: [users.id] }),
+  user_info: one(user, { fields: [rent_data.user_id], references: [user.id] }),
   verification_requests: one(verification_requests)
 }));
 
-export const userRelation = relations(users, ({ many }) => ({
+export const userRelation = relations(user, ({ many }) => ({
   rent_data: many(rent_data)
   // here relation was auto-inferred as rent_data.user_id -> users.id
 }));

@@ -39,7 +39,7 @@ export const add_data_router = protectedProcedure
 
       const id = returned_data[0].id;
 
-      if (rent_type !== 'electricity' && user.user_type !== 'admin')
+      if (rent_type !== 'electricity' && user.role !== 'admin')
         await db.insert(verification_requests).values({
           id: id
         });
