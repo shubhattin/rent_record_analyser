@@ -1,8 +1,11 @@
+import { auth } from '~/lib/auth';
 import type { LayoutServerLoad } from './$types'; // Adjust the path based on your project structure
-import { getUserInfoFromCookieIdToken } from '~/api/routers/auth';
 
-export const load: LayoutServerLoad = async ({ cookies }) => {
+export const load: LayoutServerLoad = async ({ request }) => {
+  const session = await auth.api.getSession({
+    headers: request.headers
+  });
   return {
-    user: await getUserInfoFromCookieIdToken(cookies)
+    user_info: session?.user // This can be undefined if the user is not authenticated
   };
 };

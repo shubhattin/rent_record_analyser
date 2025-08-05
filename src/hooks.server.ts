@@ -1,31 +1,16 @@
-import { createContext } from '~/api/context';
-import { router } from '~/api/trpc_router';
-import { createTRPCHandle } from 'trpc-sveltekit';
 import type { Handle } from '@sveltejs/kit';
+import { createTRPCHandle } from 'trpc-sveltekit';
+import { router } from '~/api/trpc_router';
+import { createContext } from '~/api/context';
+import { auth } from '$lib/auth'; // path to your auth file
+import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { building } from '$app/environment';
 
-export const handle: Handle = createTRPCHandle({ router, createContext });
-
-/*
-// Use this approach to also allow prerendering of static pregenerated pages
-
-
-const handle_trpc: { func: Handle } = { func: null! };
-
-const set_handle_trpc = async () => {
-  // using it in this way to also allow static pregenerated pages
-  if (!handle_trpc.func) {
-    const { createTRPCHandle } = await import('trpc-sveltekit');
-    const { router } = await import('~/api/trpc_router');
-    const { createContext } = await import('~/api/context');
-    handle_trpc.func = createTRPCHandle({ router, createContext });
-  }
-};
+export const handle_trpc: Handle = createTRPCHandle({ router, createContext });
 
 export const handle: Handle = async ({ event, resolve }) => {
   if (event.url.pathname.startsWith('/trpc')) {
-    await set_handle_trpc();
-    return handle_trpc.func({ event, resolve });
+    return handle_trpc({ event, resolve });
   }
-  return resolve(event);
+  return svelteKitHandler({ event, resolve, auth, building });
 };
-*/

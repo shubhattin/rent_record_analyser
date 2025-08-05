@@ -5,16 +5,19 @@
   import { user_info } from '~/state/user.svelte';
   import { VscAccount } from 'svelte-icons-pack/vsc';
   import { AiOutlineUser } from 'svelte-icons-pack/ai';
-  import { client_q } from '~/api/client';
+  import { createMutation } from '@tanstack/svelte-query';
+  import { authClient } from '$lib/auth-client';
 
   let user_info_popover_status = $state(false);
   let logout_modal_status = $state(false);
 
-  const logout_mut = client_q.auth.logout.mutation({
-    async onSuccess() {
-      $user_info = null;
-    }
+  const logout_mut = createMutation({
+    mutationFn: async () => {
+      await authClient.signOut();
+    },
+    onSuccess() {}
   });
+
   const log_out_func = async () => {
     logout_modal_status = false;
     $logout_mut.mutate();
@@ -36,7 +39,7 @@
       <div class="text-center text-base font-bold">
         <Icon class="-mt-1 text-2xl" src={AiOutlineUser} />
         {$user_info!.name}
-        <span class="text-sm text-gray-500 dark:text-gray-400">(#{$user_info!.id})</span>
+        <!-- <span class="text-sm text-gray-500 dark:text-gray-400">(#{$user_info!.id})</span> -->
       </div>
       <div class="space-y-2 p-1 select-none">
         <Modal

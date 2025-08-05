@@ -8,13 +8,10 @@
   import TopAppBar from '~/components/TopAppBar.svelte';
   import { pwa_state } from '~/state/main.svelte';
   import '@fontsource/roboto/latin.css';
-  import type { LayoutData } from './$types';
-  import { user_info } from '~/state/user.svelte';
+  import CookieCacheRefresh from '~/lib/CookieCacheRefresh.svelte';
+  import InitUserState from './InitUserState.svelte';
 
-  let { data, children }: { data: LayoutData; children: Snippet } = $props();
-
-  $user_info = null;
-  if (data.user) $user_info = data.user;
+  let { children }: { children: Snippet } = $props();
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -39,3 +36,6 @@
     {@render children()}
   </QueryClientProvider>
 </div>
+
+<InitUserState />
+<CookieCacheRefresh />

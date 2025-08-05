@@ -1,10 +1,9 @@
 import { redirect } from '@sveltejs/kit';
 import { get_rent_data_page } from '~/api/routers/rent_data.js';
-import { db } from '~/db/db';
 
 export const load = async ({ parent }) => {
-  const { user } = await parent();
-  if (!user) throw redirect(302, '/');
+  const { user_info } = await parent();
+  if (!user_info || !user_info.is_approved) throw redirect(302, '/');
 
   const data = await get_rent_data_page();
 

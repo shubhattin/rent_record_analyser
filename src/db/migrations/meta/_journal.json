@@ -43,6 +43,13 @@
       "when": 1754125687752,
       "tag": "0005_messy_big_bertha",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1754391413760,
+      "tag": "0006_smooth_northstar",
+      "breakpoints": true
     }
   ]
 }
