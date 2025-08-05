@@ -1,6 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 import { get_rent_data_page } from '~/api/routers/rent_data.js';
-import { db } from '~/db/db';
 
 export const load = async ({ parent }) => {
   const { user_info } = await parent();

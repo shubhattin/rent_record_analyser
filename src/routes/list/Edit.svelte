@@ -171,7 +171,7 @@
         <th>Date</th>
         <th>Amount</th>
         <th>Month</th>
-        <th class="text-xs">Type, User, ID</th>
+        <th class="text-xs">Type, ID</th>
       </tr>
     </thead>
     <tbody>
@@ -265,7 +265,9 @@
                   src={HomeIcon}
                   class="h-4 w-4"
                 />{:else if dt.rent_type === 'electricity'}
-                <ImageSpan src={FlashIcon} class="h-4 w-4" />{/if}, {dt.user_id || 'NA'}, {dt.id}
+                <ImageSpan src={FlashIcon} class="h-4 w-4" />{/if},
+              <!-- {dt.user_id?.substring(0, 3) || 'NA'}, -->
+              {dt.id}
             </span>
             {#if is_editable_row}
               {@const values_edited =

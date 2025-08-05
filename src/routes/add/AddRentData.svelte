@@ -67,7 +67,7 @@
       add_data_modal_state = true;
     }}
   >
-    {#if $user_info && $user_info.user_type === 'admin'}
+    {#if $user_info && $user_info.role === 'admin'}
       <div class="mt-2 space-x-3">
         <label class="inline-flex items-center space-x-2">
           <input

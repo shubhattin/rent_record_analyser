@@ -65,7 +65,7 @@
     </div>
   {/if}
 </div>
-{#if !editable && $user_info && $user_info.user_type === 'admin'}
+{#if !editable && $user_info && $user_info.role === 'admin'}
   <button
     transition:slide
     class="fixed right-2 bottom-2 cursor-default text-3xl"
