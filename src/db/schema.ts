@@ -29,7 +29,9 @@ export const rent_data = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
     date: date({ mode: 'string' }).notNull(),
-    user_id: text().references(() => user.id, { onDelete: 'set null' }),
+    user_id: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'set null' }),
     rent_type: rentTypeEnum().default('rent').notNull()
   },
   ({ date, month }) => [

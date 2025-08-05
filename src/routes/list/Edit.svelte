@@ -15,13 +15,13 @@
   import FlashIcon from '~/components/icons/flash.svg';
   import { FiSave } from 'svelte-icons-pack/fi';
   import Icon from '~/tools/Icon.svelte';
-  import { AiOutlineClose } from 'svelte-icons-pack/ai';
+  import { AiOutlineClose, AiOutlineUser } from 'svelte-icons-pack/ai';
   import { BiReset } from 'svelte-icons-pack/bi';
   import { TiTick } from 'svelte-icons-pack/ti';
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '~/tools/cl_join';
   import { SvelteSet } from 'svelte/reactivity';
-  import { Modal } from '@skeletonlabs/skeleton-svelte';
+  import { Modal, Popover } from '@skeletonlabs/skeleton-svelte';
   import { CgClose } from 'svelte-icons-pack/cg';
 
   let {
@@ -171,7 +171,7 @@
         <th>Date</th>
         <th>Amount</th>
         <th>Month</th>
-        <th class="text-xs">Type, ID</th>
+        <th class="text-xs">Type, ID, User</th>
       </tr>
     </thead>
     <tbody>
@@ -258,7 +258,7 @@
               />
             {/if}
           </td>
-          <td>
+          <td class="flex items-center space-x-1">
             <span class="small inline-flex items-center">
               {#if dt.rent_type === 'rent'}
                 <ImageSpan
@@ -266,9 +266,27 @@
                   class="h-4 w-4"
                 />{:else if dt.rent_type === 'electricity'}
                 <ImageSpan src={FlashIcon} class="h-4 w-4" />{/if},
-              <!-- {dt.user_id?.substring(0, 3) || 'NA'}, -->
               {dt.id}
             </span>
+            <Popover
+              positioning={{ placement: 'top' }}
+              triggerBase="4"
+              contentBase="card bg-surface-200-800 px-1.5 py-0.5 rounded-md space-y-4 max-w-[320px]"
+              arrow
+              arrowBackground="!bg-surface-200 dark:!bg-surface-800"
+            >
+              {#snippet trigger()}
+                <Icon src={AiOutlineUser} />
+              {/snippet}
+              {#snippet content()}
+                <div class="space-x-1 text-sm">
+                  <span>{dt.user_name.split(' ')[0]}</span>
+                  <span class="text-xs text-gray-600 dark:text-gray-400">
+                    {dt.user_id.substring(0, 5)}
+                  </span>
+                </div>
+              {/snippet}
+            </Popover>
             {#if is_editable_row}
               {@const values_edited =
                 prev_data[i].date !== data[i].date ||

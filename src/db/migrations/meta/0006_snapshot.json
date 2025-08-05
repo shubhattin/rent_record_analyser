@@ -1,5 +1,5 @@
 {
-  "id": "58becc17-03a3-479f-8f22-f1c8bff9a16e",
+  "id": "9a343308-ef3b-4593-9aa5-8ee51b474a68",
   "prevId": "cca45ff3-752b-457f-b668-2c028865eb4f",
   "version": "7",
   "dialect": "postgresql",
@@ -74,7 +74,7 @@
           "name": "user_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "rent_type": {
           "name": "rent_type",

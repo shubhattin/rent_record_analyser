@@ -1,6 +1,6 @@
 import z from 'zod';
 import { protectedProcedure, publicProcedure, t } from '~/api/trpc_init';
-import { rent_data, verification_requests } from '~/db/schema';
+import { rent_data, user, verification_requests } from '~/db/schema';
 import { desc, eq, and, lt, or, count } from 'drizzle-orm';
 import { db } from '~/db/db';
 import {
@@ -39,11 +39,13 @@ export const get_rent_data_page = async ({
       month: rent_data.month,
       rent_type: rent_data.rent_type,
       user_id: rent_data.user_id,
+      user_name: user.name,
       is_not_verified: verification_requests.id
     })
     .from(rent_data)
     .orderBy(desc(rent_data.date), desc(rent_data.id))
     .leftJoin(verification_requests, eq(verification_requests.id, rent_data.id))
+    .innerJoin(user, eq(rent_data.user_id, user.id))
     .limit(LIMIT);
 
   const data = cursorCondition ? await query.where(cursorCondition) : await query;
