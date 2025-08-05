@@ -18,7 +18,7 @@ export const user_info_schema = UsersSchemaZod.pick({
 });
 type user_info_type = z.infer<typeof user_info_schema>;
 
-const ID_TOKREN_EXPIRE = '10d' as const;
+const ID_TOKEN_EXPIRE = '10d' as const;
 const ACCESS_TOKEN_EXPIRE = '15mins' as const;
 
 export const AUTH_ID_LOC = 'server_auth_id' as const; // id token
@@ -31,7 +31,7 @@ const get_id_and_aceess_token = async (user_info: user_info_type) => {
   const id_token = await new SignJWT({ user: user_info, type: 'login' })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime(ID_TOKREN_EXPIRE)
+    .setExpirationTime(ID_TOKEN_EXPIRE)
     .sign(JWT_SECRET);
 
   // Access Token will be used for authorization, i.e. to access the user's resources.
@@ -59,7 +59,7 @@ const setCookiesFromTokens = (cookies: Cookies, id_token: string, access_token: 
     httpOnly: true,
     secure: true,
     sameSite: 'strict',
-    expires: new Date(Date.now() + ms(ID_TOKREN_EXPIRE)),
+    expires: new Date(Date.now() + ms(ID_TOKEN_EXPIRE)),
     path: COOKIE_LOC
   });
   cookies.set(ACCESS_ID_LOC, access_token, {

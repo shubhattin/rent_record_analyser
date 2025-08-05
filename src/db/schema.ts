@@ -13,6 +13,8 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations, sql } from 'drizzle-orm';
 
+export * from './auth-schema';
+
 export const rentTypeEnum = pgEnum('rent_type', ['rent', 'electricity']);
 
 export const rent_data = pgTable(
