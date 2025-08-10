@@ -18,7 +18,7 @@
 
   let data = $state(ssr_data.data);
   let months_fetched = $state(ssr_data.month_fetched);
-  let all_months_fetched = $state(ssr_data.all_months_fetched);
+  let all_months_fetched_status = $state(ssr_data.all_months_fetched);
   // $effect(() => {
   //   data = ssr_data.data;
   //   months_fetched = ssr_data.month_fetched;
@@ -56,18 +56,19 @@
   let selected_accordian = $state(['0-0']);
 
   const NEXT_MONTH_LIMIT = 3;
+  let fetch_index = 0;
   const load_more_data_mut = createMutation({
     mutationFn: async () => {
       const next_data = await client.rent_data.get_paginated_rent_data_anlysis.query({
         month_fetched: months_fetched,
-        next_month_limit: NEXT_MONTH_LIMIT
+        next_month_limit: NEXT_MONTH_LIMIT + fetch_index++ * 1
       });
       return next_data;
     },
     onSuccess(next_data) {
       data = merge_data(next_data.data);
       months_fetched = next_data.month_fetched;
-      all_months_fetched = next_data.all_months_fetched;
+      all_months_fetched_status = next_data.all_months_fetched;
     }
   });
 
@@ -189,7 +190,7 @@
     Total = ₹ {total}
   </small>
 </div>
-{#if !all_months_fetched}
+{#if !all_months_fetched_status}
   <div class="mt-4 flex items-center justify-center text-white dark:text-zinc-300">
     <button
       class="btn dark:bg-surface-800 bg-surface-400 px-1.5 py-0.5 text-sm font-semibold"
