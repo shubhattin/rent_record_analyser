@@ -72,12 +72,11 @@ export const get_rent_data_analysis_page = async (
     .orderBy(desc(rent_data.month))
     .groupBy(rent_data.month);
 
-  const month_fetch_limit = group_by_month.reduce((val, item, i) => {
-    if (i + 1 > month_fetched + next_month_limit) return val;
-    return val + item.count;
-  }, 0);
-  const months_record_fetched = group_by_month
+  const month_fetch_limit = group_by_month
     .slice(month_fetched, month_fetched + next_month_limit)
+    .reduce((val, item) => val + item.count, 0);
+  const months_record_fetched = group_by_month
+    .slice(0, month_fetched)
     .reduce((val, item) => val + item.count, 0);
 
   const rent_data_ = await db
