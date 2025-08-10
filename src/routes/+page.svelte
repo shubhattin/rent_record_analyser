@@ -16,13 +16,13 @@
   let { data: ssr_data }: { data: PageData } = $props();
 
   let data = $state(ssr_data.data);
-  let month_limit = $state(ssr_data.month_limit);
+  let months_fetched = $state(ssr_data.month_fetched);
   let all_months_fetched = $state(ssr_data.all_months_fetched);
-  $effect(() => {
-    data = ssr_data.data;
-    month_limit = ssr_data.month_limit;
-    all_months_fetched = ssr_data.all_months_fetched;
-  });
+  // $effect(() => {
+  //   data = ssr_data.data;
+  //   months_fetched = ssr_data.month_fetched;
+  //   all_months_fetched = ssr_data.all_months_fetched;
+  // });
 
   let rent_data = $derived(data.rent_data);
   let info_analysis = $derived(data.info_analysis);
@@ -41,13 +41,14 @@
   const load_more_data_mut = createMutation({
     mutationFn: async () => {
       const next_data = await client.rent_data.get_paginated_rent_data_anlysis.query({
-        month_limit: month_limit + NEXT_MONTH_LIMIT
+        month_fetched: months_fetched,
+        next_month_limit: NEXT_MONTH_LIMIT
       });
       return next_data;
     },
     onSuccess(next_data) {
       data = next_data.data;
-      month_limit = next_data.month_limit;
+      months_fetched = next_data.month_fetched;
       all_months_fetched = next_data.all_months_fetched;
     }
   });
