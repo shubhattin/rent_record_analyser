@@ -12,17 +12,35 @@
   import { get_date_list } from '~/api/routers/rent_filters';
   import { createMutation } from '@tanstack/svelte-query';
   import { client } from '~/api/client';
+  import { SvelteMap } from 'svelte/reactivity';
 
   let { data: ssr_data }: { data: PageData } = $props();
 
   let data = $state(ssr_data.data);
-  let month_limit = $state(ssr_data.month_limit);
-  let all_months_fetched = $state(ssr_data.all_months_fetched);
-  $effect(() => {
-    data = ssr_data.data;
-    month_limit = ssr_data.month_limit;
-    all_months_fetched = ssr_data.all_months_fetched;
+  let months_fetched = $state(ssr_data.month_fetched);
+  let all_months_fetched_status = $state(ssr_data.all_months_fetched);
+  // $effect(() => {
+  //   data = ssr_data.data;
+  //   months_fetched = ssr_data.month_fetched;
+  //   all_months_fetched = ssr_data.all_months_fetched;
+  // });
+  onMount(() => {
+    // Convert initial Maps to SvelteMap for reactivity
+    data.info_analysis = toSvelteInfoAnalysisMap(data.info_analysis);
   });
+  // Ensure Maps are reactive
+  const toSvelteInfoAnalysisMap = (input: typeof ssr_data.data.info_analysis) => {
+    type InfoAnalysis = typeof ssr_data.data.info_analysis;
+    type InfoAnalysisYr = InfoAnalysis extends Map<number, infer V> ? V : never;
+    const out = new SvelteMap<number, InfoAnalysisYr>();
+    input.forEach((value, year) => {
+      out.set(year, {
+        amount: value.amount,
+        months: new SvelteMap(value.months)
+      });
+    });
+    return out;
+  };
 
   let rent_data = $derived(data.rent_data);
   let info_analysis = $derived(data.info_analysis);
@@ -38,19 +56,49 @@
   let selected_accordian = $state(['0-0']);
 
   const NEXT_MONTH_LIMIT = 3;
+  let fetch_index = 0;
   const load_more_data_mut = createMutation({
     mutationFn: async () => {
       const next_data = await client.rent_data.get_paginated_rent_data_anlysis.query({
-        month_limit: month_limit + NEXT_MONTH_LIMIT
+        month_fetched: months_fetched,
+        next_month_limit: NEXT_MONTH_LIMIT + fetch_index++ * 1
       });
       return next_data;
     },
     onSuccess(next_data) {
-      data = next_data.data;
-      month_limit = next_data.month_limit;
-      all_months_fetched = next_data.all_months_fetched;
+      data = merge_data(next_data.data);
+      months_fetched = next_data.month_fetched;
+      all_months_fetched_status = next_data.all_months_fetched;
     }
   });
+
+  const merge_data = (new_data: typeof ssr_data.data) => {
+    // Ensure incoming maps are reactive
+    const reactive_info_analysis = toSvelteInfoAnalysisMap(new_data.info_analysis);
+    // total
+    data.total += new_data.total;
+    // rent_data (if there)
+    if (new_data.rent_data.length > 0) data.rent_data = [...data.rent_data, ...new_data.rent_data];
+    // info_analysis
+    reactive_info_analysis.forEach((year_value, year_nm) => {
+      if (data.info_analysis.has(year_nm)) {
+        // if there then merge months from new_data
+        // the backend is designed in a way so that month collisions wont occurr
+        const existing = data.info_analysis.get(year_nm)!;
+        year_value.months.forEach((month_value, month_nm) => {
+          existing.months.set(month_nm, month_value);
+        });
+        // Set a new object to trigger reactivity for amount changes
+        data.info_analysis.set(year_nm, {
+          amount: existing.amount + year_value.amount,
+          months: existing.months
+        });
+      } else {
+        data.info_analysis.set(year_nm, year_value);
+      }
+    });
+    return data;
+  };
 </script>
 
 <svelte:head>
@@ -142,7 +190,7 @@
     Total = ₹ {total}
   </small>
 </div>
-{#if !all_months_fetched}
+{#if !all_months_fetched_status}
   <div class="mt-4 flex items-center justify-center text-white dark:text-zinc-300">
     <button
       class="btn dark:bg-surface-800 bg-surface-400 px-1.5 py-0.5 text-sm font-semibold"

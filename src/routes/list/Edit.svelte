@@ -1,12 +1,7 @@
 <script lang="ts">
   import { z } from 'zod';
   import { slide } from 'svelte/transition';
-  import {
-    convert_to_dd_mm_yyyy,
-    convert_to_yyyy_mm_dd,
-    pad_month_string,
-    sort_date_helper
-  } from '~/tools/date';
+  import { convert_to_dd_mm_yyyy, convert_to_yyyy_mm_dd, pad_month_string } from '~/tools/date';
   import Spinner from '~/components/Spinner.svelte';
   import { client_q } from '~/api/client';
   import type { RentDataPageType } from '~/api/routers/rent_data';
