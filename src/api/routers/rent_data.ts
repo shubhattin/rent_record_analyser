@@ -43,7 +43,7 @@ export const get_rent_data_page = async ({
       is_not_verified: verification_requests.id
     })
     .from(rent_data)
-    .orderBy(desc(rent_data.date), desc(rent_data.id))
+    .orderBy(desc(rent_data.month), desc(rent_data.date))
     .leftJoin(verification_requests, eq(verification_requests.id, rent_data.id))
     .innerJoin(user, eq(rent_data.user_id, user.id))
     .limit(LIMIT);
