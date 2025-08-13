@@ -31,11 +31,14 @@
     });
   });
 
+  let fetch_index = 0;
+  const FETCH_LIMIT = 20;
   const load_more_data_mut = createMutation({
     mutationFn: async () => {
       const next_data = await client.rent_data.get_paginated_rent_data.query({
         lastDate: last_date,
-        lastID: last_id
+        lastID: last_id,
+        limit: FETCH_LIMIT + fetch_index++ * 4
       });
       return next_data;
     },
@@ -53,15 +56,21 @@
 
 <div class="my-8">
   <Edit all_data={data} bind:editable />
-  {#if !editable && last_date !== null && last_id !== null}
+  {#if !editable}
     <div class="mt-4 flex items-center justify-center">
-      <button
-        class="btn preset-filled-primary-500 px-1.5 py-0.5 text-sm font-semibold"
-        disabled={$load_more_data_mut.isPending}
-        onclick={async () => {
-          await $load_more_data_mut.mutateAsync();
-        }}>Load More</button
-      >
+      {#if last_date !== null && last_id !== null}
+        <button
+          class="btn preset-filled-primary-500 px-1.5 py-0.5 text-sm font-semibold"
+          disabled={$load_more_data_mut.isPending}
+          onclick={async () => {
+            await $load_more_data_mut.mutateAsync();
+          }}>Load More</button
+        >
+      {/if}
+    </div>
+    <div class="mt-6 space-x-1 text-center text-xs text-gray-400 select-none">
+      <span>Total Records Fetched:</span>
+      <span class="font-semibold">{data.length}</span>
     </div>
   {/if}
 </div>
