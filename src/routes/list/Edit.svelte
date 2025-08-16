@@ -171,7 +171,7 @@
     </thead>
     <tbody>
       {#each data as dt, i (dt.id)}
-        {@const is_verify_request = dt.is_not_verified}
+        {@const is_verify_request = !!dt.verification_request}
         {@const to_change_status = to_change_list.has(dt.id)}
         {@const to_delete_status = to_delete_list.has(dt.id)}
         {@const to_verify_status = to_verify_list.has(dt.id)}
@@ -254,19 +254,21 @@
             {/if}
           </td>
           <td class="flex items-center space-x-1">
-            <span class="small inline-flex items-center">
+            <span class="inline-flex items-center">
               {#if dt.rent_type === 'rent'}
                 <ImageSpan
                   src={HomeIcon}
                   class="h-4 w-4"
                 />{:else if dt.rent_type === 'electricity'}
-                <ImageSpan src={FlashIcon} class="h-4 w-4" />{/if},
-              {dt.id}
+                <ImageSpan src={FlashIcon} class="h-4 w-4" />{/if}
+              <span class="sm:1.5 ml-0.5">
+                {dt.id}
+              </span>
             </span>
             <Popover
               positioning={{ placement: 'top' }}
               triggerBase="4"
-              contentBase="card bg-surface-200-800 px-1.5 py-0.5 rounded-md space-y-4 max-w-[320px]"
+              contentBase="card bg-surface-200-800 px-0.5 sm:px-1.5 py-0.5 rounded-md space-y-4 max-w-[320px]"
               arrow
               arrowBackground="!bg-surface-200 dark:!bg-surface-800"
             >
@@ -275,9 +277,9 @@
               {/snippet}
               {#snippet content()}
                 <div class="space-x-1 text-sm">
-                  <span>{dt.user_name.split(' ')[0]}</span>
+                  <span>{dt.user.name.split(' ')[0]}</span>
                   <span class="text-xs text-gray-600 dark:text-gray-400">
-                    {dt.user_id.substring(0, 5)}
+                    {dt.user.id.substring(0, 5)}
                   </span>
                 </div>
               {/snippet}

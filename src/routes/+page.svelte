@@ -125,7 +125,7 @@
               </td>
               <td class="space-x-1 px-1 py-0.5 text-start text-sm">
                 {#each rent_records_filtered as record, i}
-                  <span class:underline={record.is_not_verified}
+                  <span class:underline={!!record.verification_request}
                     >₹ {record.amount}{#if i !== rent_records_filtered.length - 1},{/if}</span
                   >
                 {/each}

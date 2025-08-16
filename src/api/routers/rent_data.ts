@@ -1,7 +1,7 @@
 import z from 'zod';
 import { protectedProcedure, publicProcedure, t } from '~/api/trpc_init';
-import { rent_data, user, verification_requests } from '~/db/schema';
-import { desc, eq, and, lt, or, count } from 'drizzle-orm';
+import { rent_data } from '~/db/schema';
+import { desc, count } from 'drizzle-orm';
 import { db } from '~/db/db';
 import {
   get_date_list,
@@ -11,44 +11,42 @@ import {
 } from './rent_filters';
 
 type GetDataOptions = {
+  limit: number;
   lastDate?: string | null;
   listID?: number | null;
-  limit?: number | null;
 };
 
-const DEFAULT_LIMIT = 20;
 export const get_rent_data_page = async ({
+  limit,
   lastDate = null,
-  listID = null,
-  limit
-}: GetDataOptions = {}) => {
-  const LIMIT = limit ?? DEFAULT_LIMIT;
-  let cursorCondition = undefined;
-  if (lastDate !== null && listID !== null) {
-    cursorCondition = or(
-      lt(rent_data.date, lastDate),
-      and(eq(rent_data.date, lastDate), lt(rent_data.id, listID))
-    );
-  }
-
-  const query = db
-    .select({
-      id: rent_data.id,
-      amount: rent_data.amount,
-      date: rent_data.date,
-      month: rent_data.month,
-      rent_type: rent_data.rent_type,
-      user_id: rent_data.user_id,
-      user_name: user.name,
-      is_not_verified: verification_requests.id
-    })
-    .from(rent_data)
-    .orderBy(desc(rent_data.month), desc(rent_data.date))
-    .leftJoin(verification_requests, eq(verification_requests.id, rent_data.id))
-    .innerJoin(user, eq(rent_data.user_id, user.id))
-    .limit(LIMIT);
-
-  const data = cursorCondition ? await query.where(cursorCondition) : await query;
+  listID = null
+}: GetDataOptions) => {
+  const data = await db.query.rent_data.findMany({
+    columns: {
+      id: true,
+      amount: true,
+      date: true,
+      month: true,
+      rent_type: true
+    },
+    with: {
+      user: {
+        columns: {
+          id: true,
+          name: true
+        }
+      },
+      verification_request: true
+    },
+    where: (table, { or, and, eq, lt }) => {
+      if (lastDate !== null && listID !== null) {
+        return or(lt(table.date, lastDate), and(eq(table.date, lastDate), lt(table.id, listID)));
+      }
+      return undefined;
+    },
+    orderBy: (table, { desc }) => [desc(table.date), desc(table.id)],
+    limit
+  });
 
   return {
     data,
@@ -79,21 +77,22 @@ export const get_rent_data_analysis_page = async (
     .slice(0, month_fetched)
     .reduce((val, item) => val + item.count, 0);
 
-  const rent_data_ = await db
-    .select({
-      id: rent_data.id,
-      amount: rent_data.amount,
-      date: rent_data.date,
-      month: rent_data.month,
-      rent_type: rent_data.rent_type,
-      user_id: rent_data.user_id,
-      is_not_verified: verification_requests.id
-    })
-    .from(rent_data)
-    .orderBy(desc(rent_data.month), desc(rent_data.date))
-    .leftJoin(verification_requests, eq(verification_requests.id, rent_data.id))
-    .offset(months_record_fetched)
-    .limit(month_fetch_limit);
+  const rent_data_ = await db.query.rent_data.findMany({
+    columns: {
+      id: true,
+      amount: true,
+      date: true,
+      month: true,
+      rent_type: true,
+      user_id: true
+    },
+    limit: month_fetch_limit,
+    offset: months_record_fetched,
+    orderBy: (table, { desc }) => [desc(table.month), desc(table.date)],
+    with: {
+      verification_request: true
+    }
+  });
 
   const [year_list, amount_yr_list] = get_year_list(rent_data_);
   const result = new Map<
@@ -150,7 +149,7 @@ const get_paginated_rent_data_route = protectedProcedure
     z.object({
       lastDate: z.string().date().nullable().optional().default(null),
       lastID: z.coerce.number().int().nullable().optional().default(null),
-      limit: z.coerce.number().int().nullable().optional().default(null)
+      limit: z.coerce.number().int()
     })
   )
   .query(async ({ input: { lastDate, lastID, limit } }) => {
@@ -174,3 +173,55 @@ export const rent_data_router = t.router({
   get_paginated_rent_data: get_paginated_rent_data_route,
   get_paginated_rent_data_anlysis: get_paginated_rent_data_analysis_route
 });
+
+/*
+PURE SQL APPROACH
+
+## Main Paginated Data
+
+let cursorCondition = undefined;
+if (lastDate !== null && listID !== null) {
+  cursorCondition = or(
+    lt(rent_data.date, lastDate),
+    and(eq(rent_data.date, lastDate), lt(rent_data.id, listID))
+  );
+}
+
+const query = db
+  .select({
+    id: rent_data.id,
+    amount: rent_data.amount,
+    date: rent_data.date,
+    month: rent_data.month,
+    rent_type: rent_data.rent_type,
+    user_id: rent_data.user_id,
+    user_name: user.name,
+    is_not_verified: verification_requests.id
+  })
+  .from(rent_data)
+  .orderBy(desc(rent_data.month), desc(rent_data.date), desc(rent_data.id))
+  .leftJoin(verification_requests, eq(verification_requests.id, rent_data.id))
+  .innerJoin(user, eq(rent_data.user_id, user.id))
+  .limit(limit);
+ 
+const data = cursorCondition ? await query.where(cursorCondition) : await query;
+
+## List Data
+
+const rent_data_ = await db
+  .select({
+    id: rent_data.id,
+    amount: rent_data.amount,
+    date: rent_data.date,
+    month: rent_data.month,
+    rent_type: rent_data.rent_type,
+    user_id: rent_data.user_id,
+    is_not_verified: verification_requests.id
+  })
+  .from(rent_data)
+  .orderBy(desc(rent_data.month), desc(rent_data.date))
+  .leftJoin(verification_requests, eq(verification_requests.id, rent_data.id))
+  .offset(months_record_fetched)
+  .limit(month_fetch_limit);
+
+*/

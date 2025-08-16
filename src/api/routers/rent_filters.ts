@@ -3,7 +3,10 @@ type rent_data_type = {
   date: string;
   amount: number;
   rent_type: 'rent' | 'electricity';
-  is_not_verified: number | null;
+  user_id: string;
+  verification_request: {
+    id: number;
+  } | null;
 }[];
 
 export const get_year_list = (rent_data: rent_data_type) => {
