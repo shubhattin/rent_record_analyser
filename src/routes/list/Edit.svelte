@@ -18,11 +18,17 @@
   import { SvelteSet } from 'svelte/reactivity';
   import { Modal, Popover } from '@skeletonlabs/skeleton-svelte';
   import { CgClose } from 'svelte-icons-pack/cg';
+  import { deepCopy } from '~/tools/kry';
 
   let {
     all_data,
-    editable = $bindable()
-  }: { all_data: RentDataPageType['data']; editable: boolean } = $props();
+    editable = $bindable(),
+    prev_data = $bindable()
+  }: {
+    all_data: RentDataPageType['data'];
+    editable: boolean;
+    prev_data: RentDataPageType['data'];
+  } = $props();
 
   let data = $state(all_data);
   $effect(() => {
@@ -30,17 +36,6 @@
   });
 
   let save_modal_opened = $state(false);
-
-  function deepCopy<T>(value: T, is_array: boolean): T {
-    const source = value as any;
-    if (is_array)
-      return source.map((obj: any) => ({
-        ...obj
-      })) as T;
-    return { ...source } as T;
-  }
-  // svelte-ignore state_referenced_locally
-  let prev_data = $state(deepCopy(data, true));
 
   let to_change_list = $state(new SvelteSet<number>());
   let to_delete_list = $state(new SvelteSet<number>());
@@ -91,17 +86,17 @@
         onSuccess: (_data) => {
           if (_data.status === 'success') {
             // trying to do optimistic updates without relying on the sever response of updated data
-            let new_data = deepCopy(data, true);
+            let new_data = deepCopy(data);
             for (let dt of to_change) {
               const index = get_key_index_in_data(dt.id, new_data);
-              new_data[index] = deepCopy(dt, false);
+              new_data[index] = deepCopy(dt);
             }
             new_data = new_data.filter((dt) => !to_delete.includes(dt.id));
             new_data = new_data.sort((dt1, dt2) => dt1.date.localeCompare(dt2.date));
 
             // resetting values
-            data = deepCopy(new_data, true);
-            prev_data = deepCopy(data, true);
+            data = deepCopy(new_data);
+            prev_data = deepCopy(data);
             to_change_list.clear();
             to_delete_list.clear();
             to_verify_list.clear();
@@ -290,7 +285,7 @@
                 prev_data[i].amount !== data[i].amount ||
                 prev_data[i].month !== data[i].month}
               {#if !to_delete_status && values_edited}
-                <button onclick={() => (data[i] = deepCopy(prev_data[i], false))}
+                <button onclick={() => (data[i] = deepCopy(prev_data[i]))}
                   ><Icon src={BiReset} class="-mt-2 text-xl hover:fill-amber-600" /></button
                 >
               {/if}

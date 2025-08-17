@@ -100,3 +100,72 @@ export function get_textarea_height(text: string, single_line_height: number, mi
   const height = Math.max(min_line, text.split('\n').length) * single_line_height;
   return `${height}rem`;
 }
+
+/**
+ * Creates a deep copy of a value, handling nested objects, arrays, Dates,
+ * RegExps, Maps, Sets, and circular references.
+ * @param value The value to deep copy
+ * @param hash (Internal) Used to track circular references
+ * @returns A deep copy of the input value
+ */
+export function deepCopy<T>(value: T, hash = new WeakMap()): T {
+  // Handle primitive types and null/undefined
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+
+  // Handle circular references
+  if (hash.has(value)) {
+    return hash.get(value);
+  }
+
+  // Handle Date objects
+  if (value instanceof Date) {
+    return new Date(value.getTime()) as T;
+  }
+
+  // Handle RegExp objects
+  if (value instanceof RegExp) {
+    return new RegExp(value.source, value.flags) as T;
+  }
+
+  // Handle Map objects
+  if (value instanceof Map) {
+    const copy = new Map();
+    hash.set(value, copy);
+    value.forEach((val, key) => {
+      copy.set(deepCopy(key, hash), deepCopy(val, hash));
+    });
+    return copy as T;
+  }
+
+  // Handle Set objects
+  if (value instanceof Set) {
+    const copy = new Set();
+    hash.set(value, copy);
+    value.forEach((val) => {
+      copy.add(deepCopy(val, hash));
+    });
+    return copy as T;
+  }
+
+  // Handle Arrays
+  if (Array.isArray(value)) {
+    const copy: unknown[] = [];
+    hash.set(value, copy);
+    for (let i = 0; i < value.length; i++) {
+      copy[i] = deepCopy(value[i], hash);
+    }
+    return copy as T;
+  }
+
+  // Handle Objects
+  const result: Record<string, unknown> = {};
+  hash.set(value, result);
+  for (const key in value) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) {
+      result[key] = deepCopy(value[key], hash);
+    }
+  }
+  return result as T;
+}

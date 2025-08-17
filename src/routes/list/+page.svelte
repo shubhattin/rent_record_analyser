@@ -8,10 +8,12 @@
   import { user_info } from '~/state/user.svelte';
   import { createMutation } from '@tanstack/svelte-query';
   import { client } from '~/api/client';
+  import { deepCopy } from '~/tools/kry';
 
   let { data: ssr_data }: { data: PageData } = $props();
 
   let data = $state(ssr_data.rent_data);
+  let prev_data = $state<typeof data>(null!);
   let last_id = $state(ssr_data.lastId);
   let last_date = $state(ssr_data.lastDate);
   $effect(() => {
@@ -23,6 +25,7 @@
   let editable = $state(false);
 
   onMount(() => {
+    prev_data = deepCopy(data);
     window.addEventListener('beforeunload', function (e) {
       if ((import.meta as any).env.PROD && editable && typeof window !== 'undefined') {
         e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
@@ -44,6 +47,7 @@
     },
     onSuccess(next_data) {
       data = data.concat(next_data.data);
+      prev_data = deepCopy(data);
       last_date = next_data.lastDate;
       last_id = next_data.lastID;
     }
@@ -55,7 +59,7 @@
 </svelte:head>
 
 <div class="my-8">
-  <Edit all_data={data} bind:editable />
+  <Edit all_data={data} bind:editable bind:prev_data />
   {#if !editable}
     <div class="mt-4 flex items-center justify-center">
       {#if last_date !== null && last_id !== null}
