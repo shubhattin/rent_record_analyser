@@ -161,14 +161,6 @@
           {/snippet}
           <!-- DateWise -->
           {#snippet panel()}
-            <div class="flex items-center gap-1">
-              <Icon src={TiFlashOutline} class="-mt-1 size-5 text-amber-600 dark:text-yellow-300" />
-              <span class="text-sm">
-                ₹ {info_analysis.get(yr)!.months.get(mn)!.electricity_total}
-              </span>
-              <!-- ^ Total Electricity -->
-            </div>
-            {@render rent_table_list(yr, mn, 'electricity')}
             <div class="my-0.5 flex items-center gap-1">
               <Icon
                 src={AiOutlineHome}
@@ -180,6 +172,14 @@
               <!-- ^ Total Rent -->
             </div>
             {@render rent_table_list(yr, mn, 'rent')}
+            <div class="flex items-center gap-1">
+              <Icon src={TiFlashOutline} class="-mt-1 size-5 text-amber-600 dark:text-yellow-300" />
+              <span class="text-sm">
+                ₹ {info_analysis.get(yr)!.months.get(mn)!.electricity_total}
+              </span>
+              <!-- ^ Total Electricity -->
+            </div>
+            {@render rent_table_list(yr, mn, 'electricity')}
           {/snippet}
         </Accordion.Item>
       {/each}
