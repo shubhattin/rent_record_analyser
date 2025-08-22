@@ -1,4 +1,4 @@
-### A Simple Rent Record Analyser.
+### A Simple Rent Record Analyser
 
 Made Using _[SvelteKit](https://kit.svelte.dev/)_ and [TailwindCSS](https://tailwindcss.com/) along with [Skeleton UI](https://www.skeleton.dev/) for design. Also using [tRPC](https://trpc.io/) for API endpoints with [Tanstack Query for Svelte](https://tanstack.com/query/latest) for better async state management.
 
@@ -14,3 +14,6 @@ Using [PostgreSQL](https://www.postgresql.org/) hosted at [Neon](https://neon.te
 - [FastAPI](https://fastapi.tiangolo.com/), [htmx](https://htmx.org/) and [PicoCSS](https://picocss.com/) :- [here](https://github.com/shubhattin/rent_record_analyser/tree/aaac76a7c653abd38f5bbe803cec8c1b50ef56b7)
 
 <!-- Icon Website Fallback :- https://icon-sets.iconify.design/ -->
+
+- JWT + _Server Cookies_ for authentication. untill [this commit](https://github.com/shubhattin/rent_record_analyser/tree/d7a53fcb09c0aa19a634bbd75116d4a4646d9332)
+- JWT + Client Cookies for authentication. untill [this commit](https://github.com/shubhattin/rent_record_analyser/tree/3658f44c943690a6db1d51c1915f10e2981fb78e)

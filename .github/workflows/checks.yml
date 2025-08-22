@@ -3,6 +3,8 @@ name: TS & Svelte Check
 on:
   - push
 
+env:
+  PUBLIC_BETTER_AUTH_URL: http://localhost:3030
 jobs:
   check:
     runs-on: ubuntu-latest
