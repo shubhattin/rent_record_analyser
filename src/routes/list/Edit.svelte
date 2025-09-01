@@ -260,25 +260,27 @@
                 {dt.id}
               </span>
             </span>
-            <Popover
-              positioning={{ placement: 'top' }}
-              triggerBase="4"
-              contentBase="card bg-surface-200-800 px-0.5 sm:px-1.5 py-0.5 rounded-md space-y-4 max-w-[320px]"
-              arrow
-              arrowBackground="!bg-surface-200 dark:!bg-surface-800"
-            >
-              {#snippet trigger()}
-                <Icon src={AiOutlineUser} />
-              {/snippet}
-              {#snippet content()}
-                <div class="space-x-1 text-sm">
-                  <span>{dt.user.name.split(' ')[0]}</span>
-                  <span class="text-xs text-gray-600 dark:text-gray-400">
-                    {dt.user.id.substring(0, 5)}
-                  </span>
-                </div>
-              {/snippet}
-            </Popover>
+            {#if !editable}
+              <Popover
+                positioning={{ placement: 'top' }}
+                triggerBase="4"
+                contentBase="card bg-surface-200-800 px-0.5 sm:px-1.5 py-0.5 rounded-md space-y-4 max-w-[320px]"
+                arrow
+                arrowBackground="!bg-surface-200 dark:!bg-surface-800"
+              >
+                {#snippet trigger()}
+                  <Icon src={AiOutlineUser} />
+                {/snippet}
+                {#snippet content()}
+                  <div class="space-x-1 text-sm">
+                    <span>{dt.user.name.split(' ')[0]}</span>
+                    <span class="text-xs text-gray-600 dark:text-gray-400">
+                      {dt.user.id.substring(0, 5)}
+                    </span>
+                  </div>
+                {/snippet}
+              </Popover>
+            {/if}
             {#if is_editable_row}
               {@const values_edited =
                 prev_data[i].date !== data[i].date ||
