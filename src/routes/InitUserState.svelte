@@ -1,22 +1,14 @@
 <script lang="ts">
   import { user_info } from '~/state/user.svelte';
-  import { useSession } from '~/lib/auth-client';
-  import { browser } from '$app/environment';
+  import { useQuery } from 'convex-svelte';
   import { page } from '$app/state';
-  import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
+  import { api } from '~/convex/_generated/api';
 
-  const session = useSession();
-  let user_info_fetched = $state(false);
+  const currentUserResponse = useQuery(api.auth.getCurrentUser, {});
 
   $user_info = null;
-  if (page.data.user_info) $user_info = page.data.user_info;
+  if (page.data.user_info) $user_info = page.data.currentUser;
   $effect(() => {
-    $user_info = user_info_fetched ? $session.data?.user : page.data.user_info;
-  });
-
-  $effect(() => {
-    if (browser && $session.data?.user) {
-      user_info_fetched = true;
-    }
+    $user_info = !currentUserResponse.isLoading ? currentUserResponse.data : page.data.user_info;
   });
 </script>

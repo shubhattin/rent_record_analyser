@@ -58,6 +58,11 @@ export const createAuth = (
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    return authComponent.getAuthUser(ctx);
+    try {
+      const user = authComponent.safeGetAuthUser(ctx);
+      return user;
+    } catch (error) {
+      return null;
+    }
   }
 });
