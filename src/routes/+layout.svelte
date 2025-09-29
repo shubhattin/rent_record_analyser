@@ -10,7 +10,10 @@
   import '@fontsource/roboto/latin.css';
   import CookieCacheRefresh from '~/lib/CookieCacheRefresh.svelte';
   import InitUserState from './InitUserState.svelte';
+  import { createSvelteAuthClient } from '@mmailaender/convex-better-auth-svelte/svelte';
+  import { authClient } from '$lib/auth-client';
 
+  createSvelteAuthClient({ authClient });
   let { children }: { children: Snippet } = $props();
 
   const queryClient = new QueryClient({

@@ -16,3 +16,6 @@ src/db/scripts/out/
 **/a.ts
 
 static/~partytown
+
+**/a.json
+**/a.js

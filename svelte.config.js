@@ -13,7 +13,8 @@ const config = {
       regions: 'sin1'
     }),
     alias: {
-      '~/*': './src/*'
+      '~/*': './src/*',
+      $convex: './src/convex'
     }
   }
 };
