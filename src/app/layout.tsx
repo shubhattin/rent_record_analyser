@@ -26,14 +26,14 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppContextProvider initialSession={user}>
-            <ConvexClientProvider>
+          <ConvexClientProvider>
+            <AppContextProvider initialSession={user}>
               <div className="container mx-auto mb-1">
                 <Toaster richColors={true} />
                 {children}
               </div>
-            </ConvexClientProvider>
-          </AppContextProvider>
+            </AppContextProvider>
+          </ConvexClientProvider>
         </ThemeProvider>
       </body>
     </html>
