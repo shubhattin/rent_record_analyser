@@ -1,19 +1,18 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { inferAsyncReturnType } from '@trpc/server';
-import { auth } from '$lib/auth';
-
+import { createConvexHttpClient } from '@mmailaender/convex-better-auth-svelte/sveltekit';
+import { api } from '$convex/_generated/api';
 export async function createContext(event: RequestEvent) {
   const {
     request: { headers }
   } = event;
+  const client = createConvexHttpClient({ cookies: event.cookies });
+  const currentUser = await client.query(api.auth.getCurrentUser, {});
 
-  const session = await auth.api.getSession({
-    headers: headers
-  });
   const cookie = headers.get('Cookie');
 
   return {
-    user: session?.user,
+    user: currentUser,
     cookie
   };
 }

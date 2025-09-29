@@ -3,6 +3,7 @@
   import { useSession } from '~/lib/auth-client';
   import { browser } from '$app/environment';
   import { page } from '$app/state';
+  import { useAuth } from '@mmailaender/convex-better-auth-svelte/svelte';
 
   const session = useSession();
   let user_info_fetched = $state(false);
