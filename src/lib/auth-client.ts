@@ -7,3 +7,5 @@ export const authClient = createAuthClient({
 });
 
 export const { useSession, signIn, signOut, signUp } = authClient;
+
+export type UserInfoSession = (typeof authClient.$Infer.Session)['user'] | null;

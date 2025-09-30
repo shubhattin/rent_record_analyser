@@ -1,10 +1,9 @@
 'use client';
 
-import { createContext } from 'react';
-import { api } from '$convex/_generated/api';
-import { useQuery } from 'convex/react';
+import { createContext, useEffect, useState } from 'react';
+import { type UserInfoSession, useSession } from '~/lib/auth-client';
 
-type user_info_type = (typeof api.auth.getCurrentUser)['_returnType'];
+type user_info_type = UserInfoSession;
 export const AppContext = createContext<{
   user_info: user_info_type;
 }>({
@@ -18,8 +17,17 @@ export const AppContextProvider = ({
   children: React.ReactNode;
   initialSession: user_info_type | null;
 }) => {
-  const currentUserResponse = useQuery(api.auth.getCurrentUser, {});
-  const user = currentUserResponse ?? initialSession;
+  const session = useSession();
+
+  const [userInfoFetched, setUserInfoFetched] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !session.isPending && session.data) {
+      setUserInfoFetched(true);
+    }
+  }, [session]);
+
+  const user = (!userInfoFetched ? initialSession : session.data?.user) ?? null;
 
   return <AppContext.Provider value={{ user_info: user }}>{children}</AppContext.Provider>;
 };

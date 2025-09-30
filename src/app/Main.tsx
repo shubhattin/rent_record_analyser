@@ -1,15 +1,19 @@
 'use client';
 
 import { api } from '$convex/_generated/api';
-import { useQuery } from 'convex/react';
 import { useContext, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { signIn } from '~/lib/auth-client';
+import { signIn, signOut } from '~/lib/auth-client';
 import { AppContext } from '~/components/AppDataContext';
+import { Preloaded, usePreloadedQuery } from 'convex/react';
 
-export default function Page() {
-  const data = useQuery(api.routes.addEditData.getTask, {});
+export default function Page({
+  preloadedRecords
+}: {
+  preloadedRecords: Preloaded<typeof api.routes.addEditData.getTask>;
+}) {
+  const data = usePreloadedQuery(preloadedRecords);
   const [count, setCount] = useState(0);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +23,12 @@ export default function Page() {
     <div>
       <div>Fetched Data: {data?.length}</div>
       <button onClick={() => setCount(count + 1)}>{count} Click me</button>
-      {user_info && <div>Logged in as {user_info.name}</div>}
+      {user_info && (
+        <div>
+          Logged in as {user_info.name}
+          <Button onClick={() => signOut()}>Logout</Button>
+        </div>
+      )}
       {!user_info && (
         <div>
           <Input value={username} onChange={(e) => setUsername(e.target.value)} />

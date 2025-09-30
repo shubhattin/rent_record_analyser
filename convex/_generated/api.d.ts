@@ -15,6 +15,7 @@ import type * as betterAuth_adapter from "../betterAuth/adapter.js";
 import type * as betterAuth_auth from "../betterAuth/auth.js";
 import type * as http from "../http.js";
 import type * as routes_addEditData from "../routes/addEditData.js";
+import type * as routes_contex from "../routes/contex.js";
 
 import type {
   ApiFromModules,
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   "betterAuth/auth": typeof betterAuth_auth;
   http: typeof http;
   "routes/addEditData": typeof routes_addEditData;
+  "routes/contex": typeof routes_contex;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

@@ -59,7 +59,11 @@ export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
     try {
-      const user = authComponent.safeGetAuthUser(ctx);
+      // const user = authComponent.safeGetAuthUser(ctx);
+      const session = await createAuth(ctx).api.getSession({
+        headers: await authComponent.getHeaders(ctx)
+      });
+      const user = session?.user;
       return user;
     } catch (error) {
       return null;
