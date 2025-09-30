@@ -3,7 +3,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
 import { Metadata, Viewport } from 'next';
-import { AppContextProvider } from '~/components/AppDataContext';
+import { AppContextProvider } from '~/state/AppDataContext';
 import { ConvexClientProvider } from './ConvexClientProvider';
 import { getCachedUser } from '~/lib/get_cached_server_data';
 

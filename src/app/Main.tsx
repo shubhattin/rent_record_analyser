@@ -5,7 +5,7 @@ import { useContext, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { signIn, signOut } from '~/lib/auth-client';
-import { AppContext } from '~/components/AppDataContext';
+import { AppContext } from '~/state/AppDataContext';
 import { Preloaded, usePreloadedQuery } from 'convex/react';
 
 export default function Page({
