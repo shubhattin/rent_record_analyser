@@ -14,6 +14,7 @@ import type * as betterAuth__generated_server from "../betterAuth/_generated/ser
 import type * as betterAuth_adapter from "../betterAuth/adapter.js";
 import type * as betterAuth_auth from "../betterAuth/auth.js";
 import type * as http from "../http.js";
+import type * as routes_addEditData from "../routes/addEditData.js";
 
 import type {
   ApiFromModules,
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   "betterAuth/adapter": typeof betterAuth_adapter;
   "betterAuth/auth": typeof betterAuth_auth;
   http: typeof http;
+  "routes/addEditData": typeof routes_addEditData;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
@@ -143,13 +145,13 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
-                    | "userId"
                     | "username"
                     | "displayUsername"
                     | "role"
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "userId"
                     | "id";
                   operator?:
                     | "lt"
@@ -327,13 +329,13 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
-                    | "userId"
                     | "username"
                     | "displayUsername"
                     | "role"
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "userId"
                     | "id";
                   operator?:
                     | "lt"
@@ -590,13 +592,13 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
-                    | "userId"
                     | "username"
                     | "displayUsername"
                     | "role"
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "userId"
                     | "id";
                   operator?:
                     | "lt"
@@ -825,13 +827,13 @@ export declare const components: {
                     | "image"
                     | "createdAt"
                     | "updatedAt"
-                    | "userId"
                     | "username"
                     | "displayUsername"
                     | "role"
                     | "banned"
                     | "banReason"
                     | "banExpires"
+                    | "userId"
                     | "id";
                   operator?:
                     | "lt"

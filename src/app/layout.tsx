@@ -5,17 +5,14 @@ import { Toaster } from '@/components/ui/sonner';
 import { Metadata, Viewport } from 'next';
 import { AppContextProvider } from '~/components/AppDataContext';
 import { ConvexClientProvider } from './ConvexClientProvider';
-import { fetchQuery } from 'convex/nextjs';
-import { api } from '$convex/_generated/api';
-import { getToken } from '~/lib/auth-server';
+import { getCachedUser } from '~/lib/get_cached_server_data';
 
 export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = await getToken();
-  const user = await fetchQuery(api.auth.getCurrentUser, {}, { token });
+  const user = await getCachedUser();
 
   return (
     <html lang="en" suppressHydrationWarning className="dark" style={{ colorScheme: 'dark' }}>

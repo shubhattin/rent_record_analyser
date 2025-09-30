@@ -35,12 +35,12 @@ export const createAuth = (
       enabled: true
     },
     plugins: [
-      convex(),
       username({
         minUsernameLength: 6,
         maxUsernameLength: 20
       }),
-      admin()
+      admin(),
+      convex()
     ],
     session: {
       cookieCache: {

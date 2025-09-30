@@ -123,13 +123,13 @@ export type Mounts = {
                   | "image"
                   | "createdAt"
                   | "updatedAt"
-                  | "userId"
                   | "username"
                   | "displayUsername"
                   | "role"
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "userId"
                   | "id";
                 operator?:
                   | "lt"
@@ -307,13 +307,13 @@ export type Mounts = {
                   | "image"
                   | "createdAt"
                   | "updatedAt"
-                  | "userId"
                   | "username"
                   | "displayUsername"
                   | "role"
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "userId"
                   | "id";
                 operator?:
                   | "lt"
@@ -570,13 +570,13 @@ export type Mounts = {
                   | "image"
                   | "createdAt"
                   | "updatedAt"
-                  | "userId"
                   | "username"
                   | "displayUsername"
                   | "role"
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "userId"
                   | "id";
                 operator?:
                   | "lt"
@@ -805,13 +805,13 @@ export type Mounts = {
                   | "image"
                   | "createdAt"
                   | "updatedAt"
-                  | "userId"
                   | "username"
                   | "displayUsername"
                   | "role"
                   | "banned"
                   | "banReason"
                   | "banExpires"
+                  | "userId"
                   | "id";
                 operator?:
                   | "lt"
