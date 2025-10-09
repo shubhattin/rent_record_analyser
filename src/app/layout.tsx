@@ -1,5 +1,6 @@
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import AppBar from '~/components/AppBar/AppBar';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
 import { Metadata, Viewport } from 'next';
@@ -25,9 +26,12 @@ export default async function RootLayout({
         >
           <ConvexClientProvider>
             <AppContextProvider initialSession={user}>
-              <div className="container mx-auto mb-1">
+              <div className="container mx-auto mb-1 px-2">
                 <Toaster richColors={true} />
-                {children}
+                <div className="contaiiner mx-auto mb-1 max-w-screen-lg">
+                  <AppBar />
+                  {children}
+                </div>
               </div>
             </AppContextProvider>
           </ConvexClientProvider>
