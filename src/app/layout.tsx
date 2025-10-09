@@ -30,7 +30,7 @@ export default async function RootLayout({
                 <Toaster richColors={true} />
                 <div className="contaiiner mx-auto mb-1 max-w-screen-lg">
                   <AppBar />
-                  {children}
+                  <div className="mx-2 mt-4">{children}</div>
                 </div>
               </div>
             </AppContextProvider>

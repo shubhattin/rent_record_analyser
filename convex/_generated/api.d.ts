@@ -14,8 +14,9 @@ import type * as betterAuth__generated_server from "../betterAuth/_generated/ser
 import type * as betterAuth_adapter from "../betterAuth/adapter.js";
 import type * as betterAuth_auth from "../betterAuth/auth.js";
 import type * as http from "../http.js";
-import type * as routes_addEditData from "../routes/addEditData.js";
 import type * as routes_contex from "../routes/contex.js";
+import type * as routes_rentData from "../routes/rentData.js";
+import type * as routes_rent_filters from "../routes/rent_filters.js";
 
 import type {
   ApiFromModules,
@@ -38,8 +39,9 @@ declare const fullApi: ApiFromModules<{
   "betterAuth/adapter": typeof betterAuth_adapter;
   "betterAuth/auth": typeof betterAuth_auth;
   http: typeof http;
-  "routes/addEditData": typeof routes_addEditData;
   "routes/contex": typeof routes_contex;
+  "routes/rentData": typeof routes_rentData;
+  "routes/rent_filters": typeof routes_rent_filters;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

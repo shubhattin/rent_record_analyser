@@ -27,7 +27,12 @@ export default function AppBar({
   const { user_info } = useContext(AppContext);
 
   return (
-    <div className="sticky top-0 z-40 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div
+      className={cn(
+        'sticky top-0 z-40 w-full border-b backdrop-blur',
+        'bg-slate-100 dark:bg-zinc-700/60'
+      )}
+    >
       <div className="flex h-12 items-center justify-between px-2 sm:px-3">
         <div className="flex items-center gap-2">
           {pathname !== '/' && (
@@ -66,7 +71,7 @@ export default function AppBar({
                 <Menu className="h-5 w-5" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-60">
+            <PopoverContent align="end" className="w-60 p-3 select-none">
               <Link
                 href="https://github.com/shubhattin/rent_record_analyser"
                 target="_blank"
