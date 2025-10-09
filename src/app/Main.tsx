@@ -14,12 +14,11 @@ import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '~/tools/date';
 import { Home, Zap } from 'lucide-react';
 import { cn } from '~/lib/utils';
 
-type RentType = 'rent' | 'electricity';
 type RentRecord = {
   month: string; // yyyy-mm
   date: string; // yyyy-mm-dd
   amount: number;
-  rent_type: RentType;
+  rent_type: 'rent' | 'electricity';
   is_verification_request?: boolean;
 };
 
@@ -85,7 +84,7 @@ export default function Page({
               {monthsSortedDesc.map((mn, i_mn) => {
                 const mnInfo = yrInfo.months[mn as unknown as keyof typeof yrInfo.months];
                 const dateRecords = getDateList(yr, mn);
-                const renderTable = (type: RentType) => {
+                const renderTable = (type: RentRecord['rent_type']) => {
                   if (!user_info) return null;
                   return (
                     <table className="mt-1">
@@ -156,7 +155,7 @@ export default function Page({
           </Fragment>
         );
       })}
-      <small>Total = ₹ {data.data.total}</small>
+      <div className="text-sm">Total = ₹ {data.data.total}</div>
     </div>
   );
 }

@@ -59,7 +59,8 @@ export const getRentData = query({
           (total, item) => total + item.amount * (item.rent_type === 'rent' ? 1 : -1),
           0
         ),
-        rent_data: is_user_authed ? rent_data_ : []
+        rent_data: is_user_authed ? rent_data_ : rent_data_
+        // send full data for now, to avoid token loading
       },
       month_fetched: 0,
       all_months_fetched: true
