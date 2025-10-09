@@ -5,8 +5,9 @@ import {
   get_date_list,
   get_total_sum_for_type
 } from './rent_filters';
+import { verifyAuthUser } from './context';
 
-export const getRentData = query({
+export const getRentDataAnalysis = query({
   args: {},
   handler: async (ctx, args) => {
     const user = await ctx.auth.getUserIdentity();
@@ -59,11 +60,26 @@ export const getRentData = query({
           (total, item) => total + item.amount * (item.rent_type === 'rent' ? 1 : -1),
           0
         ),
-        rent_data: is_user_authed ? rent_data_ : rent_data_
-        // send full data for now, to avoid token loading
+        rent_data: is_user_authed ? rent_data_ : []
       },
       month_fetched: 0,
       all_months_fetched: true
     };
+  }
+});
+
+export const getRentData = query({
+  args: {},
+  handler: async (ctx, args) => {
+    await verifyAuthUser(ctx);
+    const verification_requests = await ctx.db.query('verification_requests').collect();
+    const rent_data = (await ctx.db.query('rent_data').collect()).map((item) => ({
+      ...item,
+      is_verification_request: verification_requests.some(
+        (request) => request.rent_data_id === item._id
+      )
+    }));
+
+    return rent_data;
   }
 });

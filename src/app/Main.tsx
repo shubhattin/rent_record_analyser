@@ -3,7 +3,7 @@
 import { api } from '$convex/_generated/api';
 import { Fragment, useContext, useEffect, useMemo, useState } from 'react';
 import { AppContext } from '~/state/AppDataContext';
-import { Preloaded, usePreloadedQuery } from 'convex/react';
+import { Preloaded, usePreloadedQuery, useConvexAuth } from 'convex/react';
 import {
   Accordion,
   AccordionContent,
@@ -25,10 +25,17 @@ type RentRecord = {
 export default function Page({
   preloadedRecords
 }: {
-  preloadedRecords: Preloaded<typeof api.routes.rentData.getRentData>;
+  preloadedRecords: Preloaded<typeof api.routes.rentData.getRentDataAnalysis>;
 }) {
-  const data = usePreloadedQuery(preloadedRecords);
+  const data_ = usePreloadedQuery(preloadedRecords);
+  const [data, setData] = useState(data_);
   const { user_info } = useContext(AppContext);
+  const convexAuth = useConvexAuth();
+
+  useEffect(() => {
+    if (convexAuth.isLoading) return;
+    setData(data_);
+  }, [data_, convexAuth]);
 
   const rentData = data.data.rent_data as RentRecord[];
   const [selectedMonths, setSelectedMonths] = useState<string[]>(['0-0']);
