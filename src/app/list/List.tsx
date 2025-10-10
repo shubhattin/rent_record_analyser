@@ -25,7 +25,6 @@ const FETCH_LIMIT = 20;
 const List = () => {
   const fetchIndexRef = useRef(0);
 
-  const verification_request_ids = useQuery(api.routes.rentData.getRentDataVerificationRequest);
   const { results, status, loadMore } = usePaginatedQuery(
     api.routes.rentData.getRentData,
     {},
@@ -34,8 +33,8 @@ const List = () => {
 
   // React Compiler can over-memoize when array identity is stable (e.g. pagination mutates in place).
   // Derive a fresh array when length changes so downstream memoization (react-table) sees updates.
-  const tableData = useMemo(() => results.slice(), [results.length]);
-  if (!verification_request_ids || results.length === 0) return <LoadingSkeleton />;
+  const tableData = useMemo(() => results.slice(), [results]);
+  if (results.length === 0) return <LoadingSkeleton />;
 
   return (
     <div className="space-y-4">
@@ -50,10 +49,14 @@ const List = () => {
           </Button>
         )}
       </div>
+      <div className="space-x-1 text-center text-sm text-muted-foreground">
+        <span>Total Records Fetched:</span>
+        <span className="font-semibold">{results.length}</span>
+      </div>
     </div>
   );
 };
 
 const LoadingSkeleton = () => {
-  return <Skeleton className="h-[80vh] w-full" />;
+  return <Skeleton className="h-[87vh] w-full" />;
 };

@@ -15,6 +15,7 @@ import { MdDeleteOutline } from 'react-icons/md';
 import { TiTick } from 'react-icons/ti';
 import { useContext } from 'react';
 import { AppContext } from '~/state/AppDataContext';
+import { cn } from '~/lib/utils';
 
 type RentRecord = (typeof api.routes.rentData.getRentData._returnType)['page'][number];
 
@@ -35,16 +36,26 @@ export const columns: ColumnDef<RentRecord>[] = [
   },
   {
     accessorKey: 'amount',
-    header: () => <div className="text-start font-semibold">Amount</div>
+    header: () => <div className="text-start font-semibold">Amount</div>,
+    cell: ({ row }) => {
+      const verification_request_ids = useQuery(api.routes.rentData.getRentDataVerificationRequest);
+      const is_verification_request = verification_request_ids?.some(
+        (v) => v[0] === row.original._id
+      );
+
+      return (
+        <span className={cn(is_verification_request && 'underline')}>{row.original.amount}</span>
+      );
+    }
   },
   {
     accessorKey: 'rent_type',
     header: () => <div className="text-start text-xs font-semibold">Type</div>,
     cell: ({ row }) => {
       if (row.original.rent_type === 'rent')
-        return <Home className="size-4 text-sky-600 dark:text-sky-300" />;
+        return <Home className="size-3.5 text-sky-600 sm:size-4 dark:text-sky-300" />;
       if (row.original.rent_type === 'electricity')
-        return <Zap className="size-4 text-amber-600 dark:text-amber-300" />;
+        return <Zap className="size-3.5 text-amber-600 sm:size-4 dark:text-amber-300" />;
       return <div className="text-start">Unknown</div>;
     }
   },
@@ -79,7 +90,7 @@ export const columns: ColumnDef<RentRecord>[] = [
             <DropdownMenuLabel className="flex items-center space-x-1">
               <User className="size-3" />
               <span className="text-xs text-muted-foreground">
-                {record_user_info?.name.split(' ')[0]}
+                {record_user_info?.name.split(' ')[0] ?? '--'}
               </span>
             </DropdownMenuLabel>
             {is_admin && (
