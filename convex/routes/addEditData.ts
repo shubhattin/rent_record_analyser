@@ -81,3 +81,18 @@ export const verifyRentData = mutation({
     };
   }
 });
+
+export const deleteRentData = mutation({
+  args: {
+    id: v.id('rent_data')
+  },
+  handler: async (ctx, { id }) => {
+    await verifyAuthAdminUser(ctx);
+
+    await ctx.db.delete(id);
+
+    return {
+      deleted: true
+    };
+  }
+});

@@ -38,7 +38,20 @@ const List = () => {
 
   return (
     <div className="space-y-4">
-      <DataTable key={results.length} columns={columns} data={tableData} />
+      <DataTable
+        key={JSON.stringify(
+          tableData.map((v) => ({
+            _id: v._id,
+            amount: v.amount,
+            date: v.date,
+            month: v.month
+          }))
+        )}
+        columns={columns}
+        data={tableData}
+      />
+      {/* using the whole value as key solves the issue 
+      where it does not rerender on value update as the length is still same */}
       <div className="item-center flex justify-center">
         {status !== 'Exhausted' && (
           <Button

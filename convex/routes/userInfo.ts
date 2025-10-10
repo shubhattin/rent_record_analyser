@@ -9,15 +9,8 @@ export const getUserInfo = query({
   },
   handler: async (ctx, args) => {
     await verifyAuthUser(ctx);
-    const user = ctx.runQuery(components.betterAuth.adapter.findOne, {
-      model: 'user',
-      where: [
-        {
-          field: '_id',
-          operator: 'eq',
-          value: args.user_id
-        }
-      ]
+    const user = ctx.runQuery(components.betterAuth.auth.getUserInfo, {
+      user_id: args.user_id
     });
     return user;
   }

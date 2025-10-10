@@ -1032,5 +1032,13 @@ export declare const components: {
         any
       >;
     };
+    auth: {
+      getUserInfo: FunctionReference<
+        "query",
+        "internal",
+        { user_id: string },
+        any
+      >;
+    };
   };
 };

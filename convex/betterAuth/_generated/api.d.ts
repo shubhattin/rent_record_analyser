@@ -1002,6 +1002,9 @@ export type Mounts = {
       any
     >;
   };
+  auth: {
+    getUserInfo: FunctionReference<"query", "public", { user_id: string }, any>;
+  };
 };
 // For now fullApiWithMounts is only fullApi which provides
 // jump-to-definition in component client code.
