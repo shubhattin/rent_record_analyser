@@ -14,13 +14,8 @@ import { MONTH_NAMES, MONTH_NAMES_SHORT, NUMBER_SUFFIX } from '~/tools/date';
 import { Home, Zap } from 'lucide-react';
 import { cn } from '~/lib/utils';
 
-type RentRecord = {
-  month: string; // yyyy-mm
-  date: string; // yyyy-mm-dd
-  amount: number;
-  rent_type: 'rent' | 'electricity';
-  is_verification_request?: boolean;
-};
+type RentRecord =
+  (typeof api.routes.rentData.getRentDataAnalysis._returnType)['data']['rent_data'][number];
 
 export default function Page({
   preloadedRecords

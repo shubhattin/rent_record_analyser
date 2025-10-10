@@ -6,6 +6,7 @@ import {
   get_total_sum_for_type
 } from './rent_filters';
 import { verifyAuthUser } from './context';
+import { paginationOptsValidator } from 'convex/server';
 
 export const getRentDataAnalysis = query({
   args: {},
@@ -14,7 +15,9 @@ export const getRentDataAnalysis = query({
     const is_user_authed = !!user;
 
     const verification_requests = await ctx.db.query('verification_requests').collect();
-    const rent_data_ = (await ctx.db.query('rent_data').collect()).map((item) => ({
+    const rent_data_ = (
+      await ctx.db.query('rent_data').withIndex('month_date').order('desc').collect()
+    ).map((item) => ({
       ...item,
       is_verification_request: verification_requests.some(
         (request) => request.rent_data_id === item._id
@@ -69,17 +72,28 @@ export const getRentDataAnalysis = query({
 });
 
 export const getRentData = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    await verifyAuthUser(ctx);
+
+    const rent_data_page = await ctx.db
+      .query('rent_data')
+      .withIndex('date')
+      .order('desc')
+      .paginate(args.paginationOpts);
+
+    return rent_data_page;
+  }
+});
+
+export const getRentDataVerificationRequest = query({
   args: {},
   handler: async (ctx, args) => {
     await verifyAuthUser(ctx);
-    const verification_requests = await ctx.db.query('verification_requests').collect();
-    const rent_data = (await ctx.db.query('rent_data').collect()).map((item) => ({
-      ...item,
-      is_verification_request: verification_requests.some(
-        (request) => request.rent_data_id === item._id
-      )
-    }));
 
-    return rent_data;
+    const verification_request_ids = (await ctx.db.query('verification_requests').collect()).map(
+      (v) => [v.rent_data_id, v._id]
+    );
+    return verification_request_ids;
   }
 });

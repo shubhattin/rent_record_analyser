@@ -7,13 +7,12 @@ export default defineSchema({
     month: v.string(), // Format: YYYY-MM, validate in app logic if needed
     created_at: v.number(), // You may want to use Convex's createdAt system field instead
     updated_at: v.number(),
-    date: v.string(), // Store as ISO string
-    user_id: v.string(), // Reference to Better Auth user
+    date: v.string(), // yyyy-mm-dd format to auto handle ordering by this key
+    user_id: v.string(),
     rent_type: v.union(v.literal('rent'), v.literal('electricity'))
   })
-    .index('date', ['date'])
-    .index('month', ['month']),
-
+    .index('month_date', ['month', 'date'])
+    .index('date', ['date']),
   others: defineTable({
     key: v.string(),
     value: v.string()
