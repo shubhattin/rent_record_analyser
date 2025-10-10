@@ -1,12 +1,19 @@
-name: TS & Svelte Check
+name: App Checks
 
 on:
   - push
 
 env:
-  PUBLIC_BETTER_AUTH_URL: http://localhost:3030
+  NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
+  PG_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+  OPENAI_API_KEY: sk_proj_1234567890
+  AWS_REGION: region-123
+  AWS_ACCESS_KEY_ID: access-123
+  AWS_SECRET_ACCESS_KEY: secret-123
+  AWS_S3_FILES_BUCKET_NAME: bucket-123
+
 jobs:
-  check:
+  type_build_check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,11 +21,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - uses: pnpm/action-setup@v3
         name: Install pnpm
         with:
-          version: 8
+          version: 10
           run_install: true
-
-      - run: pnpm check
+      - run: |
+          pnpm check
+          pnpm build
+  # tests:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #     - uses: pnpm/action-setup@v3
+  #       name: Install pnpm
+  #       with:
+  #         version: 10
+  #         run_install: true
+  #     - run: |
+  #         pnpm test

@@ -53,10 +53,6 @@ export const from_base64 = (str: string, decode = false) => {
   return str;
 };
 
-export const get_possibily_not_undefined = <T>(val: T | null, fallback_val: T | null = null) => {
-  if (val === undefined || val === null) val = fallback_val;
-  return val!;
-};
 export const copy_text_to_clipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
@@ -96,76 +92,101 @@ export function get_permutations(range: [number, number], count: number = 1): nu
   return permutations;
 }
 
-export function get_textarea_height(text: string, single_line_height: number, min_line: number) {
-  const height = Math.max(min_line, text.split('\n').length) * single_line_height;
-  return `${height}rem`;
+/**
+ * This replaces `{key}` with the corresponding value in `options`
+ */
+export function format_string_text(text: string, options: Record<string, any>) {
+  return text.replace(/{(\w+)}/g, (match, key) => options[key] ?? `{${key}}`);
+}
+
+export function cleanUpWhitespace(input: string, replace_multiple_white_spaces = true): string {
+  input = input.trim();
+  if (replace_multiple_white_spaces) input = input.replace(/\s+/g, ' ');
+  return input;
+}
+
+export function get_randon_number(start: number, end: number) {
+  return Math.floor(Math.random() * (end - start + 1) + start);
+}
+
+export function mask_email(
+  email: string,
+  options: {
+    startChars?: number;
+    endChars?: number;
+  } = { startChars: 3, endChars: 2 }
+): string {
+  if (!email || !email.includes('@')) return email;
+
+  const mask_part = (text: string, startChars: number, endChars: number) => {
+    if (text.length <= startChars + endChars) return text;
+    const start = text.slice(0, startChars);
+    const end = text.slice(-endChars);
+    const maskLength = text.length - startChars - endChars;
+    return `${start}${'*'.repeat(maskLength)}${end}`;
+  };
+
+  const { startChars = 1, endChars = 1 } = options;
+  const [localPart, domain] = email.split('@');
+  const maskedLocalPart = mask_part(localPart, startChars, endChars);
+  const [domainName, tld] = domain.split('.');
+  const maskedDomain = mask_part(domainName, 1, 2);
+
+  return `${maskedLocalPart}@${maskedDomain}.${tld}`;
 }
 
 /**
- * Creates a deep copy of a value, handling nested objects, arrays, Dates,
- * RegExps, Maps, Sets, and circular references.
- * @param value The value to deep copy
- * @param hash (Internal) Used to track circular references
- * @returns A deep copy of the input value
+ * Deeply clones a value of type T.
+ * - Primitives are returned as-is.
+ * - Arrays and plain objects are recursively cloned.
+ * - Date, Map, Set are specially handled.
+ * - Other objects (e.g. functions, class instances) are returned by reference.
  */
-export function deepCopy<T>(value: T, hash = new WeakMap()): T {
-  // Handle primitive types and null/undefined
+export function deepCopy<T>(value: T): T {
+  // Primitives (and functions) are returned directly
   if (value === null || typeof value !== 'object') {
     return value;
   }
-
-  // Handle circular references
-  if (hash.has(value)) {
-    return hash.get(value);
-  }
-
-  // Handle Date objects
+  // Date
   if (value instanceof Date) {
-    return new Date(value.getTime()) as T;
+    return new Date(value.getTime()) as any;
   }
-
-  // Handle RegExp objects
-  if (value instanceof RegExp) {
-    return new RegExp(value.source, value.flags) as T;
-  }
-
-  // Handle Map objects
-  if (value instanceof Map) {
-    const copy = new Map();
-    hash.set(value, copy);
-    value.forEach((val, key) => {
-      copy.set(deepCopy(key, hash), deepCopy(val, hash));
-    });
-    return copy as T;
-  }
-
-  // Handle Set objects
-  if (value instanceof Set) {
-    const copy = new Set();
-    hash.set(value, copy);
-    value.forEach((val) => {
-      copy.add(deepCopy(val, hash));
-    });
-    return copy as T;
-  }
-
-  // Handle Arrays
+  // Array
   if (Array.isArray(value)) {
-    const copy: unknown[] = [];
-    hash.set(value, copy);
-    for (let i = 0; i < value.length; i++) {
-      copy[i] = deepCopy(value[i], hash);
+    const arrCopy = [] as unknown[];
+    for (const item of value) {
+      arrCopy.push(deepCopy(item));
     }
-    return copy as T;
+    return arrCopy as any;
   }
-
-  // Handle Objects
-  const result: Record<string, unknown> = {};
-  hash.set(value, result);
-  for (const key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      result[key] = deepCopy(value[key], hash);
+  // Map
+  if (value instanceof Map) {
+    const mapCopy = new Map();
+    for (const [k, v] of value.entries()) {
+      mapCopy.set(deepCopy(k), deepCopy(v));
     }
+    return mapCopy as any;
   }
-  return result as T;
+  // Set
+  if (value instanceof Set) {
+    const setCopy = new Set();
+    for (const v of value.values()) {
+      setCopy.add(deepCopy(v));
+    }
+    return setCopy as any;
+  }
+  // Plain Object
+  if (Object.getPrototypeOf(value) === Object.prototype) {
+    const objCopy: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      objCopy[k] = deepCopy(v);
+    }
+    return objCopy as T;
+  }
+  // Fallback: other object types (class instances, functions, etc.)
+  return value;
 }
+
+export const get_rand_num = (a: number, b: number) => {
+  return Math.trunc(Math.random() * (b - a + 1)) + a;
+};
