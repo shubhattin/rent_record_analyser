@@ -17,6 +17,7 @@ import type * as http from "../http.js";
 import type * as routes_context from "../routes/context.js";
 import type * as routes_rentData from "../routes/rentData.js";
 import type * as routes_rent_filters from "../routes/rent_filters.js";
+import type * as routes_userInfo from "../routes/userInfo.js";
 
 import type {
   ApiFromModules,
@@ -42,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   "routes/context": typeof routes_context;
   "routes/rentData": typeof routes_rentData;
   "routes/rent_filters": typeof routes_rent_filters;
+  "routes/userInfo": typeof routes_userInfo;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
