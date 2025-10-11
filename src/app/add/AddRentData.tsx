@@ -267,7 +267,7 @@ export default function AddRentData() {
           >
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure to Add?</AlertDialogTitle>
-              <AlertDialogDescription className="flex items-center gap-2 select-none">
+              <AlertDialogDescription className="flex items-center justify-center gap-2 py-4 select-none sm:justify-start sm:py-0">
                 ₹ {amount!} <TiArrowRightOutline className="size-4" />{' '}
                 {MONTH_NAMES[parseInt(month) - 1]} {year}
               </AlertDialogDescription>

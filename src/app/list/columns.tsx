@@ -12,7 +12,7 @@ import {
 import { useMutation, useQuery } from 'convex/react';
 import { Home, Zap, MoreHorizontal, Pencil, User } from 'lucide-react';
 import { MdDeleteOutline } from 'react-icons/md';
-import { TiTick } from 'react-icons/ti';
+import { TiArrowRightOutline, TiTick } from 'react-icons/ti';
 import { useContext, useState } from 'react';
 import { AppContext } from '~/state/AppDataContext';
 import { cn } from '~/lib/utils';
@@ -247,6 +247,7 @@ function EditRentRecordDialog({
   });
   const [year, setYear] = useState<string>(() => record.month.split('-')[0]);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const currentYear = new Date().getFullYear();
 
@@ -351,11 +352,35 @@ function EditRentRecordDialog({
           >
             Cancel
           </Button>
-          <Button type="button" onClick={handleSave} disabled={submitting}>
+          <Button type="button" onClick={() => setConfirmOpen(true)} disabled={submitting}>
             {submitting ? 'Saving...' : 'Save'}
           </Button>
         </DialogFooter>
       </DialogContent>
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogTrigger asChild></AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Save changes?</AlertDialogTitle>
+            <AlertDialogDescription className="flex items-center justify-center gap-2 py-4 select-none sm:justify-start sm:py-0">
+              ₹ {amount!} <TiArrowRightOutline className="size-4" />{' '}
+              {MONTH_NAMES[parseInt(month) - 1]} {year}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={submitting}
+              onClick={async () => {
+                await handleSave();
+                setConfirmOpen(false);
+              }}
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }

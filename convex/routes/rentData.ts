@@ -97,3 +97,20 @@ export const getRentDataVerificationRequest = query({
     return verification_request_ids;
   }
 });
+
+export const getGroupByMonthRentData = query({
+  args: {},
+  handler: async (ctx, args) => {
+    const rent_data = await ctx.db
+      .query('rent_data')
+      .withIndex('month_date')
+      .order('desc')
+      .collect();
+
+    const countMap = new Map<string, number>();
+    for (let i = 0; i < rent_data.length; i++) {
+      countMap.set(rent_data[i].month, (countMap.get(rent_data[i].month) ?? 0) + 1);
+    }
+    return Array.from(countMap.entries());
+  }
+});

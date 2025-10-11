@@ -3,7 +3,6 @@
 Made using [NextJS](https://nextjs.org/) and [TailwindCSS](https://tailwindcss.com/) along with [Shadcn UI](https://ui.shadcn.com/) for design. Also using [Convex](https://www.convex.dev/) for database + backend and [BetterAuth](https://www.better-auth.com/) for authentication.
 
 <br/>
-<br/>
 
 **_Older Version_**
 

@@ -5,5 +5,5 @@ export default async function Home() {
 }
 
 export const metadata = {
-  title: 'Rent Record Analyzer'
+  title: 'Add Rent Record'
 };
