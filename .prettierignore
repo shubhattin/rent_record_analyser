@@ -1,11 +1,10 @@
 node_modules
 build
-.netlify
 .vercel
-.next
+.svelte-kit
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
 
-convex/_generated
-convex/betterAuth/_generated
+src/db/migrations
+src/db/scripts/out/
