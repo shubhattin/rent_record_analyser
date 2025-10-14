@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Modal } from '@skeletonlabs/skeleton-svelte';
+  import { Dialog } from '@skeletonlabs/skeleton-svelte';
   import type { Snippet } from 'svelte';
   import { cl_join } from '~/tools/cl_join';
 
@@ -32,7 +32,7 @@
   } = $props();
 </script>
 
-<Modal
+<Dialog
   open={popup_state}
   onOpenChange={(e) => {
     popup_state = e.open;
@@ -88,4 +88,4 @@
       </button>
     </div>
   {/snippet}
-</Modal>
+</Dialog>

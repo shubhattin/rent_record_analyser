@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Popover, Modal } from '@skeletonlabs/skeleton-svelte';
+  import { Popover, Dialog } from '@skeletonlabs/skeleton-svelte';
   import Icon from '~/tools/Icon.svelte';
   import { BiLogOut } from 'svelte-icons-pack/bi';
   import { user_info } from '~/state/user.svelte';
@@ -42,7 +42,7 @@
         <!-- <span class="text-sm text-gray-500 dark:text-gray-400">(#{$user_info!.id})</span> -->
       </div>
       <div class="space-y-2 p-1 select-none">
-        <Modal
+        <Dialog
           open={logout_modal_status}
           onOpenChange={(e) => (logout_modal_status = e.open)}
           contentBase="card z-50 space-y-2 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
@@ -73,7 +73,7 @@
               </button>
             </div>
           {/snippet}
-        </Modal>
+        </Dialog>
       </div>
     </div>
   {/snippet}

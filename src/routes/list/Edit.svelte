@@ -16,7 +16,7 @@
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '~/tools/cl_join';
   import { SvelteSet } from 'svelte/reactivity';
-  import { Modal, Popover } from '@skeletonlabs/skeleton-svelte';
+  import { Dialog, Popover } from '@skeletonlabs/skeleton-svelte';
   import { CgClose } from 'svelte-icons-pack/cg';
   import { deepCopy } from '~/tools/kry';
 
@@ -126,7 +126,7 @@
       </button>
     {/if}
   </div>
-  <Modal
+  <Dialog
     open={save_modal_opened}
     onOpenChange={(e) => (save_modal_opened = e.open)}
     contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
@@ -152,7 +152,7 @@
         </button>
       </div>
     {/snippet}
-  </Modal>
+  </Dialog>
 {/if}
 <div class="table-wrap">
   <table class="table outline-none">
