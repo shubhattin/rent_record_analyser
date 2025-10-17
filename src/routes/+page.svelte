@@ -13,6 +13,7 @@
   import { createMutation } from '@tanstack/svelte-query';
   import { client } from '~/api/client';
   import { SvelteMap } from 'svelte/reactivity';
+  import { LuMinus, LuPlus } from 'svelte-icons-pack/lu';
 
   let { data: ssr_data }: { data: PageData } = $props();
 
@@ -153,14 +154,18 @@
       <!-- Monthly -->
       {#each info_analysis.get(yr)!.months.keys() as mn, i_mn (mn)}
         <Accordion.Item value="{i_yr}-{i_mn}">
-          {#snippet control()}
+          <Accordion.ItemTrigger class="flex items-center justify-between">
             <span class={cl_join({ 'font-bold': i_mn === 0 && i_yr === 0 })}>
               {MONTH_NAMES[mn - 1]}, Total = <sup>₹</sup>{info_analysis.get(yr)!.months.get(mn)!
                 .amount}
             </span>
-          {/snippet}
+            <Accordion.ItemIndicator class="group">
+              <Icon src={LuMinus} class="hidden size-4 group-data-[state=open]:block" />
+              <Icon src={LuPlus} class="block size-4 group-data-[state=open]:hidden" />
+            </Accordion.ItemIndicator>
+          </Accordion.ItemTrigger>
           <!-- DateWise -->
-          {#snippet panel()}
+          <Accordion.ItemContent>
             <div class="my-0.5 flex items-center gap-1">
               <Icon
                 src={AiOutlineHome}
@@ -180,7 +185,7 @@
               <!-- ^ Total Electricity -->
             </div>
             {@render rent_table_list(yr, mn, 'electricity')}
-          {/snippet}
+          </Accordion.ItemContent>
         </Accordion.Item>
       {/each}
     </Accordion>

@@ -16,7 +16,7 @@
   import { VscAdd } from 'svelte-icons-pack/vsc';
   import { cl_join } from '~/tools/cl_join';
   import { SvelteSet } from 'svelte/reactivity';
-  import { Dialog, Popover } from '@skeletonlabs/skeleton-svelte';
+  import { Dialog, Popover, Portal } from '@skeletonlabs/skeleton-svelte';
   import { CgClose } from 'svelte-icons-pack/cg';
   import { deepCopy } from '~/tools/kry';
 
@@ -126,32 +126,34 @@
       </button>
     {/if}
   </div>
-  <Dialog
-    open={save_modal_opened}
-    onOpenChange={(e) => (save_modal_opened = e.open)}
-    contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
-    backdropClasses="backdrop-blur-sm"
-  >
-    {#snippet content()}
-      <h6>Are you sure to Save Changes ?</h6>
-      <strong>
-        <div>
-          Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
-        </div>
-      </strong>
-      <div class="mt-4 flex justify-end space-x-2">
-        <button
-          onclick={() => (save_modal_opened = false)}
-          class="preset-outlined-error-300-700 btn rounded-lg px-2.5 py-1.5">❌ Close</button
-        >
-        <button
-          class="preset-outlined-secondary-300-700 btn rounded-lg px-2.5 py-1.5"
-          onclick={save_data_func}
-        >
-          ✅ Confirm
-        </button>
-      </div>
-    {/snippet}
+  <Dialog open={save_modal_opened} onOpenChange={(e) => (save_modal_opened = e.open)}>
+    <!-- contentBase="card bg-surface-100-900 p-4 space-y-4 shadow-xl max-w-screen-sm"
+    backdropClasses="backdrop-blur-sm" -->
+    <Portal>
+      <Dialog.Backdrop class="bg-surface-50-950/50 fixed inset-0 z-50 backdrop-blur-xs" />
+      <Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center">
+        <Dialog.Content>
+          <h6>Are you sure to Save Changes ?</h6>
+          <strong>
+            <div>
+              Edits ➔ {to_change_list.size}, Deletions ➔ {to_delete_list.size}, Verifications ➔ {to_verify_list.size}
+            </div>
+          </strong>
+          <div class="mt-4 flex justify-end space-x-2">
+            <button
+              onclick={() => (save_modal_opened = false)}
+              class="preset-outlined-error-300-700 btn rounded-lg px-2.5 py-1.5">❌ Close</button
+            >
+            <button
+              class="preset-outlined-secondary-300-700 btn rounded-lg px-2.5 py-1.5"
+              onclick={save_data_func}
+            >
+              ✅ Confirm
+            </button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Positioner>
+    </Portal>
   </Dialog>
 {/if}
 <div class="table-wrap">
@@ -261,24 +263,20 @@
               </span>
             </span>
             {#if !editable}
-              <Popover
-                positioning={{ placement: 'top' }}
-                triggerBase="4"
-                contentBase="card bg-surface-200-800 px-0.5 sm:px-1.5 py-0.5 rounded-md space-y-4 max-w-[320px]"
-                arrow
-                arrowBackground="!bg-surface-200 dark:!bg-surface-800"
-              >
-                {#snippet trigger()}
+              <Popover positioning={{ placement: 'top' }}>
+                <Popover.Trigger>
                   <Icon src={AiOutlineUser} />
-                {/snippet}
-                {#snippet content()}
+                </Popover.Trigger>
+                <Popover.Content
+                  class="card bg-surface-200-800 max-w-[320px] space-y-4 rounded-md px-0.5 py-0.5 sm:px-1.5"
+                >
                   <div class="space-x-1 text-sm">
                     <span>{dt.user.name.split(' ')[0]}</span>
                     <span class="text-xs text-gray-600 dark:text-gray-400">
                       {dt.user.id.substring(0, 5)}
                     </span>
                   </div>
-                {/snippet}
+                </Popover.Content>
               </Popover>
             {/if}
             {#if is_editable_row}

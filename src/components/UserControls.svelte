@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Popover, Dialog } from '@skeletonlabs/skeleton-svelte';
+  import { Popover, Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
   import Icon from '~/tools/Icon.svelte';
   import { BiLogOut } from 'svelte-icons-pack/bi';
   import { user_info } from '~/state/user.svelte';
@@ -27,14 +27,12 @@
 <Popover
   open={user_info_popover_status}
   onOpenChange={(e) => (user_info_popover_status = e.open)}
-  triggerBase="btn m-2 p-0 select-none outline-none"
-  contentBase="card z-40 pt-1 px-1 shadow-2xl bg-surface-100-900 rounded-lg"
   positioning={{ placement: 'left-start' }}
 >
-  {#snippet trigger()}
+  <Popover.Trigger class="btn m-2 p-0 outline-none select-none">
     <Icon class="hover:text-gray-6200 text-3xl dark:hover:text-gray-400" src={VscAccount} />
-  {/snippet}
-  {#snippet content()}
+  </Popover.Trigger>
+  <Popover.Content class="card bg-surface-100-900 z-40 rounded-lg px-1 pt-1 shadow-2xl">
     <div class="space-y-2 p-1 select-none">
       <div class="text-center text-base font-bold">
         <Icon class="-mt-1 text-2xl" src={AiOutlineUser} />
@@ -42,39 +40,41 @@
         <!-- <span class="text-sm text-gray-500 dark:text-gray-400">(#{$user_info!.id})</span> -->
       </div>
       <div class="space-y-2 p-1 select-none">
-        <Dialog
-          open={logout_modal_status}
-          onOpenChange={(e) => (logout_modal_status = e.open)}
-          contentBase="card z-50 space-y-2 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
-          backdropBackground="backdrop-blur-sm"
-        >
-          {#snippet trigger()}
+        <Dialog open={logout_modal_status} onOpenChange={(e) => (logout_modal_status = e.open)}>
+          <!-- contentBase="card z-50 space-y-2 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
+          backdropBackground="backdrop-blur-sm" -->
+          <Dialog.Trigger>
             <span
               class="btn bg-error-600 m-0 gap-1 rounded-md pt-0 pr-2 pb-1 pl-1 font-bold text-white"
             >
               <Icon class="text-2xl" src={BiLogOut} />
               <span>Logout</span>
             </span>
-          {/snippet}
-          {#snippet content()}
-            <div class="text-lg font-bold">Are you sure to logout ?</div>
-            <div class="space-x-2">
-              <button
-                class="btn preset-filled-surface-300-700 rounded-lg font-semibold"
-                onclick={log_out_func}
-              >
-                Confirm
-              </button>
-              <button
-                onclick={() => (logout_modal_status = false)}
-                class="btn preset-outlined-surface-800-200 rounded-lg font-semibold"
-              >
-                Cancel
-              </button>
-            </div>
-          {/snippet}
+          </Dialog.Trigger>
+          <Portal>
+            <Dialog.Backdrop class="bg-surface-50-950/50 fixed inset-0 z-50 backdrop-blur-sm" />
+            <Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center">
+              <Dialog.Content class="card bg-surface-100-900 z-50 space-y-2 rounded-lg px-3 py-2">
+                <div class="text-lg font-bold">Are you sure to logout ?</div>
+                <div class="space-x-2">
+                  <button
+                    class="btn preset-filled-surface-300-700 rounded-lg font-semibold"
+                    onclick={log_out_func}
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onclick={() => (logout_modal_status = false)}
+                    class="btn preset-outlined-surface-800-200 rounded-lg font-semibold"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </Dialog.Content>
+            </Dialog.Positioner>
+          </Portal>
         </Dialog>
       </div>
     </div>
-  {/snippet}
+  </Popover.Content>
 </Popover>

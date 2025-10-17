@@ -22,22 +22,20 @@
 </script>
 
 <AppBar>
-  {#snippet lead()}
+  <AppBar.Lead>
     {#if route_id !== '/'}
-      <Tooltip
-        contentBase="preset-outlined-tertiary-100-900 px-1 rounded-md text-base"
-        positioning={{ placement: 'bottom' }}
-        openDelay={100}
-      >
-        {#snippet trigger()}
+      <Tooltip positioning={{ placement: 'bottom' }} openDelay={100}>
+        <Tooltip.Trigger>
           <a class="text-xl" href="/">
             <Icon
               src={BiArrowBack}
               class="-mt-1 mr-1 text-2xl hover:fill-red-700 dark:hover:fill-sky-500"
             />
           </a>
-        {/snippet}
-        {#snippet content()}Home Page{/snippet}
+        </Tooltip.Trigger>
+        <Tooltip.Content class="preset-outlined-tertiary-100-900 rounded-md px-1 text-base"
+          >Home Page</Tooltip.Content
+        >
       </Tooltip>
     {/if}
     {#if start}
@@ -51,8 +49,8 @@
       </span>
     {/if}
     {@render start?.()}
-  {/snippet}
-  {#snippet trail()}
+  </AppBar.Lead>
+  <AppBar.Trail>
     {#if end}
       {@render end()}
     {:else}
@@ -74,17 +72,18 @@
       open={app_bar_popover_status}
       onOpenChange={(e) => (app_bar_popover_status = e.open)}
       positioning={{ placement: 'left-start' }}
-      arrow={false}
-      contentBase="card z-50 space-y-1 rounded-lg px-3 py-2 shadow-xl bg-surface-100-900"
-      triggerBase="btn p-0 gap-0 mt-1 outline-none select-none"
     >
-      {#snippet trigger()}
+      <Popover.Trigger
+        class="card bg-surface-100-900 z-50 space-y-1 rounded-lg px-3 py-2 shadow-xl"
+      >
         <Icon
           src={AiOutlineMenu}
           class="text-3xl hover:text-gray-500 active:text-blue-600 dark:hover:text-gray-400 dark:active:text-blue-400"
         />
-      {/snippet}
-      {#snippet content()}
+      </Popover.Trigger>
+      <Popover.Content
+        class="card bg-surface-100-900 z-50 space-y-1 rounded-lg px-3 py-2 shadow-xl"
+      >
         <a
           href="https://github.com/shubhattin/rent_record_analyser"
           target="_blank"
@@ -115,7 +114,7 @@
           <span class="mt-1">Set Theme</span>
           <ThemeChanger />
         </div>
-      {/snippet}
+      </Popover.Content>
     </Popover>
-  {/snippet}
+  </AppBar.Trail>
 </AppBar>

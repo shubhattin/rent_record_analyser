@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Dialog } from '@skeletonlabs/skeleton-svelte';
+  import { Dialog, Portal } from '@skeletonlabs/skeleton-svelte';
   import type { Snippet } from 'svelte';
   import { cl_join } from '~/tools/cl_join';
 
@@ -37,55 +37,57 @@
   onOpenChange={(e) => {
     popup_state = e.open;
   }}
-  contentBase={cl_join(
-    'card z-70 space-y-2 p-2 rounded-lg shadow-xl dark:bg-surface-900 bg-zinc-100',
-    contentBase
-  )}
-  backdropClasses="backdrop-blur-xs"
-  triggerBase={cl_join(triggerBase)}
 >
-  {#snippet trigger()}
+  <Dialog.Trigger>
     {@render children?.()}
-  {/snippet}
-  {#snippet content()}
-    <div class={cl_join('text-lg font-bold', className)}>{title}</div>
-    {#if body}
-      <div class="my-2 mb-3">
-        {@render body()}
-      </div>
-    {:else if body_text}
-      <div class="my-2 mb-3">
-        {@html body_text()}
-      </div>
-    {/if}
-    <div
-      class={cl_join(
-        'flex  space-x-2',
-        button_pos === 'center' && 'items-center justify-center',
-        button_pos === 'right' && 'justify-end'
-      )}
-    >
-      <button
-        class={cl_join(
-          'btn dark:bg-surface-700 rounded-lg bg-zinc-500 font-semibold text-white',
-          className
-        )}
-        onclick={() => {
-          if (close_on_confirm) popup_state = false;
-          confirm_func && confirm_func();
-        }}
-      >
-        Confirm
-      </button>
-      <button
-        onclick={() => {
-          popup_state = false;
-          cancel_func && cancel_func();
-        }}
-        class={cl_join('btn preset-outlined-surface-800-200 rounded-lg font-semibold', className)}
-      >
-        Cancel
-      </button>
-    </div>
-  {/snippet}
+  </Dialog.Trigger>
+  <Portal>
+    <Dialog.Backdrop class="bg-surface-50-950/50 fixed inset-0 z-50 backdrop-blur-xs" />
+    <Dialog.Positioner class="fixed inset-0 z-50 flex items-center justify-center">
+      <Dialog.Content>
+        <div class={cl_join('text-lg font-bold', className)}>{title}</div>
+        {#if body}
+          <div class="my-2 mb-3">
+            {@render body()}
+          </div>
+        {:else if body_text}
+          <div class="my-2 mb-3">
+            {@html body_text()}
+          </div>
+        {/if}
+        <div
+          class={cl_join(
+            'flex  space-x-2',
+            button_pos === 'center' && 'items-center justify-center',
+            button_pos === 'right' && 'justify-end'
+          )}
+        >
+          <button
+            class={cl_join(
+              'btn dark:bg-surface-700 rounded-lg bg-zinc-500 font-semibold text-white',
+              className
+            )}
+            onclick={() => {
+              if (close_on_confirm) popup_state = false;
+              confirm_func && confirm_func();
+            }}
+          >
+            Confirm
+          </button>
+          <button
+            onclick={() => {
+              popup_state = false;
+              cancel_func && cancel_func();
+            }}
+            class={cl_join(
+              'btn preset-outlined-surface-800-200 rounded-lg font-semibold',
+              className
+            )}
+          >
+            Cancel
+          </button>
+        </div>
+      </Dialog.Content>
+    </Dialog.Positioner>
+  </Portal>
 </Dialog>
